@@ -1,6 +1,6 @@
 {
   "name": "parse-server-push-adapter",
-  "version": "1.0.0-alpha1",
+  "version": "1.0.0",
   "description": "Base parse-server-push-adapter",
   "main": "lib/index.js",
   "files": [
@@ -16,6 +16,10 @@
     "push",
     "adapter"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/parse-server-modules/parse-server-push-adapter.git"
+  },
   "author": "Parse",
   "license": "MIT",
   "devDependencies": {
