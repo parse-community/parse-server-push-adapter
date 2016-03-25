@@ -1,0 +1,7 @@
+branches:
+  only:
+    - master
+language: node_js
+node_js:
+  - "4.3"
+after_success: ./node_modules/.bin/codecov
