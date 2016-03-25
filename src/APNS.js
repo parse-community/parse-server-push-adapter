@@ -219,8 +219,9 @@ function generateNotification(coreData, expirationTime) {
   return notification;
 }
 
+APNS.generateNotification = generateNotification;
+
 if (process.env.TESTING) {
-  APNS.generateNotification = generateNotification;
   APNS.chooseConns = chooseConns;
   APNS.handleTransmissionError = handleTransmissionError;
 }
