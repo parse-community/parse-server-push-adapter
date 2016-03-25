@@ -147,8 +147,9 @@ function sliceDevices(devices, chunkSize) {
   return chunkDevices;
 }
 
+GCM.generateGCMPayload = generateGCMPayload;
+
 if (process.env.TESTING) {
-  GCM.generateGCMPayload = generateGCMPayload;
   GCM.sliceDevices = sliceDevices;
 }
 
