@@ -219,7 +219,7 @@ function generateNotification(coreData, expirationTime) {
   return notification;
 }
 
-if (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') {
+if (process.env.TESTING) {
   APNS.generateNotification = generateNotification;
   APNS.chooseConns = chooseConns;
   APNS.handleTransmissionError = handleTransmissionError;

@@ -147,7 +147,7 @@ function sliceDevices(devices, chunkSize) {
   return chunkDevices;
 }
 
-if (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') {
+if (process.env.TESTING) {
   GCM.generateGCMPayload = generateGCMPayload;
   GCM.sliceDevices = sliceDevices;
 }

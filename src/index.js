@@ -6,8 +6,7 @@
 import ParsePushAdapter from './ParsePushAdapter';
 import GCM from './GCM';
 import APNS from './APNS';
+import * as utils from './PushAdapterUtils';
 
 export default ParsePushAdapter;
-module.exports = ParsePushAdapter;
-export { APNS };
-export { GCM };
+export { ParsePushAdapter, APNS, GCM, utils };
