@@ -1,9 +1,12 @@
 "use strict";
 
-const Parse = require('parse/node').Parse;
 // TODO: apn does not support the new HTTP/2 protocal. It is fine to use it in V1,
 // but probably we will replace it in the future.
-const apn = require('apn');
+import apn from 'apn';
+import Parse from 'parse';
+import log from 'npmlog';
+
+const LOG_PREFIX = 'parse-server-push-adapter APNS';
 
 /**
  * Create a new connection to the APN service.
@@ -46,7 +49,7 @@ function APNS(args) {
 
     // Set apns client callbacks
     conn.on('connected', () => {
-      console.log('APNS Connection %d Connected', conn.index);
+      log.verbose(LOG_PREFIX, 'APNS Connection %d Connected', conn.index);
     });
 
     conn.on('transmissionError', (errCode, notification, apnDevice) => {
@@ -54,15 +57,15 @@ function APNS(args) {
     });
 
     conn.on('timeout', () => {
-      console.log('APNS Connection %d Timeout', conn.index);
+      log.verbose(LOG_PREFIX, 'APNS Connection %d Timeout', conn.index);
     });
 
     conn.on('disconnected', () => {
-      console.log('APNS Connection %d Disconnected', conn.index);
+      log.verbose(LOG_PREFIX, 'APNS Connection %d Disconnected', conn.index);
     });
 
     conn.on('socketError', () => {
-      console.log('APNS Connection %d Socket Error', conn.index);
+      log.verbose(LOG_PREFIX, 'APNS Connection %d Socket Error', conn.index);
     });
 
     conn.on('transmitted', function(notification, device) {
@@ -76,7 +79,7 @@ function APNS(args) {
           }
         });
       }
-      console.log('APNS Connection %d Notification transmitted to %s', conn.index, device.token.toString('hex'));
+      log.verbose(LOG_PREFIX, 'APNS Connection %d Notification transmitted to %s', conn.index, device.token.toString('hex'));
     });
 
     this.conns.push(conn);
@@ -106,6 +109,7 @@ APNS.prototype.send = function(data, devices) {
     let qualifiedConnIndexs = chooseConns(this.conns, device);
     // We can not find a valid conn, just ignore this device
     if (qualifiedConnIndexs.length == 0) {
+      log.error(LOG_PREFIX, 'no qualified connections for %s %s', device.appIdentifier, device.deviceToken);
       return Promise.resolve({
         transmitted: false,
         device: {
@@ -154,6 +158,7 @@ function handleTransmissionError(conns, errCode, notification, apnDevice) {
   // There is no more available conns, we give up in this case
   if (newConnIndex < 0 || newConnIndex >= conns.length) {
     if (apnDevice.callback) {
+      log.error(LOG_PREFIX, `cannot find vaild connection for ${apnDevice.token.toString('hex')}`);
       apnDevice.callback({
         response: {error: `APNS can not find vaild connection for ${apnDevice.token.toString('hex')}`, code: errCode},
         status: errCode,
