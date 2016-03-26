@@ -46,13 +46,17 @@ export class ParsePushAdapter {
     let sendPromises = [];
     for (let pushType in deviceMap) {
       let sender = this.senderMap[pushType];
+      let devices = deviceMap[pushType];
       if (!sender) {
-        sendPromises.push(Promise.resolve({
-          transmitted: false,
-          response: {'error': `Can not find sender for push type ${pushType}, ${data}`}
-        }))
+        let results = devices.map((device) => {
+          return Promise.resolve({
+            device,
+            transmitted: false,
+            response: {'error': `Can not find sender for push type ${pushType}, ${data}`}
+          })
+        });
+        sendPromises.push(Promise.all(results));
       } else {
-        let devices = deviceMap[pushType];
         sendPromises.push(sender.send(data, devices));
       }
     }

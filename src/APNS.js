@@ -70,7 +70,10 @@ function APNS(args) {
         device.callback({
           notification: notification,
           transmitted: true,
-          device: device
+          device: {
+            deviceType: 'ios',
+            deviceToken: device.token
+          }
         });
       }
       console.log('APNS Connection %d Notification transmitted to %s', conn.index, device.token.toString('hex'));
@@ -105,6 +108,10 @@ APNS.prototype.send = function(data, devices) {
     if (qualifiedConnIndexs.length == 0) {
       return Promise.resolve({
         transmitted: false,
+        device: {
+          deviceToken: device.deviceToken,
+          deviceType: 'ios'
+        },
         result: {error: 'No connection available'}
       });
     }
@@ -150,7 +157,11 @@ function handleTransmissionError(conns, errCode, notification, apnDevice) {
       apnDevice.callback({
         response: {error: `APNS can not find vaild connection for ${apnDevice.token}`, code: errCode},
         status: errCode,
-        transmitted: false
+        transmitted: false,
+        device: {
+          deviceType: 'ios',
+          deviceToken: apnDevice.token
+        }
       });
     }
     return;
