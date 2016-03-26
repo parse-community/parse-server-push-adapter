@@ -8,3 +8,18 @@ Status](https://travis-ci.org/parse-server-modules/parse-server-push-adapter.svg
 Official Push adapter for parse-server
 
 See [parse-server push configuration](https://github.com/ParsePlatform/parse-server/wiki/Push)
+
+
+### see more logs
+
+You can enable verbose logging with environment variables:
+
+```
+VERBOSE=1
+
+or 
+
+VERBOSE_PARSE_SERVER_PUSH_ADAPTER=1
+```
+
+This will produce a more verbose output for all the push sending attempts
