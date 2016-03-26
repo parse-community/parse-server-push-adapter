@@ -141,6 +141,65 @@ describe('ParsePushAdapter', () => {
     done();
   });
 
+  it('reports properly results', (done) => {
+    var pushConfig = {
+      android: {
+        senderId: 'senderId',
+        apiKey: 'apiKey'
+      },
+      ios: [
+        {
+          cert: 'cert.cer',
+          key: 'key.pem',
+          production: false,
+          bundleId: 'bundleId'
+        }
+      ]
+    };
+    var installations = [
+      {
+        deviceType: 'android',
+        deviceToken: 'androidToken'
+      },
+      {
+        deviceType: 'ios',
+        deviceToken: 'c5ee8fae0a1c',
+        appIdentifier: 'anotherBundle'
+      },
+      {
+        deviceType: 'ios',
+        deviceToken: 'c5ee8fae0a1c5805e731cf15496d5b2b3f9b9c577353d3239429d3faaee01c79',
+        appIdentifier: 'anotherBundle'
+      },
+      {
+        deviceType: 'win',
+        deviceToken: 'winToken'
+      },
+      {
+        deviceType: 'android',
+        deviceToken: undefined
+      }
+    ];
+
+    var parsePushAdapter = new ParsePushAdapter(pushConfig);
+    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
+      expect(Array.isArray(results)).toBe(true);
+
+      // 2x iOS, 1x android
+      expect(results.length).toBe(3);
+      results.forEach((result) => {
+        expect(result.transmitted).toBe(false);
+        expect(typeof result.device).toBe('object');
+        expect(typeof result.device.deviceType).toBe('string');
+        expect(typeof result.device.deviceToken).toBe('string');
+      })
+      done();
+    }).catch((err) => {
+      fail('Should not fail');
+      done();
+    })
+  });
+
   function makeDevice(deviceToken, appIdentifier) {
     return {
       deviceToken: deviceToken,

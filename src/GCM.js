@@ -85,6 +85,7 @@ GCM.prototype.send = function(data, devices) {
       let promise = promises[index];
       let result = results ? results[index] : undefined;
       let device = devicesMap[token];
+      device.deviceType = 'android';
       let resolution = {
         device,
         multicast_id,
