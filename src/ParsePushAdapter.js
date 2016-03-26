@@ -1,8 +1,11 @@
-const Parse = require('parse/node').Parse;
-const GCM = require('./GCM');
-const APNS = require('./APNS');
-
+'use strict';
+import Parse from 'parse';
+import log from 'npmlog';
+import APNS from './APNS';
+import GCM from './GCM';
 import { classifyInstallations } from './PushAdapterUtils';
+
+const LOG_PREFIX = 'parse-server-push-adapter';
 
 export class ParsePushAdapter {
 
@@ -48,6 +51,7 @@ export class ParsePushAdapter {
       let sender = this.senderMap[pushType];
       let devices = deviceMap[pushType];
       if (!sender) {
+        log.verbose(LOG_PREFIX, `Can not find sender for push type ${pushType}, ${data}`)
         let results = devices.map((device) => {
           return Promise.resolve({
             device,

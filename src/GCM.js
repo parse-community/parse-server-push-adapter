@@ -1,9 +1,11 @@
 "use strict";
 
-import Parse from 'parse/node';
+import Parse from 'parse';
+import log from 'npmlog';
 import gcm from 'node-gcm';
 import { randomString } from './PushAdapterUtils';
 
+const LOG_PREFIX = 'parse-server-push-adapter GCM';
 const GCMTimeToLiveMax = 4 * 7 * 24 * 60 * 60; // GCM allows a max of 4 weeks
 const GCMRegistrationTokensMax = 1000;
 
@@ -30,6 +32,7 @@ GCM.prototype.send = function(data, devices) {
   // chunk if necessary
   let slices = sliceDevices(devices, GCMRegistrationTokensMax);
   if (slices.length > 1) {
+    log.verbose(LOG_PREFIX, `the number of devices exceeds ${GCMRegistrationTokensMax}`);
     // Make 1 send per slice
     let promises = slices.reduce((memo, slice) => {
       let promise = this.send(data, slice, timestamp);
@@ -68,6 +71,8 @@ GCM.prototype.send = function(data, devices) {
 
   let promises = deviceTokens.map(() => new Parse.Promise());
   let registrationTokens = deviceTokens;
+  let length = registrationTokens.length;
+  log.verbose(LOG_PREFIX, `sending to ${length} ${length > 1 ? 'devices' : 'device'}`);
   this.sender.send(message, { registrationTokens: registrationTokens }, 5, (error, response) => {
     // example response:
     /*
@@ -80,6 +85,11 @@ GCM.prototype.send = function(data, devices) {
         {"error":"InvalidRegistration"},
         {"error":"InvalidRegistration"}] }
     */
+    if (error) {
+      log.error(LOG_PREFIX, `send errored: %s`, JSON.stringify(error, null, 4));
+    } else {
+      log.verbose(LOG_PREFIX, `GCM Response: %s`, JSON.stringify(response, null, 4));
+    }
     let { results, multicast_id } = response || {};
     registrationTokens.forEach((token, index) => {
       let promise = promises[index];
