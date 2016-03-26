@@ -185,19 +185,16 @@ describe('ParsePushAdapter', () => {
     parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
-      // iOS and Android
-      expect(results.length).toBe(2);
-      // flatten
-      results = [].concat.apply([], results);
       // 2x iOS, 1x android
       expect(results.length).toBe(3);
       results.forEach((result) => {
         expect(result.transmitted).toBe(false);
         expect(typeof result.device).toBe('object');
         expect(typeof result.device.deviceType).toBe('string');
+        expect(typeof result.device.deviceToken).toBe('string');
       })
       done();
-    }).fail((err) => {
+    }).catch((err) => {
       fail('Should not fail');
       done();
     })

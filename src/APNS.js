@@ -72,7 +72,7 @@ function APNS(args) {
           transmitted: true,
           device: {
             deviceType: 'ios',
-            deviceToken: device.token
+            deviceToken: device.token.toString('hex')
           }
         });
       }
@@ -155,12 +155,12 @@ function handleTransmissionError(conns, errCode, notification, apnDevice) {
   if (newConnIndex < 0 || newConnIndex >= conns.length) {
     if (apnDevice.callback) {
       apnDevice.callback({
-        response: {error: `APNS can not find vaild connection for ${apnDevice.token}`, code: errCode},
+        response: {error: `APNS can not find vaild connection for ${apnDevice.token.toString('hex')}`, code: errCode},
         status: errCode,
         transmitted: false,
         device: {
           deviceType: 'ios',
-          deviceToken: apnDevice.token
+          deviceToken: apnDevice.token.toString('hex')
         }
       });
     }

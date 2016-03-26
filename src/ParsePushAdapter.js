@@ -60,7 +60,10 @@ export class ParsePushAdapter {
         sendPromises.push(sender.send(data, devices));
       }
     }
-    return Parse.Promise.when(sendPromises);
+    return Promise.all(sendPromises).then((promises) => {
+      // flatten all
+      return [].concat.apply([], promises);
+    })
   }
 }
 export default ParsePushAdapter;
