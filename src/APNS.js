@@ -105,9 +105,9 @@ APNS.prototype.send = function(data, devices) {
   let expirationTime = data['expiration_time'];
   let notification = generateNotification(coreData, expirationTime);
   let allPromises = [];
-
+  let devicesPerConnIndex = {};
   // Start by clustering the devices per connections
-  let devicesPerConnIndex = devices.reduce((memo, device) => {
+  devices.forEach((device) => {
     let qualifiedConnIndexs = chooseConns(this.conns, device);
     if (qualifiedConnIndexs.length == 0) {
       log.error(LOG_PREFIX, 'no qualified connections for %s %s', device.appIdentifier, device.deviceToken);
@@ -126,11 +126,10 @@ APNS.prototype.send = function(data, devices) {
       if (device.appIdentifier) {
         apnDevice.appIdentifier = device.appIdentifier;
       }
-      memo[apnDevice.connIndex] = memo[apnDevice.connIndex] || [];
-      memo[apnDevice.connIndex].push(apnDevice);
+      devicesPerConnIndex[apnDevice.connIndex] = devicesPerConnIndex[apnDevice.connIndex] || [];
+      devicesPerConnIndex[apnDevice.connIndex].push(apnDevice);
     }
-    return memo;
-  }, {})
+  })
 
   allPromises = Object.keys(devicesPerConnIndex).reduce((memo, connIndex) => {
     let devices = devicesPerConnIndex[connIndex];
@@ -143,35 +142,9 @@ APNS.prototype.send = function(data, devices) {
     let conn = this.conns[connIndex];
     conn.pushNotification(notification, devices);
     return memo.concat(promises);
-  }, allPromises)
+  }, allPromises);
 
-  // let promises = devices.map((device) => {
-  //   let qualifiedConnIndexs = chooseConns(this.conns, device);
-  //   // We can not find a valid conn, just ignore this device
-  //   if (qualifiedConnIndexs.length == 0) {
-  //     log.error(LOG_PREFIX, 'no qualified connections for %s %s', device.appIdentifier, device.deviceToken);
-  //     return Promise.resolve({
-  //       transmitted: false,
-  //       device: {
-  //         deviceToken: device.deviceToken,
-  //         deviceType: 'ios'
-  //       },
-  //       result: {error: 'No connection available'}
-  //     });
-  //   }
-  //   let conn = this.conns[qualifiedConnIndexs[0]];
-  //   let apnDevice = new apn.Device(device.deviceToken);
-  //   apnDevice.connIndex = qualifiedConnIndexs[0];
-  //   // Add additional appIdentifier info to apn device instance
-  //   if (device.appIdentifier) {
-  //     apnDevice.appIdentifier = device.appIdentifier;
-  //   }
-  //   return new Promise((resolve, reject) => {
-  //     apnDevice.callback = resolve;
-  //     conn.pushNotification(notification, apnDevice);
-  //   });
-  // });
-  return Parse.Promise.when(allPromises);
+  return Promise.all(allPromises);
 }
 
 function handleTransmissionError(conns, errCode, notification, apnDevice) {
