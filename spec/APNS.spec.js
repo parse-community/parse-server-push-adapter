@@ -290,6 +290,18 @@ describe('APNS', () => {
       {
         deviceToken: '112233',
         appIdentifier: 'bundleId'
+      },
+      {
+        deviceToken: '112234',
+        appIdentifier: 'bundleId'
+      },
+      {
+        deviceToken: '112235',
+        appIdentifier: 'bundleId'
+      },
+      {
+        deviceToken: '112236',
+        appIdentifier: 'bundleId'
       }
     ];
 
@@ -299,9 +311,94 @@ describe('APNS', () => {
     var notification = args[0];
     expect(notification.alert).toEqual(data.data.alert);
     expect(notification.expiry).toEqual(data['expiration_time']/1000);
-    var apnDevice = args[1]
-    expect(apnDevice.connIndex).toEqual(0);
-    expect(apnDevice.appIdentifier).toEqual('bundleId');
+    var apnDevices = args[1];
+    apnDevices.forEach((apnDevice) => {
+      expect(apnDevice.connIndex).toEqual(0);
+      expect(apnDevice.appIdentifier).toEqual('bundleId');
+    })
+    done();
+  });
+
+  it('can send APNS notification to multiple bundles', (done) => {
+    var args = [{
+      cert: 'prodCert.pem',
+      key: 'prodKey.pem',
+      production: true,
+      bundleId: 'bundleId'
+    },{
+      cert: 'devCert.pem',
+      key: 'devKey.pem',
+      production: false,
+      bundleId: 'bundleId.dev'
+    }];
+
+    var apns = new APNS(args);
+    var conn = {
+      pushNotification: jasmine.createSpy('send'),
+      bundleId: 'bundleId'
+    };
+    var conndev = {
+      pushNotification: jasmine.createSpy('send'),
+      bundleId: 'bundleId.dev'
+    };
+    apns.conns = [ conn, conndev ];
+    // Mock data
+    var expirationTime = 1454571491354
+    var data = {
+      'expiration_time': expirationTime,
+      'data': {
+        'alert': 'alert'
+      }
+    }
+    // Mock devices
+    var devices = [
+      {
+        deviceToken: '112233',
+        appIdentifier: 'bundleId'
+      },
+      {
+        deviceToken: '112234',
+        appIdentifier: 'bundleId'
+      },
+      {
+        deviceToken: '112235',
+        appIdentifier: 'bundleId'
+      },
+      {
+        deviceToken: '112235',
+        appIdentifier: 'bundleId.dev'
+      },
+      {
+        deviceToken: '112236',
+        appIdentifier: 'bundleId.dev'
+      }
+    ];
+
+    var promise = apns.send(data, devices);
+
+    expect(conn.pushNotification).toHaveBeenCalled();
+    var args = conn.pushNotification.calls.first().args;
+    var notification = args[0];
+    expect(notification.alert).toEqual(data.data.alert);
+    expect(notification.expiry).toEqual(data['expiration_time']/1000);
+    var apnDevices = args[1];
+    expect(apnDevices.length).toBe(3);
+    apnDevices.forEach((apnDevice) => {
+      expect(apnDevice.connIndex).toEqual(0);
+      expect(apnDevice.appIdentifier).toEqual('bundleId');
+    })
+
+    expect(conndev.pushNotification).toHaveBeenCalled();
+    args = conndev.pushNotification.calls.first().args;
+    notification = args[0];
+    expect(notification.alert).toEqual(data.data.alert);
+    expect(notification.expiry).toEqual(data['expiration_time']/1000);
+    apnDevices = args[1];
+    expect(apnDevices.length).toBe(2);
+    apnDevices.forEach((apnDevice) => {
+      expect(apnDevice.connIndex).toEqual(1);
+      expect(apnDevice.appIdentifier).toEqual('bundleId.dev');
+    });
     done();
   });
 });
