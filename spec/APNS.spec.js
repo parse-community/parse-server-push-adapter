@@ -84,7 +84,7 @@ describe('APNS', () => {
       'key': 'value',
       'keyAgain': 'valueAgain'
     });
-    expect(notification.expiry).toEqual(expirationTime);
+    expect(notification.expiry).toEqual(expirationTime/1000);
     done();
   });
 
@@ -298,7 +298,7 @@ describe('APNS', () => {
     var args = conn.pushNotification.calls.first().args;
     var notification = args[0];
     expect(notification.alert).toEqual(data.data.alert);
-    expect(notification.expiry).toEqual(data['expiration_time']);
+    expect(notification.expiry).toEqual(data['expiration_time']/1000);
     var apnDevice = args[1]
     expect(apnDevice.connIndex).toEqual(0);
     expect(apnDevice.appIdentifier).toEqual('bundleId');

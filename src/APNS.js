@@ -201,6 +201,7 @@ function chooseConns(conns, device) {
 /**
  * Generate the apns notification from the data we get from api request.
  * @param {Object} coreData The data field under api request body
+ * @param {number} expirationTime The expiration time in milliseconds since Jan 1 1970
  * @returns {Object} A apns notification
  */
 function generateNotification(coreData, expirationTime) {
@@ -231,7 +232,7 @@ function generateNotification(coreData, expirationTime) {
     }
   }
   notification.payload = payload;
-  notification.expiry = expirationTime;
+  notification.expiry = expirationTime / 1000;
   return notification;
 }
 
