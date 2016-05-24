@@ -25,22 +25,18 @@ WNS.prototype.send = function(data, devices)
 	devices = new Array(...devices);
 	var currentAccessToken = fs.readFileSync(this.accessTokenPath);
 	
-	if (typeof currentAccessToken !== 'string' || currentAccessToken.length == 0)
-	{
+	if (typeof currentAccessToken !== 'string' || currentAccessToken.length == 0) {
 		log.verbose(LOG_PREFIX, `currentAccessToken not existed.get new access`);
 		
 		currentAccessToken = getNewAccessToken();
 		
-		if (currentAccessToken == false)
-		{
+		if (currentAccessToken == false) {
 			log.error(LOG_PREFIX, `cannot get currentAccessToken From WNS`);
 			return false;
 		}
 		
-		fs.writeFile(this.accessTokenPath,currentAccessToken,function(err)
-			{
-				if (err) 
-				{
+		fs.writeFile(this.accessTokenPath,currentAccessToken,function(err) {
+				if (err) {
 					log.error(LOG_PREFIX, `cannot write new currentAccessToken to %s`,this.accessTokenPath);
 				}
 			}
@@ -52,14 +48,11 @@ WNS.prototype.send = function(data, devices)
 	let promises = devices.map((device) => {
 
     return new Promise((resolve, reject) => {
-		wns.sendToastText02(device.wnsRequestURI,wnsPayload,
-		{
+		wns.sendToastText02(device.deviceToken,wnsPayload,{
 			client_id: this.clientID,
 			client_secret: this.clientSecret,
 			accessToken: currentAccessToken
-		}, 
-		function (error, result) 
-		{
+		}, function (error, result) {
 			if (error) {
 			  log.error(LOG_PREFIX, `send errored: %s`, JSON.stringify(error, null, 4));
 			} else {
@@ -70,37 +63,6 @@ WNS.prototype.send = function(data, devices)
     });
   });
   return Parse.Promise.when(promises);
-	
-/*	(function (i, len, count, callback) 
-	{
-		for (; i < len; ++i) {
-			(function (i) 
-			{
-				device = devices[i];
-				wns.sendToastText02(device.wnsRequestURI,wnsPayload,
-				{
-					client_id: this.clientID,
-					client_secret: this.clientSecret,
-					accessToken: currentAccessToken
-				}, 
-				function (error, result) 
-				{
-					if (error) {
-					  log.error(LOG_PREFIX, `send errored: %s`, JSON.stringify(error, null, 4));
-					} else {
-					  log.verbose(LOG_PREFIX, `WNS Response: %s`, JSON.stringify(response, null, 4));
-					}
-					currentAccessToken = error ? error.newAccessToken : result.newAccessToken;
-					if (++count === len) {
-						callback();
-					}
-				});
-			}(i));
-		}
-	}(0, devices.length , 0, function () 
-	{
-		
-	}));*/
 }
 
 WNS.prototype.getNewAccessToken = function()
@@ -134,17 +96,14 @@ WNS.prototype.getNewAccessToken = function()
 		res.on('end', function () {
 			if (!completed) {
 				completed = true;
-				if (res.statusCode === 200) 
-				{
+				if (res.statusCode === 200) {
 					var tokenResponse;
-					try 
-					{
+					try{
 						tokenResponse = JSON.parse(body);
 						if (typeof tokenResponse.access_token !== 'string' || tokenResponse.token_type !== 'bearer')
 							throw new Error('Invalid response');
 					}
-					catch (e) 
-					{
+					catch (e) {
 						var error = new Error('Unable to obtain access token for WNS. Invalid response body: ' + body);
 						error.statusCode = res.statusCode;
 						error.headers = res.headers;
@@ -156,8 +115,7 @@ WNS.prototype.getNewAccessToken = function()
 					
 					return newAccessToken;
 				}
-				else 
-				{
+				else {
 					var error = new Error('Unable to obtain access token for WNS. HTTP status code: ' + res.statusCode
 						+ '. HTTP response body: ' + body);
 					error.statusCode = res.statusCode;
@@ -168,8 +126,7 @@ WNS.prototype.getNewAccessToken = function()
 		});
 	});
 
-	req.on('error', function (error) 
-	{
+	req.on('error', function (error) {
 		if (!completed) {
 			completed = true;
 			var result = new Error('Unable to send reqeust for access token to Windows Notification Service: ' + error.message);
