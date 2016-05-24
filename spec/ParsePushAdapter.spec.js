@@ -14,7 +14,7 @@ describe('ParsePushAdapter', () => {
 	  wp: {
 		clientID: 'clientID',
 		clientSecret:  'clientSecret',
-		accessTokenPath:  'prodCert.pem'
+		accessTokenPath:  'wpProdCert.pem'
 	  },
       ios: [
         {
@@ -181,7 +181,7 @@ describe('ParsePushAdapter', () => {
 	  wp: {
 		clientID: 'clientID',
 		clientSecret:  'clientSecret',
-		accessTokenPath:  'prodCert.pem'
+		accessTokenPath:  'wpProdCert.pem'
 	  },
       ios: [
         {
