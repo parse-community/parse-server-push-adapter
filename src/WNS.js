@@ -37,7 +37,7 @@ WNS.prototype.send = function(data, devices)
 	});
 }
 
-WNS.prototype.sendWNSNow(data,devices)
+WNS.prototype.sendWNSNow = function(data,devices)
 {
 	devices = new Array(...devices);
 	
