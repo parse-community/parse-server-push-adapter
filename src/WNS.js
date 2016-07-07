@@ -19,13 +19,13 @@ function WNS(args) {
 }
 
 WNS.prototype.send = function(data, devices) {
-  fs.access(this.accessTokenPath, fs.F_OK , (err) => {
+  fs.access(this.accessTokenPath, fs.F_OK, (err) => {
     if (err) {
-      fs.open( this.accessTokenPath , 'w' , (err,fd) => {
-        fs.close(fd , () => {
+      fs.open(this.accessTokenPath, 'w', (err,fd) => {
+        fs.close(fd, () => {
           log.verbose(LOG_PREFIX, `create new accessToken file`);
 					
-          sendWNSNow(data,devices);
+          sendWNSNow(data, devices);
          });
       });
     } else {
@@ -98,8 +98,8 @@ WNS.prototype.getNewAccessToken = function() {
     path: '/accesstoken.srf',
     method: 'POST',
     headers: {
-     'Content-Type': 'application/x-www-form-urlencoded',
-     'Content-Length': payload.length
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': payload.length
     }
   };
 
