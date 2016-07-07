@@ -86,7 +86,7 @@ WNS.prototype.sendWNSNow = function(data, devices)
 
 WNS.prototype.getNewAccessToken = function()
 {
-  var payload = url.format({
+  let payload = url.format({
     query: {
       grant_type: 'client_credentials',
       client_id: this.clientID,
@@ -96,7 +96,7 @@ WNS.prototype.getNewAccessToken = function()
   }).substring(1); // strip leading ?
 
   // make the request for accessToken to live.com 
-  var options = {
+  let options = {
     host: 'login.live.com',
     path: '/accesstoken.srf',
     method: 'POST',
@@ -106,23 +106,23 @@ WNS.prototype.getNewAccessToken = function()
     }
   };
 
-  var newAccessToken;
-  var completed;
-  var req = https.request(options, function (res) {
-  var body = '';
+  let newAccessToken;
+  let completed;
+  let req = https.request(options, function (res) {
+  let body = '';
 
   res.on('data', function (chunk) { body += chunk; });
     res.on('end', function () {
       if (!completed) {
         completed = true;
         if (res.statusCode === 200) {
-           var tokenResponse;
+           let tokenResponse;
            try{
              tokenResponse = JSON.parse(body);
              if (typeof tokenResponse.access_token !== 'string' || tokenResponse.token_type !== 'bearer')
                throw new Error('Invalid response');
            } catch (e) {
-             var error = new Error('Unable to obtain access token for WNS. Invalid response body: ' + body);
+             let error = new Error('Unable to obtain access token for WNS. Invalid response body: ' + body);
              error.statusCode = res.statusCode;
              error.headers = res.headers;
              error.innerError = e;
@@ -132,7 +132,7 @@ WNS.prototype.getNewAccessToken = function()
            newAccessToken = tokenResponse.access_token;
            return newAccessToken;
         } else {
-          var error = new Error('Unable to obtain access token for WNS. HTTP status code: ' + res.statusCode
+          let error = new Error('Unable to obtain access token for WNS. HTTP status code: ' + res.statusCode
                                 + '. HTTP response body: ' + body);
           error.statusCode = res.statusCode;
           error.headers = res.headers;
@@ -145,7 +145,7 @@ WNS.prototype.getNewAccessToken = function()
   req.on('error', function (error) {
     if (!completed) {
       completed = true;
-      var result = new Error('Unable to send reqeust for access token to Windows Notification Service: ' + error.message);
+      let result = new Error('Unable to send reqeust for access token to Windows Notification Service: ' + error.message);
       result.innerError = error;
     }
   });
