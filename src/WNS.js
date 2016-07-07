@@ -149,16 +149,16 @@ WNS.prototype.getNewAccessToken = function() {
 
   req.write(payload);
   req.end();
-	
+
   return false;
 }
 
 WNS.prototype.getWNSToastPayload = function(text1, text2) {
-	let payloadData =  {
-    "text1": text1,
+  let payloadData =  {
+    'text1': text1,
     'text2': text2
   };
-  
+
   return payloadData;
 }
 
