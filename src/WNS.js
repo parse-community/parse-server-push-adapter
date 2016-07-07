@@ -106,31 +106,31 @@ WNS.prototype.getNewAccessToken = function() {
   let newAccessToken;
   let completed;
   let req = https.request(options, function (res) {
-  let body = '';
+    let body = '';
 
-  res.on('data', function (chunk) { body += chunk; });
+    res.on('data', function (chunk) { body += chunk; });
     res.on('end', function () {
       if (!completed) {
         completed = true;
         if (res.statusCode === 200) {
-           let tokenResponse;
-           try{
-             tokenResponse = JSON.parse(body);
-             if (typeof tokenResponse.access_token !== 'string' || tokenResponse.token_type !== 'bearer')
-               throw new Error('Invalid response');
-           } catch (e) {
-             let error = new Error('Unable to obtain access token for WNS. Invalid response body: ' + body);
-             error.statusCode = res.statusCode;
-             error.headers = res.headers;
-             error.innerError = e;
-             return false;
-           }
+          let tokenResponse;
+          try{
+            tokenResponse = JSON.parse(body);
+            if (typeof tokenResponse.access_token !== 'string' || tokenResponse.token_type !== 'bearer')
+              throw new Error('Invalid response');
+          } catch (e) {
+            let error = new Error('Unable to obtain access token for WNS. Invalid response body: ' + body);
+            error.statusCode = res.statusCode;
+            error.headers = res.headers;
+            error.innerError = e;
+            return false;
+          }
 
-           newAccessToken = tokenResponse.access_token;
-           return newAccessToken;
+          newAccessToken = tokenResponse.access_token;
+          return newAccessToken;
         } else {
           let error = new Error('Unable to obtain access token for WNS. HTTP status code: ' + res.statusCode
-                                + '. HTTP response body: ' + body);
+                                 + '. HTTP response body: ' + body);
           error.statusCode = res.statusCode;
           error.headers = res.headers;
           error.innerError = body;
