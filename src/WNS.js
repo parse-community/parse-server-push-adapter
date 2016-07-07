@@ -18,8 +18,7 @@ function WNS(args) {
   this.accessTokenPath = args.accessTokenPath;
 }
 
-WNS.prototype.send = function(data, devices)
-{
+WNS.prototype.send = function(data, devices) {
   fs.access(this.accessTokenPath, fs.F_OK , (err) => {
     if (err) {
       fs.open( this.accessTokenPath , 'w' , (err,fd) => {
@@ -35,8 +34,7 @@ WNS.prototype.send = function(data, devices)
   });
 }
 
-WNS.prototype.sendWNSNow = function(data, devices)
-{
+WNS.prototype.sendWNSNow = function(data, devices) {
   devices = new Array(...devices);
 
   fs.readFile(this.accessTokenPath, (err, data) => {
@@ -84,8 +82,7 @@ WNS.prototype.sendWNSNow = function(data, devices)
   });
 }
 
-WNS.prototype.getNewAccessToken = function()
-{
+WNS.prototype.getNewAccessToken = function() {
   let payload = url.format({
     query: {
       grant_type: 'client_credentials',
@@ -156,8 +153,7 @@ WNS.prototype.getNewAccessToken = function()
   return false;
 }
 
-WNS.prototype.getWNSToastPayload = function(text1,text2)
-{
+WNS.prototype.getWNSToastPayload = function(text1, text2) {
 	let payloadData =  {
     "text1": text1,
     'text2': text2
