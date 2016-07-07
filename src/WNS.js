@@ -21,7 +21,7 @@ function WNS(args) {
 WNS.prototype.send = function(data, devices) {
   fs.access(this.accessTokenPath, fs.F_OK, (err) => {
     if (err) {
-      fs.open(this.accessTokenPath, 'w', (err,fd) => {
+      fs.open(this.accessTokenPath, 'w', (err, fd) => {
         fs.close(fd, () => {
           log.verbose(LOG_PREFIX, `create new accessToken file`);
 					
@@ -29,7 +29,7 @@ WNS.prototype.send = function(data, devices) {
          });
       });
     } else {
-      sendWNSNow(data,devices);
+      sendWNSNow(data, devices);
     }
   });
 }
@@ -41,7 +41,7 @@ WNS.prototype.sendWNSNow = function(data, devices) {
 	if (err) {
       log.verbose(LOG_PREFIX, `read accessToken file failed`);
     } else {
-      currentAccessToken = data;
+      let currentAccessToken = data;
       if (currentAccessToken.length == 0) {
         log.verbose(LOG_PREFIX, `currentAccessToken not existed.get new access`);
 
@@ -50,14 +50,14 @@ WNS.prototype.sendWNSNow = function(data, devices) {
         if (currentAccessToken == false) {
           log.error(LOG_PREFIX, `cannot get currentAccessToken From WNS`);
         } else {
-          fs.writeFile(this.accessTokenPath,currentAccessToken,function(err) {
+          fs.writeFile(this.accessTokenPath, currentAccessToken, function(err) {
             if (err) {
               log.error(LOG_PREFIX, `cannot write new currentAccessToken to %s`,this.accessTokenPath);
             }
           });	
         }
 
-        let wnsPayload = getWNSToastPayload(data.title,data.alert);
+        let wnsPayload = getWNSToastPayload(data.title, data.alert);
 
 		let promises = devices.map((device) => {
           return new Promise((resolve, reject) => {
@@ -75,7 +75,7 @@ WNS.prototype.sendWNSNow = function(data, devices) {
             });
           });
         });
-			
+
         return Parse.Promise.when(promises);
       }
     }
