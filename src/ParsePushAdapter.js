@@ -33,8 +33,8 @@ export class ParsePushAdapter {
         case 'android':
           this.senderMap[pushType] = new GCM(pushConfig[pushType]);
           break;
-		case 'wp':
-		  this.senderMap[pushType] = new WNS(pushConfig[pushType]);
+        case 'wp':
+          this.senderMap[pushType] = new WNS(pushConfig[pushType]);
           break;
       }
     }
