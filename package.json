@@ -34,6 +34,7 @@
   "dependencies": {
     "apn": "^1.7.5",
     "node-gcm": "^0.14.0",
+    "wns": "^0.5.3",
     "npmlog": "^2.0.3",
     "parse": "^1.8.1"
   }
