@@ -11,11 +11,11 @@ describe('ParsePushAdapter', () => {
         senderId: 'senderId',
         apiKey: 'apiKey'
       },
-	  wp: {
-		clientID: 'clientID',
-		clientSecret:  'clientSecret',
-		accessTokenPath:  'wpProdCert.pem'
-	  },
+      wp: {
+        clientID: 'clientID',
+        clientSecret:  'clientSecret',
+        accessTokenPath:  'wpProdCert.pem'
+      },
       ios: [
         {
           cert: 'prodCert.pem',
@@ -39,10 +39,10 @@ describe('ParsePushAdapter', () => {
     // Check android
     var androidSender = parsePushAdapter.senderMap['android'];
     expect(androidSender instanceof GCM).toBe(true);
-	// Check windows phone
-	var winSender = parsePushAdapter.senderMap['wp'];
+    // Check windows phone
+    var winSender = parsePushAdapter.senderMap['wp'];
     expect(winSender instanceof WNS).toBe(true);
-	
+
     done();
   });
 
@@ -140,10 +140,10 @@ describe('ParsePushAdapter', () => {
         deviceType: 'android',
         deviceToken: undefined
       },
-	  {
-		deviceType: 'wp',
+      {
+        deviceType: 'wp',
         deviceToken: 'wpToken'
-	  }
+      }
     ];
     var data = {};
 
@@ -162,8 +162,8 @@ describe('ParsePushAdapter', () => {
     expect(args[1]).toEqual([
       makeDevice('iosToken')
     ]);
-	// Check wp sender
-	expect(wpSender.send).toHaveBeenCalled();
+    // Check wp sender
+    expect(wpSender.send).toHaveBeenCalled();
     args = wpSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
@@ -178,11 +178,11 @@ describe('ParsePushAdapter', () => {
         senderId: 'senderId',
         apiKey: 'apiKey'
       },
-	  wp: {
-		clientID: 'clientID',
-		clientSecret:  'clientSecret',
-		accessTokenPath:  'wpProdCert.pem'
-	  },
+      wp: {
+        clientID: 'clientID',
+        clientSecret:  'clientSecret',
+        accessTokenPath:  'wpProdCert.pem'
+      },
       ios: [
         {
           cert: 'cert.cer',
@@ -215,10 +215,10 @@ describe('ParsePushAdapter', () => {
         deviceType: 'android',
         deviceToken: undefined
       },
-	  {
-		deviceType: 'wp',
+      {
+        deviceType: 'wp',
         deviceToken: 'wpToken'
-	  }
+      }
     ];
 
     var parsePushAdapter = new ParsePushAdapter(pushConfig);
