@@ -59,9 +59,9 @@ WNS.prototype.sendWNSNow = function(data, devices) {
 
         let wnsPayload = getWNSToastPayload(data.title, data.alert);
 
-		let promises = devices.map((device) => {
+		    let promises = devices.map((device) => {
           return new Promise((resolve, reject) => {
-		    wns.sendToastText02(device.deviceToken, wnsPayload, {
+		        wns.sendToastText02(device.deviceToken, wnsPayload, {
               client_id: this.clientID,
               client_secret: this.clientSecret,
               accessToken: currentAccessToken
