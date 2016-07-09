@@ -11,11 +11,11 @@ describe('ParsePushAdapter', () => {
         senderId: 'senderId',
         apiKey: 'apiKey'
       },
-	  wp: {
-		clientID: 'clientID',
-		clientSecret:  'clientSecret',
-		accessTokenPath:  'wpProdCert.pem'
-	  },
+      wp: {
+        clientID: 'clientID',
+        clientSecret:  'clientSecret',
+        accessTokenPath:  'wpProdCert.pem'
+      },
       ios: [
         {
           cert: 'prodCert.pem',
@@ -39,10 +39,10 @@ describe('ParsePushAdapter', () => {
     // Check android
     var androidSender = parsePushAdapter.senderMap['android'];
     expect(androidSender instanceof GCM).toBe(true);
-	// Check windows phone
-	var winSender = parsePushAdapter.senderMap['wp'];
+    // Check windows phone
+    var winSender = parsePushAdapter.senderMap['wp'];
     expect(winSender instanceof WNS).toBe(true);
-	
+
     done();
   });
 
@@ -65,7 +65,7 @@ describe('ParsePushAdapter', () => {
     var parsePushAdapter = new ParsePushAdapter();
 
     expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'android','wp']);
-	
+  
     done();
   });
 
@@ -89,16 +89,16 @@ describe('ParsePushAdapter', () => {
         deviceType: 'android',
         deviceToken: undefined
       },
-	  {
-		deviceType: 'wp',
-		deviceToken: 'wpToken'
-	  }
+    {
+    deviceType: 'wp',
+    deviceToken: 'wpToken'
+    }
     ];
 
     var deviceMap = ParsePushAdapter.classifyInstallations(installations, validPushTypes);
     expect(deviceMap['android']).toEqual([makeDevice('androidToken')]);
     expect(deviceMap['ios']).toEqual([makeDevice('iosToken')]);
-	expect(deviceMap['wp']).toEqual([makeDevice('wpToken')]);
+  expect(deviceMap['wp']).toEqual([makeDevice('wpToken')]);
     expect(deviceMap['win']).toBe(undefined);
     done();
   });
@@ -113,13 +113,13 @@ describe('ParsePushAdapter', () => {
     var iosSender = {
       send: jasmine.createSpy('send')
     };
-	var wpSender = {
+  var wpSender = {
       send: jasmine.createSpy('send')
     };
     var senderMap = {
       ios: iosSender,
       android: androidSender,
-	  wp: wpSender
+    wp: wpSender
     };
     parsePushAdapter.senderMap = senderMap;
     // Mock installations
@@ -140,10 +140,10 @@ describe('ParsePushAdapter', () => {
         deviceType: 'android',
         deviceToken: undefined
       },
-	  {
-		deviceType: 'wp',
+      {
+        deviceType: 'wp',
         deviceToken: 'wpToken'
-	  }
+      }
     ];
     var data = {};
 
@@ -162,8 +162,8 @@ describe('ParsePushAdapter', () => {
     expect(args[1]).toEqual([
       makeDevice('iosToken')
     ]);
-	// Check wp sender
-	expect(wpSender.send).toHaveBeenCalled();
+    // Check wp sender
+    expect(wpSender.send).toHaveBeenCalled();
     args = wpSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
@@ -172,17 +172,17 @@ describe('ParsePushAdapter', () => {
     done();
   });
 
-  it('reports properly results', (done) => {
+  it('reports properly results', (done) => {
     var pushConfig = {
       android: {
         senderId: 'senderId',
         apiKey: 'apiKey'
       },
-	  wp: {
-		clientID: 'clientID',
-		clientSecret:  'clientSecret',
-		accessTokenPath:  'wpProdCert.pem'
-	  },
+      wp: {
+        clientID: 'clientID',
+        clientSecret:  'clientSecret',
+        accessTokenPath:  'wpProdCert.pem'
+      },
       ios: [
         {
           cert: 'cert.cer',
@@ -215,26 +215,26 @@ describe('ParsePushAdapter', () => {
         deviceType: 'android',
         deviceToken: undefined
       },
-	  {
-		deviceType: 'wp',
+      {
+        deviceType: 'wp',
         deviceToken: 'wpToken'
-	  }
+      }
     ];
 
     var parsePushAdapter = new ParsePushAdapter(pushConfig);
-    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
+    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
       // 2x iOS, 1x android, 1x wp8.1+
       expect(results.length).toBe(3);
-      results.forEach((result) => {
+      results.forEach((result) => {
         expect(result.transmitted).toBe(false);
         expect(typeof result.device).toBe('object');
         expect(typeof result.device.deviceType).toBe('string');
         expect(typeof result.device.deviceToken).toBe('string');
       })
       done();
-    }).catch((err) => {
+    }).catch((err) => {
       fail('Should not fail');
       done();
     })

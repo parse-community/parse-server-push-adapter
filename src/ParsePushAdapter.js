@@ -33,8 +33,8 @@ export class ParsePushAdapter {
         case 'android':
           this.senderMap[pushType] = new GCM(pushConfig[pushType]);
           break;
-		case 'wp':
-		  this.senderMap[pushType] = new WNS(pushConfig[pushType]);
+        case 'wp':
+          this.senderMap[pushType] = new WNS(pushConfig[pushType]);
           break;
       }
     }
@@ -58,7 +58,7 @@ export class ParsePushAdapter {
       {
         if (!sender) {
           log.verbose(LOG_PREFIX, `Can not find sender for push type ${pushType}, ${data}`)
-          let results = devices.map((device) => {
+          let results = devices.map((device) => {
             return Promise.resolve({
               device,
               transmitted: false,
@@ -71,7 +71,7 @@ export class ParsePushAdapter {
         }
       }
     }
-    return Promise.all(sendPromises).then((promises) => {
+    return Promise.all(sendPromises).then((promises) => {
       // flatten all
       return [].concat.apply([], promises);
     })
