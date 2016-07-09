@@ -104,13 +104,14 @@ APNS.prototype.send = function(data, devices) {
   let coreData = data.data;
   let expirationTime = data['expiration_time'];
   let notification = generateNotification(coreData, expirationTime);
-
-  let promises = devices.map((device) => {
+  let allPromises = [];
+  let devicesPerConnIndex = {};
+  // Start by clustering the devices per connections
+  devices.forEach((device) => {
     let qualifiedConnIndexs = chooseConns(this.conns, device);
-    // We can not find a valid conn, just ignore this device
     if (qualifiedConnIndexs.length == 0) {
       log.error(LOG_PREFIX, 'no qualified connections for %s %s', device.appIdentifier, device.deviceToken);
-      return Promise.resolve({
+      let promise = Promise.resolve({
         transmitted: false,
         device: {
           deviceToken: device.deviceToken,
@@ -118,20 +119,32 @@ APNS.prototype.send = function(data, devices) {
         },
         result: {error: 'No connection available'}
       });
+      allPromises.push(promise);
+    } else {
+      let apnDevice = new apn.Device(device.deviceToken);
+      apnDevice.connIndex = qualifiedConnIndexs[0];
+      if (device.appIdentifier) {
+        apnDevice.appIdentifier = device.appIdentifier;
+      }
+      devicesPerConnIndex[apnDevice.connIndex] = devicesPerConnIndex[apnDevice.connIndex] || [];
+      devicesPerConnIndex[apnDevice.connIndex].push(apnDevice);
     }
-    let conn = this.conns[qualifiedConnIndexs[0]];
-    let apnDevice = new apn.Device(device.deviceToken);
-    apnDevice.connIndex = qualifiedConnIndexs[0];
-    // Add additional appIdentifier info to apn device instance
-    if (device.appIdentifier) {
-      apnDevice.appIdentifier = device.appIdentifier;
-    }
-    return new Promise((resolve, reject) => {
-      apnDevice.callback = resolve;
-      conn.pushNotification(notification, apnDevice);
+  })
+
+  allPromises = Object.keys(devicesPerConnIndex).reduce((memo, connIndex) => {
+    let devices = devicesPerConnIndex[connIndex];
+    // Create a promise, attach the callback
+    let promises = devices.map((apnDevice) => {
+      return new Promise((resolve, reject) => {
+        apnDevice.callback = resolve;
+      });
     });
-  });
-  return Parse.Promise.when(promises);
+    let conn = this.conns[connIndex];
+    conn.pushNotification(notification, devices);
+    return memo.concat(promises);
+  }, allPromises);
+
+  return Promise.all(allPromises);
 }
 
 function handleTransmissionError(conns, errCode, notification, apnDevice) {
