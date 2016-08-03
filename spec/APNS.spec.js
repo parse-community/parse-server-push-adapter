@@ -67,6 +67,7 @@ describe('APNS', () => {
       'badge': 100,
       'sound': 'test',
       'content-available': 1,
+      'mutable-content': 1,
       'category': 'INVITE_CATEGORY',
       'key': 'value',
       'keyAgain': 'valueAgain'
@@ -79,6 +80,7 @@ describe('APNS', () => {
     expect(notification.badge).toEqual(data.badge);
     expect(notification.sound).toEqual(data.sound);
     expect(notification.contentAvailable).toEqual(1);
+    expect(notification.mutableContent).toEqual(1);
     expect(notification.category).toEqual(data.category);
     expect(notification.payload).toEqual({
       'key': 'value',
