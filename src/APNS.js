@@ -236,6 +236,10 @@ function generateNotification(coreData, expirationTime) {
         let isAvailable = coreData['content-available'] === 1;
         notification.setContentAvailable(isAvailable);
         break;
+      case 'mutable-content':
+        let isMutable = coreData['mutable-content'] === 1;
+        notification.setMutableContent(isMutable);
+        break;
       case 'category':
         notification.category = coreData.category;
         break;
