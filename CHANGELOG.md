@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/parse-server-modules/parse-server-push-adapter/tree/HEAD)
-
-[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v1.0.4...HEAD)
+## [1.1.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/1.1.0) (2016-08-25)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v1.0.4...1.1.0)
 
 **Closed issues:**
 
