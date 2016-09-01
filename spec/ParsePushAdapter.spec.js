@@ -141,6 +141,87 @@ describe('ParsePushAdapter', () => {
     done();
   });
 
+  it('can send push notifications by pushType and failback by deviceType', (done) => {
+    var parsePushAdapter = new ParsePushAdapter();
+    // Mock android ios senders
+    var androidSender = {
+      send: jasmine.createSpy('send')
+    };
+    var iosSender = {
+      send: jasmine.createSpy('send')
+    };
+    var senderMap = {
+      ios: iosSender,
+      android: androidSender
+    };
+    parsePushAdapter.senderMap = senderMap;
+    // Mock installations
+    var installations = [
+      {
+        deviceType: 'android',
+        deviceToken: 'androidToken'
+      },
+      {
+        deviceType: 'android',
+        pushType: 'gcm',
+        deviceToken: 'androidToken'
+      },
+      {
+        deviceType: 'android',
+        pushType: 'ppns',
+        deviceToken: 'androidToken'
+      },
+      {
+        deviceType: 'android',
+        pushType: 'none',
+        deviceToken: 'androidToken'
+      },
+      {
+        deviceType: 'ios',
+        deviceToken: 'iosToken'
+      },
+      {
+        deviceType: 'ios',
+        pushType: 'ios',
+        deviceToken: 'iosToken'
+      },
+      {
+        deviceType: 'win',
+        deviceToken: 'winToken'
+      },
+      {
+        deviceType: 'win',
+        deviceToken: 'winToken'
+      },
+      {
+        deviceType: 'android',
+        deviceToken: undefined
+      }
+    ];
+    var data = {};
+
+    parsePushAdapter.send(data, installations);
+    // Check android sender
+    expect(androidSender.send).toHaveBeenCalled();
+    var args = androidSender.send.calls.first().args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
+      makeDevice('androidToken'),
+      makeDevice('androidToken'),
+      makeDevice('androidToken'),
+      makeDevice('androidToken')
+    ]);
+    // Check ios sender
+    expect(iosSender.send).toHaveBeenCalled();
+    args = iosSender.send.calls.first().args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
+      makeDevice('iosToken'),
+      makeDevice('iosToken')
+    ]);
+    done();
+  });
+
   it('reports properly results', (done) => {
     var pushConfig = {
       android: {
