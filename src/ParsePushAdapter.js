@@ -3,6 +3,7 @@ import Parse from 'parse';
 import log from 'npmlog';
 import APNS from './APNS';
 import GCM from './GCM';
+import WNS from './WNS';
 import { classifyInstallations } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter';
@@ -12,7 +13,7 @@ export class ParsePushAdapter {
   supportsPushTracking = true;
 
   constructor(pushConfig = {}) {
-    this.validPushTypes = ['ios', 'android'];
+    this.validPushTypes = ['ios', 'android','wp'];
     this.senderMap = {};
     // used in PushController for Dashboard Features
     this.feature = {
@@ -31,6 +32,9 @@ export class ParsePushAdapter {
           break;
         case 'android':
           this.senderMap[pushType] = new GCM(pushConfig[pushType]);
+          break;
+        case 'wp':
+          this.senderMap[pushType] = new WNS(pushConfig[pushType]);
           break;
       }
     }
@@ -54,7 +58,7 @@ export class ParsePushAdapter {
       {
         if (!sender) {
           log.verbose(LOG_PREFIX, `Can not find sender for push type ${pushType}, ${data}`)
-          let results = devices.map((device) => {
+          let results = devices.map((device) => {
             return Promise.resolve({
               device,
               transmitted: false,
@@ -67,7 +71,7 @@ export class ParsePushAdapter {
         }
       }
     }
-    return Promise.all(sendPromises).then((promises) => {
+    return Promise.all(sendPromises).then((promises) => {
       // flatten all
       return [].concat.apply([], promises);
     })
