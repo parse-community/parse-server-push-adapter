@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto';
-
+import Parse from 'parse/node';
 /**g
    * Classify the device token of installations based on its device type.
    * @param {Object} installations An array of installations
@@ -41,4 +41,39 @@ export function randomString(size) {
     objectId += chars[bytes.readUInt8(i) % chars.length];
   }
   return objectId;
+}
+
+/**
+ * Slice a list of devices to several list of devices with fixed chunk size.
+ * @param {Array} devices An array of devices
+ * @param {Number} chunkSize The size of the a chunk
+ * @returns {Array} An array which contaisn several arries of devices with fixed chunk size
+ */
+export function sliceDevices(devices, chunkSize) {
+  let chunkDevices = [];
+  while (devices.length > 0) {
+    chunkDevices.push(devices.splice(0, chunkSize));
+  }
+  return chunkDevices;
+}
+
+export function sendByBatch(data, devices, maxBatchSize, sendCallback) {
+  // Make a new array
+  devices = new Array(...devices);
+  let slices = sliceDevices(devices, maxBatchSize);
+  if (slices.length > 1) {
+    log.verbose(LOG_PREFIX, `the number of devices exceeds ${maxBatchSize}`);
+  }
+  // Make 1 send per slice
+  let promises = slices.reduce((memo, slice) => {
+    let promise = sendCallback(data, slice);
+    memo.push(promise);
+    return memo;
+  }, [])
+  return Parse.Promise.when(promises).then((results) => {
+    let allResults = results.reduce((memo, result) => {
+      return memo.concat(result);
+    }, []);
+    return Parse.Promise.as(allResults);
+  });
 }

@@ -1,9 +1,9 @@
 "use strict";
 
-import Parse from 'parse';
+import Parse from 'parse/node';
 import log from 'npmlog';
 import gcm from 'node-gcm';
-import { randomString } from './PushAdapterUtils';
+import { randomString, sendByBatch } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter GCM';
 const GCMTimeToLiveMax = 4 * 7 * 24 * 60 * 60; // GCM allows a max of 4 weeks
@@ -24,30 +24,12 @@ function GCM(args) {
  * @returns {Object} A promise which is resolved after we get results from gcm
  */
 GCM.prototype.send = function(data, devices) {
+  return sendByBatch(data, devices, GCMRegistrationTokensMax, this._send.bind(this));
+}
+
+GCM.prototype._send = function(data, devices) {
   let pushId = randomString(10);
-  // Make a new array
-  devices = new Array(...devices);
   let timestamp = Date.now();
-  // For android, we can only have 1000 recepients per send, so we need to slice devices to
-  // chunk if necessary
-  let slices = sliceDevices(devices, GCMRegistrationTokensMax);
-  if (slices.length > 1) {
-    log.verbose(LOG_PREFIX, `the number of devices exceeds ${GCMRegistrationTokensMax}`);
-    // Make 1 send per slice
-    let promises = slices.reduce((memo, slice) => {
-      let promise = this.send(data, slice, timestamp);
-      memo.push(promise);
-      return memo;
-    }, [])
-    return Parse.Promise.when(promises).then((results) => {
-      let allResults = results.reduce((memo, result) => {
-        return memo.concat(result);
-      }, []);
-      return Parse.Promise.as(allResults);
-    });
-  }
-  // get the devices back...
-  devices = slices[0];
 
   let expirationTime;
   // We handle the expiration_time convertion in push.js, so expiration_time is a valid date

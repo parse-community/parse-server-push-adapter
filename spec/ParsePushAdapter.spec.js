@@ -54,7 +54,7 @@ describe('ParsePushAdapter', () => {
   it('can get valid push types', (done) => {
     var parsePushAdapter = new ParsePushAdapter();
 
-    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'android']);
+    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'android', 'gcm', 'fcm']);
     done();
   });
 
@@ -142,19 +142,15 @@ describe('ParsePushAdapter', () => {
   });
 
   it('can send push notifications by pushType and failback by deviceType', (done) => {
-    var parsePushAdapter = new ParsePushAdapter();
-    // Mock android ios senders
-    var androidSender = {
-      send: jasmine.createSpy('send')
-    };
-    var iosSender = {
-      send: jasmine.createSpy('send')
-    };
-    var senderMap = {
-      ios: iosSender,
-      android: androidSender
-    };
-    parsePushAdapter.senderMap = senderMap;
+    var parsePushAdapter = new ParsePushAdapter({
+      ios: {
+        bundleId: 'bundle'
+      },
+      android: {apiKey: 'key'}
+    });
+    var iosSender = spyOn(parsePushAdapter.senderMap.ios, 'send');
+    var androidSender = spyOn(parsePushAdapter.senderMap.android, 'send');
+
     // Mock installations
     var installations = [
       {
@@ -202,18 +198,25 @@ describe('ParsePushAdapter', () => {
 
     parsePushAdapter.send(data, installations);
     // Check android sender
-    expect(androidSender.send).toHaveBeenCalled();
-    var args = androidSender.send.calls.first().args;
+    // Only 3 goes to the sender as pushType != gcm
+    expect(androidSender).toHaveBeenCalled();
+    var args = androidSender.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('androidToken'),
       makeDevice('androidToken'),
-      makeDevice('androidToken'),
+      makeDevice('androidToken')
+    ]);
+
+    
+    args = androidSender.calls.mostRecent().args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
       makeDevice('androidToken')
     ]);
     // Check ios sender
-    expect(iosSender.send).toHaveBeenCalled();
-    args = iosSender.send.calls.first().args;
+    expect(iosSender).toHaveBeenCalled();
+    args = iosSender.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('iosToken'),
