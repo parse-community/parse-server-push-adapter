@@ -3,6 +3,7 @@ import Parse from 'parse';
 import log from 'npmlog';
 import APNS from './APNS';
 import GCM from './GCM';
+import FCM from './FCM';
 import { classifyInstallations } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter';
@@ -12,7 +13,7 @@ export class ParsePushAdapter {
   supportsPushTracking = true;
 
   constructor(pushConfig = {}) {
-    this.validPushTypes = ['ios', 'android'];
+    this.validPushTypes = ['ios', 'android', 'gcm', 'fcm'];
     this.senderMap = {};
     // used in PushController for Dashboard Features
     this.feature = {
@@ -30,7 +31,12 @@ export class ParsePushAdapter {
           this.senderMap[pushType] = new APNS(pushConfig[pushType]);
           break;
         case 'android':
-          this.senderMap[pushType] = new GCM(pushConfig[pushType]);
+        case 'gcm':
+          this.senderMap['android']  = new GCM(pushConfig[pushType]);
+          this.senderMap['gcm'] = this.senderMap['android'];
+          break;
+        case 'fcm':
+          this.senderMap['fcm'] = new FCM(pushConfig[pushType]);
           break;
       }
     }

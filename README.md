@@ -26,3 +26,21 @@ VERBOSE_PARSE_SERVER_PUSH_ADAPTER=1
 ```
 
 This will produce a more verbose output for all the push sending attempts
+
+
+## Using the FCM options instead of GCM/android
+
+When registering the deviceToken in your client, you should set pushType to 'fcm'.
+
+Initialize this adapter with the following options:
+
+```
+{
+  fcm: {
+    serverKey: 'serverKey'
+  }
+}
+```
+
+Note that you can also use the FCM option for iOS devices, just set pushType to 'fcm' when storing the registration token on the iOS device.
+
