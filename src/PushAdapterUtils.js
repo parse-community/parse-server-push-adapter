@@ -17,9 +17,9 @@ export function classifyInstallations(installations, validPushTypes) {
     if (!installation.deviceToken) {
       continue;
     }
-    let pushType = installation.deviceType;
-    if (deviceMap[pushType]) {
-      deviceMap[pushType].push({
+    let devices = deviceMap[installation.pushType] || deviceMap[installation.deviceType] || null;
+    if (Array.isArray(devices)) {
+      devices.push({
         deviceToken: installation.deviceToken,
         appIdentifier: installation.appIdentifier
       });
