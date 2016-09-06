@@ -1,6 +1,7 @@
 var ParsePushAdapter = require('../src/index').ParsePushAdapter;
 var APNS = require('../src/APNS');
 var GCM = require('../src/GCM');
+var WNS = require('../src/WNS');
 
 describe('ParsePushAdapter', () => {
   it('can be initialized', (done) => {
@@ -10,6 +11,11 @@ describe('ParsePushAdapter', () => {
         senderId: 'senderId',
         apiKey: 'apiKey'
       },
+	  wp: {
+		clientID: 'clientID',
+		clientSecret:  'clientSecret',
+		accessTokenPath:  'wpProdCert.pem'
+	  },
       ios: [
         {
           cert: 'prodCert.pem',
@@ -33,6 +39,10 @@ describe('ParsePushAdapter', () => {
     // Check android
     var androidSender = parsePushAdapter.senderMap['android'];
     expect(androidSender instanceof GCM).toBe(true);
+	// Check windows phone
+	var winSender = parsePushAdapter.senderMap['wp'];
+    expect(winSender instanceof WNS).toBe(true);
+	
     done();
   });
 
@@ -54,13 +64,14 @@ describe('ParsePushAdapter', () => {
   it('can get valid push types', (done) => {
     var parsePushAdapter = new ParsePushAdapter();
 
-    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'android']);
+    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'android','wp']);
+	
     done();
   });
 
   it('can classify installation', (done) => {
     // Mock installations
-    var validPushTypes = ['ios', 'android'];
+    var validPushTypes = ['ios', 'android', 'wp'];
     var installations = [
       {
         deviceType: 'android',
@@ -77,12 +88,17 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'android',
         deviceToken: undefined
-      }
+      },
+	  {
+		deviceType: 'wp',
+		deviceToken: 'wpToken'
+	  }
     ];
 
     var deviceMap = ParsePushAdapter.classifyInstallations(installations, validPushTypes);
     expect(deviceMap['android']).toEqual([makeDevice('androidToken')]);
     expect(deviceMap['ios']).toEqual([makeDevice('iosToken')]);
+	expect(deviceMap['wp']).toEqual([makeDevice('wpToken')]);
     expect(deviceMap['win']).toBe(undefined);
     done();
   });
@@ -97,9 +113,13 @@ describe('ParsePushAdapter', () => {
     var iosSender = {
       send: jasmine.createSpy('send')
     };
+	var wpSender = {
+      send: jasmine.createSpy('send')
+    };
     var senderMap = {
       ios: iosSender,
-      android: androidSender
+      android: androidSender,
+	  wp: wpSender
     };
     parsePushAdapter.senderMap = senderMap;
     // Mock installations
@@ -119,7 +139,11 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'android',
         deviceToken: undefined
-      }
+      },
+	  {
+		deviceType: 'wp',
+        deviceToken: 'wpToken'
+	  }
     ];
     var data = {};
 
@@ -137,6 +161,13 @@ describe('ParsePushAdapter', () => {
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('iosToken')
+    ]);
+	// Check wp sender
+	expect(wpSender.send).toHaveBeenCalled();
+    args = wpSender.send.calls.first().args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
+      makeDevice('wpToken')
     ]);
     done();
   });
@@ -228,6 +259,11 @@ describe('ParsePushAdapter', () => {
         senderId: 'senderId',
         apiKey: 'apiKey'
       },
+	  wp: {
+		clientID: 'clientID',
+		clientSecret:  'clientSecret',
+		accessTokenPath:  'wpProdCert.pem'
+	  },
       ios: [
         {
           cert: 'cert.cer',
@@ -259,14 +295,18 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'android',
         deviceToken: undefined
-      }
+      },
+	  {
+		deviceType: 'wp',
+        deviceToken: 'wpToken'
+	  }
     ];
 
     var parsePushAdapter = new ParsePushAdapter(pushConfig);
     parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
-      // 2x iOS, 1x android
+      // 2x iOS, 1x android, 1x wp8.1+
       expect(results.length).toBe(3);
       results.forEach((result) => {
         expect(result.transmitted).toBe(false);
