@@ -21,6 +21,7 @@ export function classifyInstallations(installations, validPushTypes) {
     if (Array.isArray(devices)) {
       devices.push({
         deviceToken: installation.deviceToken,
+        deviceType: installation.deviceType,
         appIdentifier: installation.appIdentifier
       });
     }

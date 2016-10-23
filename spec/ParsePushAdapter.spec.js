@@ -81,8 +81,8 @@ describe('ParsePushAdapter', () => {
     ];
 
     var deviceMap = ParsePushAdapter.classifyInstallations(installations, validPushTypes);
-    expect(deviceMap['android']).toEqual([makeDevice('androidToken')]);
-    expect(deviceMap['ios']).toEqual([makeDevice('iosToken')]);
+    expect(deviceMap['android']).toEqual([makeDevice('androidToken', 'android')]);
+    expect(deviceMap['ios']).toEqual([makeDevice('iosToken', 'ios')]);
     expect(deviceMap['win']).toBe(undefined);
     done();
   });
@@ -129,14 +129,14 @@ describe('ParsePushAdapter', () => {
     var args = androidSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
-      makeDevice('androidToken')
+      makeDevice('androidToken', 'android')
     ]);
     // Check ios sender
     expect(iosSender.send).toHaveBeenCalled();
     args = iosSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
-      makeDevice('iosToken')
+      makeDevice('iosToken', 'ios')
     ]);
     done();
   });
@@ -206,18 +206,18 @@ describe('ParsePushAdapter', () => {
     var args = androidSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
-      makeDevice('androidToken'),
-      makeDevice('androidToken'),
-      makeDevice('androidToken'),
-      makeDevice('androidToken')
+      makeDevice('androidToken', 'android'),
+      makeDevice('androidToken', 'android'),
+      makeDevice('androidToken', 'android'),
+      makeDevice('androidToken', 'android')
     ]);
     // Check ios sender
     expect(iosSender.send).toHaveBeenCalled();
     args = iosSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
-      makeDevice('iosToken'),
-      makeDevice('iosToken')
+      makeDevice('iosToken', 'ios'),
+      makeDevice('iosToken', 'ios')
     ]);
     done();
   });
@@ -281,9 +281,10 @@ describe('ParsePushAdapter', () => {
     })
   });
 
-  function makeDevice(deviceToken, appIdentifier) {
+  function makeDevice(deviceToken, deviceType, appIdentifier) {
     return {
       deviceToken: deviceToken,
+      deviceType: deviceType,
       appIdentifier: appIdentifier
     };
   }
