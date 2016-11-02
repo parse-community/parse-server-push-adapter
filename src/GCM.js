@@ -57,7 +57,7 @@ GCM.prototype.send = function(data, devices) {
   }
   // Generate gcm payload
   // PushId is not a formal field of GCM, but Parse Android SDK uses this field to deduplicate push notifications
-  let gcmPayload = generateGCMPayload(data.data, pushId, timestamp, expirationTime);
+  let gcmPayload = generateGCMPayload(data, pushId, timestamp, expirationTime);
   // Make and send gcm request
   let message = new gcm.Message(gcmPayload);
 
@@ -120,16 +120,18 @@ GCM.prototype.send = function(data, devices) {
  * @param {Number|undefined} expirationTime A number whose format is the Unix Epoch or undefined
  * @returns {Object} A promise which is resolved after we get results from gcm
  */
-function generateGCMPayload(coreData, pushId, timeStamp, expirationTime) {
-  let payloadData =  {
-    'time': new Date(timeStamp).toISOString(),
-    'push_id': pushId,
-    'data': JSON.stringify(coreData)
-  }
+function generateGCMPayload(requestData, pushId, timeStamp, expirationTime) {
   let payload = {
-    priority: 'normal',
-    data: payloadData
+    priority: 'normal'
   };
+  payload.data = {
+    data: JSON.stringify(requestData.data),
+    push_id: pushId,
+    time: new Date(timeStamp).toISOString()
+  }
+  if (requestData.notification) {
+    payload.notification = requestData.notification;
+  }
   if (expirationTime) {
    // The timeStamp and expiration is in milliseconds but gcm requires second
     let timeToLive = Math.floor((expirationTime - timeStamp) / 1000);
