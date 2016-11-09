@@ -114,7 +114,7 @@ GCM.prototype.send = function(data, devices) {
 
 /**
  * Generate the gcm payload from the data we get from api request.
- * @param {Object} coreData The data field under api request body
+ * @param {Object} requestData The request body
  * @param {String} pushId A random string
  * @param {Number} timeStamp A number whose format is the Unix Epoch
  * @param {Number|undefined} expirationTime A number whose format is the Unix Epoch or undefined
@@ -122,12 +122,15 @@ GCM.prototype.send = function(data, devices) {
  */
 function generateGCMPayload(requestData, pushId, timeStamp, expirationTime) {
   let payload = {
-    priority: 'normal'
+    priority: 'high'
   };
   payload.data = {
-    data: JSON.stringify(requestData.data),
+    data: requestData.data,
     push_id: pushId,
     time: new Date(timeStamp).toISOString()
+  }
+  if (requestData.content_available) {
+    payload.content_available = requestData.content_available;
   }
   if (requestData.notification) {
     payload.notification = requestData.notification;
