@@ -54,13 +54,13 @@ describe('ParsePushAdapter', () => {
   it('can get valid push types', (done) => {
     var parsePushAdapter = new ParsePushAdapter();
 
-    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'android']);
+    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'android', 'fcm']);
     done();
   });
 
   it('can classify installation', (done) => {
     // Mock installations
-    var validPushTypes = ['ios', 'android'];
+    var validPushTypes = ['ios', 'android', 'fcm'];
     var installations = [
       {
         deviceType: 'android',

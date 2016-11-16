@@ -35,13 +35,13 @@ describe('GCM', () => {
 
     var payload = GCM.generateGCMPayload(requestData, pushId, timeStamp);
 
-    expect(payload.priority).toEqual('normal');
+    expect(payload.priority).toEqual('high');
     expect(payload.timeToLive).toEqual(undefined);
     var dataFromPayload = payload.data;
     expect(dataFromPayload.time).toEqual(timeStampISOStr);
     expect(payload.notification).toEqual(requestData.notification);
     expect(dataFromPayload['push_id']).toEqual(pushId);
-    var dataFromUser = JSON.parse(dataFromPayload.data);
+    var dataFromUser = dataFromPayload.data;
     expect(dataFromUser).toEqual(requestData.data);
     done();
   });
@@ -64,13 +64,13 @@ describe('GCM', () => {
 
     var payload = GCM.generateGCMPayload(requestData, pushId, timeStamp, expirationTime);
 
-    expect(payload.priority).toEqual('normal');
+    expect(payload.priority).toEqual('high');
     expect(payload.timeToLive).toEqual(Math.floor((expirationTime - timeStamp) / 1000));
     var dataFromPayload = payload.data;
     expect(dataFromPayload.time).toEqual(timeStampISOStr);
     expect(payload.notification).toEqual(requestData.notification);
     expect(dataFromPayload['push_id']).toEqual(pushId);
-    var dataFromUser = JSON.parse(dataFromPayload.data);
+    var dataFromUser = dataFromPayload.data;
     expect(dataFromUser).toEqual(requestData.data);
     done();
   });
@@ -93,13 +93,13 @@ describe('GCM', () => {
 
     var payload = GCM.generateGCMPayload(requestData, pushId, timeStamp, expirationTime);
 
-    expect(payload.priority).toEqual('normal');
+    expect(payload.priority).toEqual('high');
     expect(payload.timeToLive).toEqual(0);
     var dataFromPayload = payload.data;
     expect(dataFromPayload.time).toEqual(timeStampISOStr);
     expect(payload.notification).toEqual(requestData.notification);
     expect(dataFromPayload['push_id']).toEqual(pushId);
-    var dataFromUser = JSON.parse(dataFromPayload.data);
+    var dataFromUser = dataFromPayload.data;
     expect(dataFromUser).toEqual(requestData.data);
     done();
   });
@@ -122,14 +122,14 @@ describe('GCM', () => {
 
     var payload = GCM.generateGCMPayload(requestData, pushId, timeStamp, expirationTime);
 
-    expect(payload.priority).toEqual('normal');
+    expect(payload.priority).toEqual('high');
     // Four week in second
     expect(payload.timeToLive).toEqual(4 * 7 * 24 * 60 * 60);
     var dataFromPayload = payload.data;
     expect(dataFromPayload.time).toEqual(timeStampISOStr);
     expect(payload.notification).toEqual(requestData.notification);
     expect(dataFromPayload['push_id']).toEqual(pushId);
-    var dataFromUser = JSON.parse(dataFromPayload.data);
+    var dataFromUser = dataFromPayload.data;
     expect(dataFromUser).toEqual(requestData.data);
     done();
   });
