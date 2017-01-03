@@ -26,7 +26,7 @@ function GCM(args) {
 GCM.prototype.send = function(data, devices) {
   let pushId = randomString(10);
   // Make a new array
-  devices = new Array(...devices);
+  devices=devices.slice(0);
   let timestamp = Date.now();
   // For android, we can only have 1000 recepients per send, so we need to slice devices to
   // chunk if necessary
