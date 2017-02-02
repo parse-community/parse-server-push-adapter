@@ -32,9 +32,9 @@
     "jasmine": "^2.4.1"
   },
   "dependencies": {
-    "apn": "^1.7.8",
+    "apn": "^2.1.2",
     "node-gcm": "^0.14.0",
     "npmlog": "^2.0.3",
-    "parse": "^1.8.1"
+    "parse": "^1.9.2"
   }
 }

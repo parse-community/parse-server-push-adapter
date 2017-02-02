@@ -12,16 +12,16 @@ describe('ParsePushAdapter', () => {
       },
       ios: [
         {
-          cert: 'prodCert.pem',
-          key: 'prodKey.pem',
+          cert: new Buffer('testCert'),
+          key: new Buffer('testKey'),
           production: true,
-          bundleId: 'bundleId'
+          topic: 'topic'
         },
         {
-          cert: 'devCert.pem',
-          key: 'devKey.pem',
+          cert: new Buffer('testCert'),
+          key: new Buffer('testKey'),
           production: false,
-          bundleId: 'bundleIdAgain'
+          topic: 'topicAgain'
         }
       ]
     };
@@ -45,7 +45,7 @@ describe('ParsePushAdapter', () => {
       }
     };
 
-    expect(function() {
+    expect(function () {
       new ParsePushAdapter(pushConfig);
     }).toThrow();
     done();
@@ -222,7 +222,7 @@ describe('ParsePushAdapter', () => {
     done();
   });
 
-  it('reports properly results', (done) => {
+  it('reports properly results', (done) => {
     var pushConfig = {
       android: {
         senderId: 'senderId',
@@ -230,10 +230,10 @@ describe('ParsePushAdapter', () => {
       },
       ios: [
         {
-          cert: 'cert.cer',
-          key: 'key.pem',
+          cert: new Buffer('testCert'),
+          key: new Buffer('testKey'),
           production: false,
-          bundleId: 'bundleId'
+          topic: 'topic'
         }
       ]
     };
@@ -263,19 +263,19 @@ describe('ParsePushAdapter', () => {
     ];
 
     var parsePushAdapter = new ParsePushAdapter(pushConfig);
-    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
+    parsePushAdapter.send({ data: { alert: 'some' } }, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
       // 2x iOS, 1x android
       expect(results.length).toBe(3);
-      results.forEach((result) => {
+      results.forEach((result) => {
         expect(result.transmitted).toBe(false);
         expect(typeof result.device).toBe('object');
         expect(typeof result.device.deviceType).toBe('string');
         expect(typeof result.device.deviceToken).toBe('string');
       })
       done();
-    }).catch((err) => {
+    }).catch((err) => {
       fail('Should not fail');
       done();
     })
