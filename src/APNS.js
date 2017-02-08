@@ -22,6 +22,7 @@ export class APNS {
    * @param {String} args.passphrase The passphrase for the provider key, if required
    * @param {Boolean} args.production Specifies which environment to connect to: Production (if true) or Sandbox
    * @param {String} args.topic Specififies an App-Id for this Provider
+   * @param {String} args.bundleId DEPRECATED: Specifies an App-ID for this Provider
    * @param {Number} args.connectionRetryLimit  The maximum number of connection failures that will be tolerated before apn.Provider will "give up". (Defaults to: 3)
    */
   constructor(args = []) {
@@ -43,10 +44,11 @@ export class APNS {
 
       // rewrite bundleId to topic for backward-compatibility
       if (apnsArgs.bundleId) {
+        log.warn(LOG_PREFIX, 'bundleId is deprecated, use topic instead');
         apnsArgs.topic = apnsArgs.bundleId
       }
 
-      let provider = this._createProvider(apnsArgs);
+      let provider = APNS._createProvider(apnsArgs);
       this.providers.push(provider);
     }
 
@@ -63,9 +65,9 @@ export class APNS {
 
   /**
    * Send apns request.
-   * 
+   *
    * @param {Object} data The data we need to send, the format is the same with api request body
-   * @param {Array} devices An array of devices
+   * @param {Array} allDevices An array of devices
    * @returns {Object} A promise which is resolved immediately
    */
   send(data, allDevices) {
@@ -90,17 +92,17 @@ export class APNS {
 
       // No Providers found
       if (!providers || providers.length === 0) {
-        let errorPromises = devices.map(device => this._createErrorPromise(device.deviceToken, 'No Provider found'));
+        let errorPromises = devices.map(device => APNS._createErrorPromise(device.deviceToken, 'No Provider found'));
         allPromises = allPromises.concat(errorPromises);
         continue;
       }
 
-      let notification = this._generateNotification(coreData, expirationTime, appIdentifier);
+      let notification = APNS._generateNotification(coreData, expirationTime, appIdentifier);
       let promise = providers[0]
         .send(notification, devices.map(device => device.deviceToken))
         .then(this._handlePromise.bind(this));
       allPromises.push(promise);
-    };
+    }
 
     return Promise.all(allPromises);
   }
@@ -108,10 +110,10 @@ export class APNS {
   /**
    * Creates an Provider base on apnsArgs.
    */
-  _createProvider(apnsArgs) {
+  static _createProvider(apnsArgs) {
     let provider = new apn.Provider(apnsArgs);
 
-    // if using certificate, then topic must be defined 
+    // if using certificate, then topic must be defined
     if ((apnsArgs.cert || apnsArgs.key || apnsArgs.pfx) && !apnsArgs.topic) {
       throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED, 'topic is mssing for %j', apnsArgs);
     }
@@ -135,7 +137,7 @@ export class APNS {
    * @param {String} topic Topic the Notification is sent to
    * @returns {Object} A apns Notification
    */
-  _generateNotification(coreData, expirationTime, topic) {
+  static _generateNotification(coreData, expirationTime, topic) {
     let notification = new apn.Notification();
     let payload = {};
     for (let key in coreData) {
@@ -173,9 +175,9 @@ export class APNS {
 
   /**
    * Choose appropriate providers based on device appIdentifier.
-   * 
+   *
    * @param {String} appIdentifier appIdentifier for required provider
-   * @returns Returns Array with appropriate providers
+   * @returns {Array} Returns Array with appropriate providers
    */
   _chooseProviders(appIdentifier) {
     // If the device we need to send to does not have appIdentifier, any provider could be a qualified provider
@@ -196,28 +198,30 @@ export class APNS {
   }
 
   _handlePromise(response) {
+    let promises = [];
     response.sent.forEach((token) => {
-      log.verbose(LOG_PREFIX, 'APNS transmitted to %s', token);
-      return this._createSuccesfullPromise(token);
+      log.verbose(LOG_PREFIX, 'APNS transmitted to %s', token.device);
+      promises.push(APNS._createSuccesfullPromise(token.device));
     });
     response.failed.forEach((failure) => {
       if (failure.error) {
         log.error(LOG_PREFIX, 'APNS error transmitting to device %s with error %s', failure.device, failure.error);
-        return this._createErrorPromise(failure.device, failure.error);
+        promises.push(PNS._createErrorPromise(failure.device, failure.error));
       } else if (failure.status && failure.response && failure.response.reason) {
         log.error(LOG_PREFIX, 'APNS error transmitting to device %s with status %s and reason %s', failure.device, failure.status, failure.response.reason);
-        return this._createErrorPromise(failure.device, failure.response.reason);
+        promises.push(APNS._createErrorPromise(failure.device, failure.response.reason));
       }
     });
+    return Promise.all(promises);
   }
 
   /**
    * Creates an errorPromise for return.
-   * 
+   *
    * @param {String} token Device-Token
    * @param {String} errorMessage ErrrorMessage as string
    */
-  _createErrorPromise(token, errorMessage) {
+  static _createErrorPromise(token, errorMessage) {
     return Promise.resolve({
       transmitted: false,
       device: {
@@ -230,10 +234,10 @@ export class APNS {
 
   /**
    * Creates an successfulPromise for return.
-   * 
+   *
    * @param {String} token Device-Token
    */
-  _createSuccesfullPromise(token) {
+  static _createSuccesfullPromise(token) {
     return Promise.resolve({
       transmitted: true,
       device: {
