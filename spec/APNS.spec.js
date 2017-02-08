@@ -5,11 +5,11 @@ describe('APNS', () => {
 
   it('can initialize with cert', (done) => {
     let args = {
-      cert: new Buffer('testCert'),
+      cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
       key: new Buffer('testKey'),
       production: true,
       topic: 'topic'
-    }
+    };
     let apns = new APNS(args);
 
     expect(apns.providers.length).toBe(1);
@@ -99,6 +99,46 @@ describe('APNS', () => {
     done();
   });
 
+  it('can initialize with multiple certs', (done) => {
+    let args = [
+      {
+        cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
+        key: new Buffer('testKey'),
+        production: false,
+        topic: 'topic'
+      },
+      {
+        cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
+        key: new Buffer('testKey'),
+        production: true,
+        topic: 'topicAgain'
+      }
+    ];
+
+    let apns = new APNS(args);
+
+    expect(apns.providers.length).toBe(2);
+    let devApnsProvider = apns.providers[1];
+    expect(devApnsProvider.index).toBe(1);
+    expect(devApnsProvider.topic).toBe(args[0].topic);
+
+    let devApnsOptions = devApnsProvider.client.config;
+    expect(devApnsOptions.cert).toBe(args[0].cert);
+    expect(devApnsOptions.key).toBe(args[0].key);
+    expect(devApnsOptions.production).toBe(args[0].production);
+
+    let prodApnsProvider = apns.providers[0];
+    expect(prodApnsProvider.index).toBe(0);
+    expect(prodApnsProvider.topic).toBe(args[1].topic);
+
+    // TODO: Remove this checking onec we inject APNS
+    let prodApnsOptions = prodApnsProvider.client.config;
+    expect(prodApnsOptions.cert).toBe(args[1].cert);
+    expect(prodApnsOptions.key).toBe(args[1].key);
+    expect(prodApnsOptions.production).toBe(args[1].production);
+    done();
+  });
+
   it('can generate APNS notification', (done) => {
     //Mock request data
     let data = {
@@ -111,9 +151,9 @@ describe('APNS', () => {
       'key': 'value',
       'keyAgain': 'valueAgain'
     };
-    let expirationTime = 1454571491354
+    let expirationTime = 1454571491354;
 
-    let notification = APNS.prototype._generateNotification(data, expirationTime);
+    let notification = APNS._generateNotification(data, expirationTime);
 
     expect(notification.aps.alert).toEqual(data.alert);
     expect(notification.aps.badge).toEqual(data.badge);
@@ -141,7 +181,7 @@ describe('APNS', () => {
       }
     ];
 
-    let qualifiedProviders = APNS.prototype._chooseProviders.call({ providers: providers }, appIdentifier);
+    let qualifiedProviders = APNS.prototype._chooseProviders.call({providers: providers}, appIdentifier);
     expect(qualifiedProviders).toEqual([{
       topic: 'topic'
     }]);
@@ -160,7 +200,7 @@ describe('APNS', () => {
       }
     ];
 
-    let qualifiedProviders = APNS.prototype._chooseProviders.call({ providers: providers }, appIdentifier);
+    let qualifiedProviders = APNS.prototype._chooseProviders.call({providers: providers}, appIdentifier);
     expect(qualifiedProviders).toEqual([]);
     done();
   });
@@ -171,7 +211,7 @@ describe('APNS', () => {
       key: new Buffer('testKey'),
       production: true,
       topic: 'topic'
-    }
+    };
     let apns = new APNS(args);
     let provider = apns.providers[0];
     spyOn(provider, 'send').and.callFake((notification, devices) => {
@@ -181,13 +221,13 @@ describe('APNS', () => {
       })
     });
     // Mock data
-    let expirationTime = 1454571491354
+    let expirationTime = 1454571491354;
     let data = {
       'expiration_time': expirationTime,
       'data': {
         'alert': 'alert'
       }
-    }
+    };
     // Mock devices
     let mockedDevices = [
       {
@@ -248,13 +288,13 @@ describe('APNS', () => {
     });
     apns.providers = [provider, providerDev];
     // Mock data
-    let expirationTime = 1454571491354
+    let expirationTime = 1454571491354;
     let data = {
       'expiration_time': expirationTime,
       'data': {
         'alert': 'alert'
       }
-    }
+    };
     // Mock devices
     let mockedDevices = [
       {
