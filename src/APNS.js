@@ -205,7 +205,7 @@ export class APNS {
     response.failed.forEach((failure) => {
       if (failure.error) {
         log.error(LOG_PREFIX, 'APNS error transmitting to device %s with error %s', failure.device, failure.error);
-        promises.push(PNS._createErrorPromise(failure.device, failure.error));
+        promises.push(APNS._createErrorPromise(failure.device, failure.error));
       } else if (failure.status && failure.response && failure.response.reason) {
         log.error(LOG_PREFIX, 'APNS error transmitting to device %s with status %s and reason %s', failure.device, failure.status, failure.response.reason);
         promises.push(APNS._createErrorPromise(failure.device, failure.response.reason));
