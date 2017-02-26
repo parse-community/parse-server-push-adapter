@@ -54,13 +54,13 @@ describe('ParsePushAdapter', () => {
   it('can get valid push types', (done) => {
     var parsePushAdapter = new ParsePushAdapter();
 
-    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'android', 'fcm']);
+    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'osx', 'tvos', 'android', 'fcm']);
     done();
   });
 
   it('can classify installation', (done) => {
     // Mock installations
-    var validPushTypes = ['ios', 'android', 'fcm'];
+    var validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm'];
     var installations = [
       {
         deviceType: 'android',
@@ -69,6 +69,14 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'ios',
         deviceToken: 'iosToken'
+      },
+      {
+        deviceType: 'tvos',
+        deviceToken: 'tvosToken'
+      },
+      {
+        deviceType: 'osx',
+        deviceToken: 'osxToken'
       },
       {
         deviceType: 'win',
@@ -83,6 +91,8 @@ describe('ParsePushAdapter', () => {
     var deviceMap = ParsePushAdapter.classifyInstallations(installations, validPushTypes);
     expect(deviceMap['android']).toEqual([makeDevice('androidToken', 'android')]);
     expect(deviceMap['ios']).toEqual([makeDevice('iosToken', 'ios')]);
+    expect(deviceMap['osx']).toEqual([makeDevice('osxToken', 'osx')]);
+    expect(deviceMap['tvos']).toEqual([makeDevice('tvosToken', 'tvos')]);
     expect(deviceMap['win']).toBe(undefined);
     done();
   });
