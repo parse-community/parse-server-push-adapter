@@ -177,7 +177,7 @@ function handleTransmissionError(conns, errCode, notification, apnDevice) {
         status: errCode,
         transmitted: false,
         device: {
-          deviceType: 'ios',
+          deviceType: apnDevice.deviceType,
           deviceToken: apnDevice.token.toString('hex')
         }
       });
