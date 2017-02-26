@@ -74,7 +74,7 @@ function APNS(args) {
           notification: notification,
           transmitted: true,
           device: {
-            deviceType: 'ios',
+            deviceType: device.deviceType, // TODO check
             deviceToken: device.token.toString('hex')
           }
         });
@@ -115,7 +115,7 @@ APNS.prototype.send = function(data, devices) {
         transmitted: false,
         device: {
           deviceToken: device.deviceToken,
-          deviceType: 'ios'
+          deviceType: device.deviceType
         },
         result: {error: 'No connection available'}
       });
