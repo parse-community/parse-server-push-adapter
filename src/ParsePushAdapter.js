@@ -12,7 +12,7 @@ export class ParsePushAdapter {
   supportsPushTracking = true;
 
   constructor(pushConfig = {}) {
-    this.validPushTypes = ['ios', 'android', 'fcm'];
+    this.validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm'];
     this.senderMap = {};
     // used in PushController for Dashboard Features
     this.feature = {
@@ -27,6 +27,8 @@ export class ParsePushAdapter {
       }
       switch (pushType) {
         case 'ios':
+        case 'tvos':
+        case 'osx':
           this.senderMap[pushType] = new APNS(pushConfig[pushType]);
           break;
         case 'android':
