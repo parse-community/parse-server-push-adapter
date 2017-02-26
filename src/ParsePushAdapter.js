@@ -51,8 +51,19 @@ export class ParsePushAdapter {
     let deviceMap = classifyInstallations(installations, this.validPushTypes);
     let sendPromises = [];
     for (let pushType in deviceMap) {
-      let sender = this.senderMap[pushType];
+      var sender = this.senderMap[pushType];
       let devices = deviceMap[pushType];
+      
+      if (!sender) {
+        if (pushType == 'tvos') {
+          // if there is only an ios push configuration available reuse it for tvos
+          sender = this.senderMap['ios'];
+        } else if (pushType == 'ios') {
+          // if there is only a tvos push configuration available reuse it for ios
+          sender = this.senderMap['tvos'];
+        }
+      }
+
       if(Array.isArray(devices) && devices.length > 0)
       {
         if (!sender) {
