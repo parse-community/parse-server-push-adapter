@@ -343,7 +343,7 @@ describe('ParsePushAdapter', () => {
           cert: 'cert.cer',
           key: 'key.pem',
           production: false,
-          bundleId: 'bundleId'
+          bundleId: 'iosbundleId'
         }
       ],
       osx: [
@@ -351,7 +351,7 @@ describe('ParsePushAdapter', () => {
           cert: 'cert.cer',
           key: 'key.pem',
           production: false,
-          bundleId: 'bundleId'
+          bundleId: 'osxbundleId'
         }
       ]
     };
@@ -362,23 +362,23 @@ describe('ParsePushAdapter', () => {
       },
       {
         deviceType: 'ios',
-        deviceToken: 'c5ee8fae0a1c',
-        appIdentifier: 'anotherBundle'
+        deviceToken: '0d72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
+        appIdentifier: 'iosbundleId'
       },
       {
         deviceType: 'ios',
-        deviceToken: 'c5ee8fae0a1c5805e731cf15496d5b2b3f9b9c577353d3239429d3faaee01c79',
-        appIdentifier: 'anotherBundle'
+        deviceToken: 'ff3943ed0b2090c47e5d6f07d8f202a10427941d7897fda5a6b18c6d9fd07d48',
+        appIdentifier: 'iosbundleId'
       },
       {
         deviceType: 'osx',
-        deviceToken: 'c5ee8fae0a1c5805e731cf15496d5b2b3f9b9c577353d3239429d3faaee01c79',
-        appIdentifier: 'anotherBundle'
+        deviceToken: '5cda62a8d88eb48d9111a6c436f2e326a053eb0cd72dfc3a0893089342602235',
+        appIdentifier: 'osxbundleId'
       },
       {
         deviceType: 'tvos',
-        deviceToken: 'c5ee8fae0a1c5805e731cf15496d5b2b3f9b9c577353d3239429d3faaee01c79',
-        appIdentifier: 'anotherBundle'
+        deviceToken: '0d72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
+        appIdentifier: 'iosbundleId' // ios and tvos share the same bundleid
       },
       {
         deviceType: 'win',
