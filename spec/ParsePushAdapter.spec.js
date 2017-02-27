@@ -196,7 +196,7 @@ describe('ParsePushAdapter', () => {
     parsePushAdapter.send(data, installations);
     // Check ios sender
     expect(iosSender.send.calls.count()).toEqual(1);
-    args = iosSender.send.calls.first().args;
+    var args = iosSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('iosToken', 'ios'),
@@ -237,7 +237,7 @@ describe('ParsePushAdapter', () => {
     parsePushAdapter.send(data, installations);
 
     expect(iosSender.send.calls.count()).toEqual(2);
-    args = iosSender.send.calls.argsFor(0);
+    var args = iosSender.send.calls.argsFor(0);
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('iosToken', 'ios'),
