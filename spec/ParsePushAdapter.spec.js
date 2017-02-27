@@ -127,10 +127,6 @@ describe('ParsePushAdapter', () => {
         deviceToken: 'iosToken'
       },
       {
-        deviceType: 'tvos',
-        deviceToken: 'tvosToken'
-      },
-      {
         deviceType: 'osx',
         deviceToken: 'osxToken'
       },
@@ -160,19 +156,97 @@ describe('ParsePushAdapter', () => {
     expect(args[1]).toEqual([
       makeDevice('iosToken', 'ios'),
     ]);
-    // ios sender should be reused for tvos as no tvos sender is present
-    args = iosSender.send.calls[1].args;
-    expect(args[0]).toEqual(data);
-    expect(args[1]).toEqual([
-      makeDevice('tvosToken', 'tvos'),
-    ]);
-
     // Check osx sender
     expect(osxSender.send).toHaveBeenCalled();
     args = osxSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('osxToken', 'osx')
+    ]);
+    done();
+  });
+
+  it('does use ios and tvos senders if both are configured', (done) => {
+    var parsePushAdapter = new ParsePushAdapter();
+    // Mock senders
+    var iosSender = {
+      send: jasmine.createSpy('send')
+    };
+    var tvosSender = {
+      send: jasmine.createSpy('send')
+    };
+    var senderMap = {
+      ios: iosSender,
+      tvos: tvosSender
+    };
+    parsePushAdapter.senderMap = senderMap;
+    // Mock installations
+    var installations = [
+      {
+        deviceType: 'ios',
+        deviceToken: 'iosToken'
+      },
+      {
+        deviceType: 'tvos',
+        deviceToken: 'tvosToken'
+      }
+    ];
+    var data = {};
+
+    parsePushAdapter.send(data, installations);
+    // Check ios sender
+    expect(iosSender.send).toHaveBeenCalled();
+    args = iosSender.send.calls.first().args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
+      makeDevice('iosToken', 'ios'),
+    ]);
+    // Check ios sender
+    expect(tvosSender.send).toHaveBeenCalled();
+    args = tvosSender.send.calls.first().args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
+      makeDevice('tvosToken', 'tvos'),
+    ]);
+    done();
+  });
+
+  it('does use ios sender for tvos of no tvos sender is configured', (done) => {
+    var parsePushAdapter = new ParsePushAdapter();
+    // Mock senders
+    var iosSender = {
+      send: jasmine.createSpy('send')
+    };
+    var senderMap = {
+      ios: iosSender,
+    };
+    parsePushAdapter.senderMap = senderMap;
+    // Mock installations
+    var installations = [
+      {
+        deviceType: 'ios',
+        deviceToken: 'iosToken'
+      },
+      {
+        deviceType: 'tvos',
+        deviceToken: 'tvosToken'
+      }
+    ];
+    var data = {};
+
+    parsePushAdapter.send(data, installations);
+    
+    expect(iosSender.send).toHaveBeenCalled();
+    args = iosSender.send.calls.first().args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
+      makeDevice('iosToken', 'ios'),
+    ]);
+    // ios sender should be reused for tvos as no tvos sender is present
+    args = iosSender.send.calls[1].args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
+      makeDevice('tvosToken', 'tvos'),
     ]);
     done();
   });
