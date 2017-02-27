@@ -20,7 +20,6 @@ const LOG_PREFIX = 'parse-server-push-adapter APNS';
  * @param {Boolean} args.production Specifies which environment to connect to: Production (if true) or Sandbox
  */
 function APNS(args) {
-  // Since for ios, there maybe multiple cert/key pairs,
   // typePushConfig can be an array.
   let apnsArgsList = [];
   if (Array.isArray(args)) {
