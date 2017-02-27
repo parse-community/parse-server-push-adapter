@@ -211,7 +211,7 @@ describe('ParsePushAdapter', () => {
     done();
   });
 
-  it('does use ios sender for tvos of no tvos sender is configured', (done) => {
+  it('does use ios sender for tvos if no tvos sender is configured', (done) => {
     var parsePushAdapter = new ParsePushAdapter();
     // Mock senders
     var iosSender = {
