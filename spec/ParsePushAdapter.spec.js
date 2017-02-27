@@ -195,14 +195,14 @@ describe('ParsePushAdapter', () => {
 
     parsePushAdapter.send(data, installations);
     // Check ios sender
-    expect(iosSender.send).toHaveBeenCalled();
+    expect(iosSender.send.count()).toEqual(1);
     args = iosSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('iosToken', 'ios'),
     ]);
     // Check ios sender
-    expect(tvosSender.send).toHaveBeenCalled();
+    expect(tvosSender.send.count()).toEqual(1);
     args = tvosSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
@@ -235,15 +235,15 @@ describe('ParsePushAdapter', () => {
     var data = {};
 
     parsePushAdapter.send(data, installations);
-    
-    expect(iosSender.send).toHaveBeenCalled();
-    args = iosSender.send.calls.first().args;
+
+    expect(iosSender.send.count()).toEqual(2);
+    args = iosSender.send.calls.argsFor(0);
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('iosToken', 'ios'),
     ]);
     // ios sender should be reused for tvos as no tvos sender is present
-    args = iosSender.send.calls[1].args;
+    args = iosSender.send.calls.argsFor(1);
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('tvosToken', 'tvos'),
