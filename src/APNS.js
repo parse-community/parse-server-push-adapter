@@ -73,7 +73,7 @@ function APNS(args) {
           notification: notification,
           transmitted: true,
           device: {
-            deviceType: device.deviceType, // TODO check
+            deviceType: device.deviceType,
             deviceToken: device.token.toString('hex')
           }
         });
