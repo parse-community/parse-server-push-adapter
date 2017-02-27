@@ -100,14 +100,18 @@ describe('ParsePushAdapter', () => {
 
   it('can send push notifications', (done) => {
     var parsePushAdapter = new ParsePushAdapter();
-    // Mock android ios senders
+    // Mock senders
     var androidSender = {
       send: jasmine.createSpy('send')
     };
     var iosSender = {
       send: jasmine.createSpy('send')
     };
+    var osxSender = {
+      send: jasmine.createSpy('send')
+    }
     var senderMap = {
+      osx: osxSender,
       ios: iosSender,
       android: androidSender
     };
@@ -121,6 +125,14 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'ios',
         deviceToken: 'iosToken'
+      },
+      {
+        deviceType: 'tvos',
+        deviceToken: 'tvosToken'
+      },
+      {
+        deviceType: 'osx',
+        deviceToken: 'osxToken'
       },
       {
         deviceType: 'win',
@@ -146,14 +158,22 @@ describe('ParsePushAdapter', () => {
     args = iosSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
-      makeDevice('iosToken', 'ios')
+      makeDevice('iosToken', 'ios'),
+      makeDevice('tvosToken', 'tvos')
+    ]);
+    // Check osx sender
+    expect(osxSender.send).toHaveBeenCalled();
+    args = osxSender.send.calls.first().args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
+      makeDevice('osxToken', 'osx')
     ]);
     done();
   });
 
   it('can send push notifications by pushType and failback by deviceType', (done) => {
     var parsePushAdapter = new ParsePushAdapter();
-    // Mock android ios senders
+    // Mock senders
     var androidSender = {
       send: jasmine.createSpy('send')
     };
@@ -245,6 +265,14 @@ describe('ParsePushAdapter', () => {
           production: false,
           bundleId: 'bundleId'
         }
+      ],
+      osx: [
+        {
+          cert: 'cert.cer',
+          key: 'key.pem',
+          production: false,
+          bundleId: 'bundleId'
+        }
       ]
     };
     var installations = [
@@ -263,6 +291,16 @@ describe('ParsePushAdapter', () => {
         appIdentifier: 'anotherBundle'
       },
       {
+        deviceType: 'osx',
+        deviceToken: 'c5ee8fae0a1c5805e731cf15496d5b2b3f9b9c577353d3239429d3faaee01c79',
+        appIdentifier: 'anotherBundle'
+      },
+      {
+        deviceType: 'tvos',
+        deviceToken: 'c5ee8fae0a1c5805e731cf15496d5b2b3f9b9c577353d3239429d3faaee01c79',
+        appIdentifier: 'anotherBundle'
+      },
+      {
         deviceType: 'win',
         deviceToken: 'winToken'
       },
@@ -276,8 +314,8 @@ describe('ParsePushAdapter', () => {
     parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
-      // 2x iOS, 1x android
-      expect(results.length).toBe(3);
+      // 2x iOS, 1x android, 1x osx, 1x tvos
+      expect(results.length).toBe(5);
       results.forEach((result) => {
         expect(result.transmitted).toBe(false);
         expect(typeof result.device).toBe('object');
