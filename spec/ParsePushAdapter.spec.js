@@ -159,8 +159,14 @@ describe('ParsePushAdapter', () => {
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('iosToken', 'ios'),
-      makeDevice('tvosToken', 'tvos')
     ]);
+    // ios sender should be reused for tvos as no tvos sender is present
+    args = iosSender.send.calls[1].args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
+      makeDevice('tvosToken', 'tvos'),
+    ]);
+
     // Check osx sender
     expect(osxSender.send).toHaveBeenCalled();
     args = osxSender.send.calls.first().args;
