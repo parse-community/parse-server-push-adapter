@@ -363,22 +363,22 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'ios',
         deviceToken: '0d72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
-        appIdentifier: 'iosbundleId'
+        appIdentifier: 'invalidiosbundleId'
       },
       {
         deviceType: 'ios',
         deviceToken: 'ff3943ed0b2090c47e5d6f07d8f202a10427941d7897fda5a6b18c6d9fd07d48',
-        appIdentifier: 'iosbundleId'
+        appIdentifier: 'invalidiosbundleId'
       },
       {
         deviceType: 'osx',
         deviceToken: '5cda62a8d88eb48d9111a6c436f2e326a053eb0cd72dfc3a0893089342602235',
-        appIdentifier: 'osxbundleId'
+        appIdentifier: 'invalidosxbundleId'
       },
       {
         deviceType: 'tvos',
         deviceToken: '3e72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
-        appIdentifier: 'iosbundleId' // ios and tvos share the same bundleid
+        appIdentifier: 'invalidiosbundleId' // ios and tvos share the same bundleid
       },
       {
         deviceType: 'win',
