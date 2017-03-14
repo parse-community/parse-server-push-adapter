@@ -1,5 +1,28 @@
 # Change Log
 
+## [1.3.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/1.3.0) (2017-03-14)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v1.2.0...1.3.0)
+
+**Closed issues:**
+
+- Modernize dependencies and test tools [\#60](https://github.com/parse-server-modules/parse-server-push-adapter/issues/60)
+- Fixed link for Parse-server push configuration [\#57](https://github.com/parse-server-modules/parse-server-push-adapter/issues/57)
+
+**Merged pull requests:**
+
+- Add macOS and tvOS push notification support [\#58](https://github.com/parse-server-modules/parse-server-push-adapter/pull/58) ([funkenstrahlen](https://github.com/funkenstrahlen))
+- Require node version >= 4.6.0 [\#53](https://github.com/parse-server-modules/parse-server-push-adapter/pull/53) ([flovilmart](https://github.com/flovilmart))
+
+## [1.2.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/1.2.0) (2017-01-16)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v1.1.0...1.2.0)
+
+**Closed issues:**
+
+- Classify installation with pushType and failback with deviceType [\#31](https://github.com/parse-server-modules/parse-server-push-adapter/issues/31)
+- Send deviceType key to push handler [\#39](https://github.com/parse-server-modules/parse-server-push-adapter/issues/39)
+- Added notification field for fcm [\#41](https://github.com/parse-server-modules/parse-server-push-adapter/issues/41)
+- fixes 64k limit on GCM push. [\#49](https://github.com/parse-server-modules/parse-server-push-adapter/issues/49)
+
 ## [1.1.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/1.1.0) (2016-08-25)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v1.0.4...1.1.0)
 
