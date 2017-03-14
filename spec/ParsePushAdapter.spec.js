@@ -2,8 +2,18 @@ var ParsePushAdapter = require('../src/index').ParsePushAdapter;
 var randomString = require('../src/PushAdapterUtils').randomString;
 var APNS = require('../src/APNS');
 var GCM = require('../src/GCM');
+var MockAPNConnection = require('./MockAPNConnection');
 
 describe('ParsePushAdapter', () => {
+
+  beforeEach(() => {
+    jasmine.mockLibrary('apn', 'Connection', MockAPNConnection);
+  });
+
+  afterEach(() => {
+    jasmine.restoreLibrary('apn', 'Connection');
+  });
+
   it('can be initialized', (done) => {
     // Make mock config
     var pushConfig = {
@@ -279,22 +289,22 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'ios',
         deviceToken: '0d72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
-        appIdentifier: 'invalidiosbundleId'
+        appIdentifier: 'iosbundleId'
       },
       {
         deviceType: 'ios',
         deviceToken: 'ff3943ed0b2090c47e5d6f07d8f202a10427941d7897fda5a6b18c6d9fd07d48',
-        appIdentifier: 'invalidiosbundleId'
+        appIdentifier: 'iosbundleId'
       },
       {
         deviceType: 'osx',
         deviceToken: '5cda62a8d88eb48d9111a6c436f2e326a053eb0cd72dfc3a0893089342602235',
-        appIdentifier: 'invalidosxbundleId'
+        appIdentifier: 'osxbundleId'
       },
       {
         deviceType: 'tvos',
         deviceToken: '3e72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
-        appIdentifier: 'invalidiosbundleId' // ios and tvos share the same bundleid
+        appIdentifier: 'iosbundleId' // ios and tvos share the same bundleid
       },
       {
         deviceType: 'win',
@@ -313,10 +323,19 @@ describe('ParsePushAdapter', () => {
       // 2x iOS, 1x android, 1x osx, 1x tvos
       expect(results.length).toBe(5);
       results.forEach((result) => {
-        expect(result.transmitted).toBe(false);
         expect(typeof result.device).toBe('object');
-        expect(typeof result.device.deviceType).toBe('string');
-        expect(typeof result.device.deviceToken).toBe('string');
+        if (!result.device) {
+          fail('result should have device');
+          return;
+        }
+        const device = result.device;
+        expect(typeof device.deviceType).toBe('string');
+        expect(typeof device.deviceToken).toBe('string');
+        if (device.deviceType === 'ios' || device.deviceType === 'osx') {
+          expect(result.transmitted).toBe(true);
+        } else {
+          expect(result.transmitted).toBe(false);
+        }
       })
       done();
     }).catch((err) => {
