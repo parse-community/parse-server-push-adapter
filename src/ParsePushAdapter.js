@@ -51,7 +51,7 @@ export class ParsePushAdapter {
     let deviceMap = classifyInstallations(installations, this.validPushTypes);
     let sendPromises = [];
     for (let pushType in deviceMap) {
-      var sender = this.senderMap[pushType];
+      let sender = this.senderMap[pushType];
       let devices = deviceMap[pushType];
 
       if(Array.isArray(devices) && devices.length > 0) {
