@@ -54,8 +54,7 @@ export class ParsePushAdapter {
       var sender = this.senderMap[pushType];
       let devices = deviceMap[pushType];
 
-      if(Array.isArray(devices) && devices.length > 0)
-      {
+      if(Array.isArray(devices) && devices.length > 0) {
         if (!sender) {
           log.verbose(LOG_PREFIX, `Can not find sender for push type ${pushType}, ${data}`)
           let results = devices.map((device) => {
