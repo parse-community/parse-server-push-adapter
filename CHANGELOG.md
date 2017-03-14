@@ -11,7 +11,7 @@
 **Merged pull requests:**
 
 - Add macOS and tvOS push notification support [\#58](https://github.com/parse-server-modules/parse-server-push-adapter/pull/58) ([funkenstrahlen](https://github.com/funkenstrahlen))
-- Require node version >= 4.6.0 [\#53](https://github.com/parse-server-modules/parse-server-push-adapter/pull/53) ([flovilmart](https://github.com/flovilmart)))
+- Require node version >= 4.6.0 [\#53](https://github.com/parse-server-modules/parse-server-push-adapter/pull/53) ([flovilmart](https://github.com/flovilmart))
 
 ## [1.2.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/1.2.0) (2017-01-16)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v1.1.0...1.2.0)
