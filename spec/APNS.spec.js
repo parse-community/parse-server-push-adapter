@@ -1,4 +1,5 @@
 var APNS = require('../src/APNS');
+var Parse = require('parse/node');
 
 describe('APNS', () => {
 
@@ -20,6 +21,33 @@ describe('APNS', () => {
     expect(prodApnsOptions.cert).toBe(args.cert);
     expect(prodApnsOptions.key).toBe(args.key);
     expect(prodApnsOptions.production).toBe(args.production);
+    done();
+  });
+
+  it('fails to initialize with bad data', (done) => {
+    try {
+      new APNS("args");
+    } catch(e) {
+      expect(e.code).toBe(Parse.Error.PUSH_MISCONFIGURED);
+      done();
+      return;
+    }
+    fail('should not be reached');
+  });
+
+  it('fails to initialize without a bundleID', (done) => {
+    const apnsArgs = {
+      production: true,
+      bundle: 'hello'
+    };
+    try {
+      new APNS(apnsArgs);
+    } catch(e) {
+      expect(e.code).toBe(Parse.Error.PUSH_MISCONFIGURED);
+      done();
+      return;
+    }
+    fail('should not be reached');
     done();
   });
 
