@@ -12,7 +12,7 @@ export class ParsePushAdapter {
   supportsPushTracking = true;
 
   constructor(pushConfig = {}) {
-    this.validPushTypes = ['ios', 'android', 'fcm'];
+    this.validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm'];
     this.senderMap = {};
     // used in PushController for Dashboard Features
     this.feature = {
@@ -27,6 +27,8 @@ export class ParsePushAdapter {
       }
       switch (pushType) {
         case 'ios':
+        case 'tvos':
+        case 'osx':
           this.senderMap[pushType] = new APNS(pushConfig[pushType]);
           break;
         case 'android':
@@ -51,8 +53,8 @@ export class ParsePushAdapter {
     for (let pushType in deviceMap) {
       let sender = this.senderMap[pushType];
       let devices = deviceMap[pushType];
-      if(Array.isArray(devices) && devices.length > 0)
-      {
+
+      if(Array.isArray(devices) && devices.length > 0) {
         if (!sender) {
           log.verbose(LOG_PREFIX, `Can not find sender for push type ${pushType}, ${data}`)
           let results = devices.map((device) => {
