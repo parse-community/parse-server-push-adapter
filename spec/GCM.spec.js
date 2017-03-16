@@ -1,4 +1,4 @@
-var GCM = require('../src/GCM');
+var GCM = require('../lib/GCM');
 
 describe('GCM', () => {
   it('can initialize', (done) => {

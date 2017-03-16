@@ -1,7 +1,7 @@
-var ParsePushAdapter = require('../src/index').ParsePushAdapter;
-var randomString = require('../src/PushAdapterUtils').randomString;
-var APNS = require('../src/APNS');
-var GCM = require('../src/GCM');
+var ParsePushAdapter = require('../lib/index').ParsePushAdapter;
+var randomString = require('../lib/PushAdapterUtils').randomString;
+var APNS = require('../lib/APNS');
+var GCM = require('../lib/GCM');
 var MockAPNConnection = require('./MockAPNConnection');
 
 describe('ParsePushAdapter', () => {
