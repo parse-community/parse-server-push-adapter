@@ -47,6 +47,7 @@ function APNS(args) {
     }
 
     // Set apns client callbacks
+    /* istanbul ignore next */
     conn.on('connected', () => {
       log.verbose(LOG_PREFIX, 'APNS Connection %d Connected', conn.index);
     });
@@ -54,15 +55,17 @@ function APNS(args) {
     conn.on('transmissionError', (errCode, notification, apnDevice) => {
       handleTransmissionError(this.conns, errCode, notification, apnDevice);
     });
-
+    /* istanbul ignore next */
     conn.on('timeout', () => {
       log.verbose(LOG_PREFIX, 'APNS Connection %d Timeout', conn.index);
     });
 
+    /* istanbul ignore next */
     conn.on('disconnected', () => {
       log.verbose(LOG_PREFIX, 'APNS Connection %d Disconnected', conn.index);
     });
 
+    /* istanbul ignore next */
     conn.on('socketError', () => {
       log.verbose(LOG_PREFIX, 'APNS Connection %d Socket Error', conn.index);
     });
@@ -121,6 +124,7 @@ APNS.prototype.send = function(data, devices) {
       allPromises.push(promise);
     } else {
       let apnDevice = new apn.Device(device.deviceToken);
+      apnDevice.deviceType = device.deviceType;
       apnDevice.connIndex = qualifiedConnIndexs[0];
       if (device.appIdentifier) {
         apnDevice.appIdentifier = device.appIdentifier;
