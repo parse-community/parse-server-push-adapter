@@ -35,6 +35,17 @@ describe('APNS', () => {
     fail('should not be reached');
   });
 
+  it('fails to initialize with no options', (done) => {
+    try {
+      new APNS();
+    } catch(e) {
+      expect(e.code).toBe(Parse.Error.PUSH_MISCONFIGURED);
+      done();
+      return;
+    }
+    fail('should not be reached');
+  });
+
   it('fails to initialize without a bundleID', (done) => {
     const apnsArgs = {
       production: true,
@@ -431,4 +442,35 @@ describe('APNS', () => {
     });
     done();
   });
+
+  it('reports proper error when no conn is available', (done) => {
+    var args = [{
+      cert: 'prodCert.pem',
+      key: 'prodKey.pem',
+      production: true,
+      bundleId: 'bundleId'
+    }];
+    var data = {
+      'data': {
+        'alert': 'alert'
+      }
+    }
+    var devices = [
+      {
+        deviceToken: '112233',
+        appIdentifier: 'invalidBundleId'
+      },
+    ]
+    var apns = new APNS(args);
+    apns.send(data, devices).then((results) => {
+      expect(results.length).toBe(1);
+      let result = results[0];
+      expect(result.transmitted).toBe(false);
+      expect(result.result.error).toBe('No connection available');
+      done();
+    }, (err) => {
+      fail('should not fail');
+      done();
+    })
+  })
 });

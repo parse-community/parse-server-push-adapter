@@ -71,16 +71,14 @@ function APNS(args) {
     });
 
     conn.on('transmitted', function(notification, device) {
-      if (device.callback) {
-        device.callback({
-          notification: notification,
-          transmitted: true,
-          device: {
-            deviceType: device.deviceType,
-            deviceToken: device.token.toString('hex')
-          }
-        });
-      }
+      device.callback({
+        notification: notification,
+        transmitted: true,
+        device: {
+          deviceType: device.deviceType,
+          deviceToken: device.token.toString('hex')
+        }
+      });
       log.verbose(LOG_PREFIX, 'APNS Connection %d Notification transmitted to %s', conn.index, device.token.toString('hex'));
     });
 
@@ -126,6 +124,7 @@ APNS.prototype.send = function(data, devices) {
       let apnDevice = new apn.Device(device.deviceToken);
       apnDevice.deviceType = device.deviceType;
       apnDevice.connIndex = qualifiedConnIndexs[0];
+      /* istanbul ignore else */
       if (device.appIdentifier) {
         apnDevice.appIdentifier = device.appIdentifier;
       }
@@ -173,18 +172,16 @@ function handleTransmissionError(conns, errCode, notification, apnDevice) {
   }
   // There is no more available conns, we give up in this case
   if (newConnIndex < 0 || newConnIndex >= conns.length) {
-    if (apnDevice.callback) {
-      log.error(LOG_PREFIX, `cannot find vaild connection for ${apnDevice.token.toString('hex')}`);
-      apnDevice.callback({
-        response: {error: `APNS can not find vaild connection for ${apnDevice.token.toString('hex')}`, code: errCode},
-        status: errCode,
-        transmitted: false,
-        device: {
-          deviceType: apnDevice.deviceType,
-          deviceToken: apnDevice.token.toString('hex')
-        }
-      });
-    }
+    log.error(LOG_PREFIX, `cannot find vaild connection for ${apnDevice.token.toString('hex')}`);
+    apnDevice.callback({
+      response: {error: `APNS can not find vaild connection for ${apnDevice.token.toString('hex')}`, code: errCode},
+      status: errCode,
+      transmitted: false,
+      device: {
+        deviceType: apnDevice.deviceType,
+        deviceToken: apnDevice.token.toString('hex')
+      }
+    });
     return;
   }
 
@@ -258,6 +255,7 @@ function generateNotification(coreData, expirationTime) {
 
 APNS.generateNotification = generateNotification;
 
+/* istanbul ignore else */
 if (process.env.TESTING) {
   APNS.chooseConns = chooseConns;
   APNS.handleTransmissionError = handleTransmissionError;

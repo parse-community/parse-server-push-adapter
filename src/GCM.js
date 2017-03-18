@@ -17,6 +17,8 @@ function GCM(args) {
   this.sender = new gcm.Sender(args.apiKey);
 }
 
+GCM.GCMRegistrationTokensMax = GCMRegistrationTokensMax;
+
 /**
  * Send gcm request.
  * @param {Object} data The data we need to send, the format is the same with api request body
@@ -30,7 +32,7 @@ GCM.prototype.send = function(data, devices) {
   let timestamp = Date.now();
   // For android, we can only have 1000 recepients per send, so we need to slice devices to
   // chunk if necessary
-  let slices = sliceDevices(devices, GCMRegistrationTokensMax);
+  let slices = sliceDevices(devices, GCM.GCMRegistrationTokensMax);
   if (slices.length > 1) {
     log.verbose(LOG_PREFIX, `the number of devices exceeds ${GCMRegistrationTokensMax}`);
     // Make 1 send per slice
@@ -129,12 +131,13 @@ function generateGCMPayload(requestData, pushId, timeStamp, expirationTime) {
     push_id: pushId,
     time: new Date(timeStamp).toISOString()
   }
-  if (requestData.content_available) {
-    payload.content_available = requestData.content_available;
-  }
-  if (requestData.notification) {
-    payload.notification = requestData.notification;
-  }
+  const optionalKeys = ['content_available', 'notification'];
+  optionalKeys.forEach((key, index, array) => {
+    if (requestData.hasOwnProperty(key)) {
+      payload[key] = requestData[key];
+    }
+  });
+
   if (expirationTime) {
    // The timeStamp and expiration is in milliseconds but gcm requires second
     let timeToLive = Math.floor((expirationTime - timeStamp) / 1000);
@@ -165,6 +168,7 @@ function sliceDevices(devices, chunkSize) {
 
 GCM.generateGCMPayload = generateGCMPayload;
 
+/* istanbul ignore else */
 if (process.env.TESTING) {
   GCM.sliceDevices = sliceDevices;
 }
