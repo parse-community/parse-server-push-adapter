@@ -1,4 +1,4 @@
-var APNS = require('../src/APNS');
+var APNS = require('../lib/APNS');
 var Parse = require('parse/node');
 
 describe('APNS', () => {
