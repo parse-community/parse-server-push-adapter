@@ -398,7 +398,7 @@ describe('ParsePushAdapter', () => {
   });
 
   // Xited till we can retry on other connections
-  xit('reports properly select connection', (done) => {
+  it('reports properly select connection', (done) => {
     var pushConfig = {
       ios: [
         {
@@ -441,7 +441,7 @@ describe('ParsePushAdapter', () => {
       expect(typeof device.deviceToken).toBe('string');
       expect(result.transmitted).toBe(true);
       done();
-    }).catch((err) => {
+    }).catch((err) => {
       fail('Should not fail');
       done();
     })

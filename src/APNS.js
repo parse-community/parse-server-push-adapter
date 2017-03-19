@@ -96,16 +96,38 @@ export class APNS {
       }
 
       let notification = APNS._generateNotification(coreData, expirationTime, appIdentifier);
-      let promise = providers[0]
-        .send(notification, devices.map(device => device.deviceToken))
-        .then(this._handlePromise.bind(this));
-      allPromises.push(promise);
+      const deviceIds = devices.map(device => device.deviceToken);
+      let promise = this.sendThroughProvider(notification, deviceIds, providers);
+      allPromises.push(promise.then(this._handlePromise.bind(this)));
     }
 
-    return Promise.all(allPromises).then((results) => {
+    return Promise.all(allPromises).then((results) => {
       // flatten all
       return [].concat.apply([], results);
     });
+  }
+
+  sendThroughProvider(notification, devices, providers) {
+    return providers[0]
+        .send(notification, devices)
+        .then((response) => {
+          if (response.failed
+              && response.failed.length > 0
+              && providers && providers.length > 1) {
+            let devices = response.failed.map((failure) => { return failure.device; });
+            // Reset the failures as we'll try next connection
+            response.failed = [];
+            return this.sendThroughProvider(notification,
+                            devices,
+                            providers.slice(1, providers.length)).then((retryResponse) => {
+                              response.failed = response.failed.concat(retryResponse.failed);
+                              response.sent = response.sent.concat(retryResponse.sent);
+                              return response;
+                            });
+          } else {
+            return response;
+          }
+        });
   }
 
   static _validateAPNArgs(apnsArgs) {
