@@ -3,16 +3,16 @@ var ParsePushAdapter = ParsePushAdapterPackage.ParsePushAdapter;
 var randomString = require('../src/PushAdapterUtils').randomString;
 var APNS = require('../src/APNS').default;
 var GCM = require('../src/GCM').default;
-var MockAPNConnection = require('./MockAPNConnection');
+var MockAPNProvider = require('./MockAPNProvider');
 
 describe('ParsePushAdapter', () => {
 
   beforeEach(() => {
-    jasmine.mockLibrary('apn', 'Connection', MockAPNConnection);
+    jasmine.mockLibrary('apn', 'Provider', MockAPNProvider);
   });
 
   afterEach(() => {
-    jasmine.restoreLibrary('apn', 'Connection');
+    jasmine.restoreLibrary('apn', 'Provider');
   });
 
   it('properly export the module', () => {
@@ -32,16 +32,16 @@ describe('ParsePushAdapter', () => {
       },
       ios: [
         {
-          cert: 'prodCert.pem',
-          key: 'prodKey.pem',
+          cert: new Buffer('testCert'),
+          key: new Buffer('testKey'),
           production: true,
-          bundleId: 'bundleId'
+          topic: 'topic'
         },
         {
-          cert: 'devCert.pem',
-          key: 'devKey.pem',
+          cert: new Buffer('testCert'),
+          key: new Buffer('testKey'),
           production: false,
-          bundleId: 'bundleIdAgain'
+          topic: 'topicAgain'
         }
       ]
     };
@@ -65,7 +65,7 @@ describe('ParsePushAdapter', () => {
       }
     };
 
-    expect(function() {
+    expect(function () {
       new ParsePushAdapter(pushConfig);
     }).toThrow();
     done();
@@ -267,7 +267,7 @@ describe('ParsePushAdapter', () => {
     done();
   });
 
-  it('reports properly results', (done) => {
+  it('reports properly results', (done) => {
     var pushConfig = {
       android: {
         senderId: 'senderId',
@@ -275,10 +275,10 @@ describe('ParsePushAdapter', () => {
       },
       ios: [
         {
-          cert: 'cert.cer',
-          key: 'key.pem',
+          cert: new Buffer('testCert'),
+          key: new Buffer('testKey'),
           production: false,
-          bundleId: 'iosbundleId'
+          topic: 'iosbundleId'
         }
       ],
       osx: [
@@ -286,7 +286,7 @@ describe('ParsePushAdapter', () => {
           cert: 'cert.cer',
           key: 'key.pem',
           production: false,
-          bundleId: 'osxbundleId'
+          topic: 'osxbundleId'
         }
       ]
     };
@@ -326,7 +326,7 @@ describe('ParsePushAdapter', () => {
     ];
 
     var parsePushAdapter = new ParsePushAdapter(pushConfig);
-    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
+    parsePushAdapter.send({ data: { alert: 'some' } }, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
       // 2x iOS, 1x android, 1x osx, 1x tvos
@@ -347,7 +347,7 @@ describe('ParsePushAdapter', () => {
         }
       })
       done();
-    }).catch((err) => {
+    }).catch((err) => {
       fail('Should not fail');
       done();
     })
@@ -389,7 +389,7 @@ describe('ParsePushAdapter', () => {
       expect(typeof device.deviceType).toBe('string');
       expect(typeof device.deviceToken).toBe('string');
       expect(result.transmitted).toBe(false);
-      expect(result.response.error.indexOf('APNS can not find vaild connection for ')).toBe(0);
+      expect(typeof result.response.error).toBe('string');
       done();
     }).catch((err) => {
       fail('Should not fail');
@@ -397,7 +397,8 @@ describe('ParsePushAdapter', () => {
     })
   });
 
-  it('reports properly select connection', (done) => {
+  // Xited till we can retry on other connections
+  it('reports properly select connection', (done) => {
     var pushConfig = {
       ios: [
         {
@@ -440,7 +441,7 @@ describe('ParsePushAdapter', () => {
       expect(typeof device.deviceToken).toBe('string');
       expect(result.transmitted).toBe(true);
       done();
-    }).catch((err) => {
+    }).catch((err) => {
       fail('Should not fail');
       done();
     })

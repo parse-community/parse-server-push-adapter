@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.0.0-alpha.1](https://github.com/parse-server-modules/parse-server-push-adapter/tree/2.0.0-alpha.1) (2017-03-14)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v1.3.0...2.0.0-alpha.1)
+
+**What's new**
+
+- Adds support for APNS with HTTP/2.0
+- Improvements in testing, tooling
+
 ## [1.3.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/1.3.0) (2017-03-14)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v1.2.0...1.3.0)
 
