@@ -1,5 +1,6 @@
 const Parse = require('parse/node');
 const APNS = require('../src/APNS').default;
+const MockAPNProvider = require('./MockAPNProvider');
 
 describe('APNS', () => {
 
@@ -46,56 +47,72 @@ describe('APNS', () => {
     fail('should not be reached');
   });
 
-  xit('fails to initialize without a bundleID', (done) => {
-    const apnsArgs = {
-      production: true,
-      bundle: 'hello'
-    };
-    try {
-      new APNS(apnsArgs);
-    } catch(e) {
-      expect(e.code).toBe(Parse.Error.PUSH_MISCONFIGURED);
-      done();
-      return;
-    }
-    fail('should not be reached');
+  it('fails to initialize without a bundleID', (done) => {
+    expect(() => {
+      new APNS({
+        key: new Buffer('key'),
+        production: true,
+        bundle: 'hello'
+      });
+    }).toThrow();
+
+    expect(() => {
+      new APNS({
+        cert: 'pfx',
+        production: true,
+        bundle: 'hello'
+      });
+    }).toThrow();
+
+    expect(() => {
+      new APNS({
+        pfx: new Buffer(''),
+        production: true,
+        bundle: 'hello'
+      });
+    }).toThrow();
     done();
   });
 
   it('can initialize with multiple certs', (done) => {
     var args = [
       {
-        cert: 'devCert.pem',
-        key: 'devKey.pem',
+        cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
+        key: new Buffer('testKey'),
         production: false,
         bundleId: 'bundleId'
       },
       {
-        cert: 'prodCert.pem',
-        key: 'prodKey.pem',
+        cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
+        key: new Buffer('testKey'),
         production: true,
         bundleId: 'bundleIdAgain'
       }
     ]
 
     var apns = new APNS(args);
-    expect(apns.conns.length).toBe(2);
-    var devApnsConnection = apns.conns[1];
+    expect(apns.providers.length).toBe(2);
+    var devApnsConnection = apns.providers[1];
     expect(devApnsConnection.index).toBe(1);
-    var devApnsOptions = devApnsConnection.options;
+    var devApnsOptions = devApnsConnection.client.config;
     expect(devApnsOptions.cert).toBe(args[0].cert);
     expect(devApnsOptions.key).toBe(args[0].key);
     expect(devApnsOptions.production).toBe(args[0].production);
-    expect(devApnsConnection.bundleId).toBe(args[0].bundleId);
+    expect(devApnsOptions.bundleId).toBe(args[0].bundleId);
+    expect(devApnsOptions.topic).toBe(args[0].bundleId);
+    expect(devApnsConnection.topic).toBe(args[0].bundleId);
 
-    var prodApnsConnection = apns.conns[0];
+    var prodApnsConnection = apns.providers[0];
     expect(prodApnsConnection.index).toBe(0);
+    
     // TODO: Remove this checking onec we inject APNS
-    var prodApnsOptions = prodApnsConnection.options;
+    var prodApnsOptions = prodApnsConnection.client.config;
     expect(prodApnsOptions.cert).toBe(args[1].cert);
     expect(prodApnsOptions.key).toBe(args[1].key);
     expect(prodApnsOptions.production).toBe(args[1].production);
     expect(prodApnsOptions.bundleId).toBe(args[1].bundleId);
+    expect(prodApnsOptions.topic).toBe(args[1].bundleId);
+    expect(prodApnsConnection.topic).toBe(args[1].bundleId);
     done();
   });
 
@@ -341,8 +358,8 @@ describe('APNS', () => {
 
   it('reports proper error when no conn is available', (done) => {
     var args = [{
-      cert: 'prodCert.pem',
-      key: 'prodKey.pem',
+      cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
+      key: new Buffer('testKey'),
       production: true,
       bundleId: 'bundleId'
     }];
@@ -362,11 +379,39 @@ describe('APNS', () => {
       expect(results.length).toBe(1);
       let result = results[0];
       expect(result.transmitted).toBe(false);
-      expect(result.result.error).toBe('No connection available');
+      expect(result.response.error).toBe('No Provider found');
       done();
     }, (err) => {
       fail('should not fail');
       done();
     })
-  })
+  });
+
+  it('properly parses errors', (done) => {
+    APNS._handlePushFailure({
+      device: 'abcd',
+      status: -1,
+      response: {
+        reason: 'Something wrong happend'
+      }
+    }).then((result) => {
+      expect(result.transmitted).toBe(false);
+      expect(result.device.deviceToken).toBe('abcd');
+      expect(result.device.deviceType).toBe('ios');
+      expect(result.response.error).toBe('Something wrong happend');
+      done();
+    })
+  });
+
+  it('properly parses errors again', (done) => {
+    APNS._handlePushFailure({
+      device: 'abcd',
+    }).then((result) => {
+      expect(result.transmitted).toBe(false);
+      expect(result.device.deviceToken).toBe('abcd');
+      expect(result.device.deviceType).toBe('ios');
+      expect(result.response.error).toBe('Unkown status');
+      done();
+    })
+  });
 });

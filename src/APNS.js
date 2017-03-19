@@ -24,7 +24,7 @@ export class APNS {
    * @param {String} args.bundleId DEPRECATED: Specifies an App-ID for this Provider
    * @param {Number} args.connectionRetryLimit  The maximum number of connection failures that will be tolerated before apn.Provider will "give up". (Defaults to: 3)
    */
-  constructor(args = []) {
+  constructor(args) {
     // Define class members
     this.providers = [];
 
@@ -102,19 +102,29 @@ export class APNS {
       allPromises.push(promise);
     }
 
-    return Promise.all(allPromises);
+    return Promise.all(allPromises).then((results) => {
+      // flatten all
+      return [].concat.apply([], results);
+    });
+  }
+
+  static _validateAPNArgs(apnsArgs) {
+    if (apnsArgs.topic) {
+      return true;
+    }
+    return !(apnsArgs.cert || apnsArgs.key || apnsArgs.pfx);
   }
 
   /**
    * Creates an Provider base on apnsArgs.
    */
   static _createProvider(apnsArgs) {
-    let provider = new apn.Provider(apnsArgs);
-
     // if using certificate, then topic must be defined
-    if ((apnsArgs.cert || apnsArgs.key || apnsArgs.pfx) && !apnsArgs.topic) {
+    if (!APNS._validateAPNArgs(apnsArgs)) {
       throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED, 'topic is mssing for %j', apnsArgs);
     }
+
+    let provider = new apn.Provider(apnsArgs);
 
     // Sets the topic on this provider
     provider.topic = apnsArgs.topic;
@@ -203,15 +213,22 @@ export class APNS {
       promises.push(APNS._createSuccesfullPromise(token.device));
     });
     response.failed.forEach((failure) => {
-      if (failure.error) {
-        log.error(LOG_PREFIX, 'APNS error transmitting to device %s with error %s', failure.device, failure.error);
-        promises.push(APNS._createErrorPromise(failure.device, failure.error));
-      } else if (failure.status && failure.response && failure.response.reason) {
-        log.error(LOG_PREFIX, 'APNS error transmitting to device %s with status %s and reason %s', failure.device, failure.status, failure.response.reason);
-        promises.push(APNS._createErrorPromise(failure.device, failure.response.reason));
-      }
+      promises.push(APNS._handlePushFailure(failure));
     });
     return Promise.all(promises);
+  }
+
+  static _handlePushFailure(failure) {
+    if (failure.error) {
+      log.error(LOG_PREFIX, 'APNS error transmitting to device %s with error %s', failure.device, failure.error);
+      return APNS._createErrorPromise(failure.device, failure.error);
+    } else if (failure.status && failure.response && failure.response.reason) {
+      log.error(LOG_PREFIX, 'APNS error transmitting to device %s with status %s and reason %s', failure.device, failure.status, failure.response.reason);
+      return APNS._createErrorPromise(failure.device, failure.response.reason);
+    } else {
+       log.error(LOG_PREFIX, 'APNS error transmitting to device with unkown error');
+       return APNS._createErrorPromise(failure.device, 'Unkown status');
+    }
   }
 
   /**
@@ -227,7 +244,7 @@ export class APNS {
         deviceToken: token,
         deviceType: 'ios'
       },
-      result: { error: errorMessage }
+      response: { error: errorMessage }
     });
   }
 
