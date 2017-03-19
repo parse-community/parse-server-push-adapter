@@ -9,7 +9,7 @@ const LOG_PREFIX = 'parse-server-push-adapter GCM';
 const GCMTimeToLiveMax = 4 * 7 * 24 * 60 * 60; // GCM allows a max of 4 weeks
 const GCMRegistrationTokensMax = 1000;
 
-function GCM(args) {
+export default function GCM(args) {
   if (typeof args !== 'object' || !args.apiKey) {
     throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
                           'GCM Configuration is invalid');
@@ -172,6 +172,3 @@ GCM.generateGCMPayload = generateGCMPayload;
 if (process.env.TESTING) {
   GCM.sliceDevices = sliceDevices;
 }
-
-module.exports = GCM;
-export default GCM;

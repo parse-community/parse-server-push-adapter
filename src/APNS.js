@@ -19,7 +19,7 @@ const LOG_PREFIX = 'parse-server-push-adapter APNS';
  * @param {String} args.bundleId The bundleId for cert
  * @param {Boolean} args.production Specifies which environment to connect to: Production (if true) or Sandbox
  */
-function APNS(args) {
+export default function APNS(args) {
   // typePushConfig can be an array.
   let apnsArgsList = [];
   if (Array.isArray(args)) {
@@ -260,5 +260,3 @@ if (process.env.TESTING) {
   APNS.chooseConns = chooseConns;
   APNS.handleTransmissionError = handleTransmissionError;
 }
-module.exports = APNS;
-export default APNS;
