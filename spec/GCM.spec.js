@@ -1,4 +1,4 @@
-var GCM = require('../src/GCM');
+var GCM = require('../src/GCM').default;
 
 function mockSender(gcm) {
   return spyOn(gcm.sender, 'send').and.callFake(function(message, options, timeout, cb) {

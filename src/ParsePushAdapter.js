@@ -77,4 +77,3 @@ export class ParsePushAdapter {
   }
 }
 export default ParsePushAdapter;
-module.exports = ParsePushAdapter;

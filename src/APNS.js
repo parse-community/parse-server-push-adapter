@@ -260,5 +260,5 @@ if (process.env.TESTING) {
   APNS.chooseConns = chooseConns;
   APNS.handleTransmissionError = handleTransmissionError;
 }
-module.exports = APNS;
+
 export default APNS;

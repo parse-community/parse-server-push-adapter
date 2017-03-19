@@ -1,7 +1,8 @@
-var ParsePushAdapter = require('../src/index').ParsePushAdapter;
+var ParsePushAdapterPackage = require('../src/index');
+var ParsePushAdapter = ParsePushAdapterPackage.ParsePushAdapter;
 var randomString = require('../src/PushAdapterUtils').randomString;
-var APNS = require('../src/APNS');
-var GCM = require('../src/GCM');
+var APNS = require('../src/APNS').default;
+var GCM = require('../src/GCM').default;
 var MockAPNConnection = require('./MockAPNConnection');
 
 describe('ParsePushAdapter', () => {
@@ -12,6 +13,14 @@ describe('ParsePushAdapter', () => {
 
   afterEach(() => {
     jasmine.restoreLibrary('apn', 'Connection');
+  });
+
+  it('properly export the module', () => {
+    expect(typeof ParsePushAdapterPackage.default).toBe('function');
+    expect(typeof ParsePushAdapterPackage.ParsePushAdapter).toBe('function');
+    expect(typeof ParsePushAdapterPackage.APNS).toBe('function');
+    expect(typeof ParsePushAdapterPackage.GCM).toBe('function');
+    expect(typeof ParsePushAdapterPackage.utils).toBe('object');
   });
 
   it('can be initialized', (done) => {

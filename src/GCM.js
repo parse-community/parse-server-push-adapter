@@ -173,5 +173,4 @@ if (process.env.TESTING) {
   GCM.sliceDevices = sliceDevices;
 }
 
-module.exports = GCM;
 export default GCM;
