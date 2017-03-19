@@ -7,7 +7,7 @@ import { classifyInstallations } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter';
 
-export class ParsePushAdapter {
+export default class ParsePushAdapter {
 
   supportsPushTracking = true;
 
@@ -76,4 +76,3 @@ export class ParsePushAdapter {
     })
   }
 }
-export default ParsePushAdapter;
