@@ -7,7 +7,7 @@ Status](https://travis-ci.org/parse-server-modules/parse-server-push-adapter.svg
 
 Official Push adapter for parse-server
 
-See [parse-server push configuration](http://parseplatform.github.io/docs/parse-server/guide/#push-notifications)
+See [parse-server push configuration](http://docs.parseplatform.org/parse-server/guide/#push-notifications)
 
 ## Silent Notifications
 
