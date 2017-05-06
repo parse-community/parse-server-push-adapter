@@ -176,6 +176,9 @@ export class APNS {
         case 'alert':
           notification.setAlert(coreData.alert);
           break;
+        case 'title':
+          notification.setAlertTitle(coreData.title);
+        break;
         case 'badge':
           notification.setBadge(coreData.badge);
           break;
