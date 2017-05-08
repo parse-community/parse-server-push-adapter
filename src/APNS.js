@@ -96,7 +96,7 @@ export class APNS {
         continue;
       }
 
-      let headers = { expirationTime: expirationTime, appIdentifier: appIdentifier, collapseId: collapseId }
+      let headers = { expirationTime: expirationTime, topic: appIdentifier, collapseId: collapseId }
       let notification = APNS._generateNotification(coreData, headers);
       const deviceIds = devices.map(device => device.deviceToken);
       let promise = this.sendThroughProvider(notification, deviceIds, providers);
