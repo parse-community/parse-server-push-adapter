@@ -169,8 +169,9 @@ describe('APNS', () => {
       'keyAgain': 'valueAgain'
     };
     let expirationTime = 1454571491354;
+    let collapseId = "collapseIdentifier";
 
-    let notification = APNS._generateNotification(data, expirationTime);
+    let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId });
 
     expect(notification.aps.alert).toEqual(data.alert);
     expect(notification.aps.badge).toEqual(data.badge);
@@ -183,6 +184,7 @@ describe('APNS', () => {
       'keyAgain': 'valueAgain'
     });
     expect(notification.expiry).toEqual(expirationTime / 1000);
+    expect(notification.collapseId).toEqual(collapseId);
     done();
   });
 
@@ -239,7 +241,9 @@ describe('APNS', () => {
     });
     // Mock data
     let expirationTime = 1454571491354;
+    let collapseId = "collapseIdentifier";
     let data = {
+      'collapse_id': collapseId,
       'expiration_time': expirationTime,
       'data': {
         'alert': 'alert'
@@ -270,6 +274,7 @@ describe('APNS', () => {
     let notification = calledArgs[0];
     expect(notification.aps.alert).toEqual(data.data.alert);
     expect(notification.expiry).toEqual(data['expiration_time'] / 1000);
+    expect(notification.collapseId).toEqual(data['collapse_id']);
     let apnDevices = calledArgs[1];
     expect(apnDevices.length).toEqual(4);
     done();
@@ -306,7 +311,9 @@ describe('APNS', () => {
     apns.providers = [provider, providerDev];
     // Mock data
     let expirationTime = 1454571491354;
+    let collapseId = "collapseIdentifier";
     let data = {
+      'collapse_id': collapseId,
       'expiration_time': expirationTime,
       'data': {
         'alert': 'alert'
@@ -343,6 +350,7 @@ describe('APNS', () => {
     let notification = calledArgs[0];
     expect(notification.aps.alert).toEqual(data.data.alert);
     expect(notification.expiry).toEqual(data['expiration_time'] / 1000);
+    expect(notification.collapseId).toEqual(data['collapse_id']);
     let apnDevices = calledArgs[1];
     expect(apnDevices.length).toBe(3);
 
@@ -351,6 +359,7 @@ describe('APNS', () => {
     notification = calledArgs[0];
     expect(notification.aps.alert).toEqual(data.data.alert);
     expect(notification.expiry).toEqual(data['expiration_time'] / 1000);
+    expect(notification.collapseId).toEqual(data['collapse_id']);
     apnDevices = calledArgs[1];
     expect(apnDevices.length).toBe(2);
     done();

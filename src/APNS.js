@@ -72,6 +72,7 @@ export class APNS {
   send(data, allDevices) {
     let coreData = data.data;
     let expirationTime = data['expiration_time'];
+    let collapseId = data['collapse_id'];
     let allPromises = [];
 
     let devicesPerAppIdentifier = {};
@@ -95,7 +96,8 @@ export class APNS {
         continue;
       }
 
-      let notification = APNS._generateNotification(coreData, expirationTime, appIdentifier);
+      let headers = { expirationTime: expirationTime, topic: appIdentifier, collapseId: collapseId }
+      let notification = APNS._generateNotification(coreData, headers);
       const deviceIds = devices.map(device => device.deviceToken);
       let promise = this.sendThroughProvider(notification, deviceIds, providers);
       allPromises.push(promise.then(this._handlePromise.bind(this)));
@@ -164,11 +166,10 @@ export class APNS {
   /**
    * Generate the apns Notification from the data we get from api request.
    * @param {Object} coreData The data field under api request body
-   * @param {number} expirationTime The expiration time in milliseconds since Jan 1 1970
-   * @param {String} topic Topic the Notification is sent to
+   * @param {Object} headers The header properties for the notification (topic, expirationTime, collapseId)
    * @returns {Object} A apns Notification
    */
-  static _generateNotification(coreData, expirationTime, topic) {
+  static _generateNotification(coreData, headers) {
     let notification = new apn.Notification();
     let payload = {};
     for (let key in coreData) {
@@ -176,6 +177,9 @@ export class APNS {
         case 'alert':
           notification.setAlert(coreData.alert);
           break;
+        case 'title':
+          notification.setAlertTitle(coreData.title);
+        break;
         case 'badge':
           notification.setBadge(coreData.badge);
           break;
@@ -198,9 +202,12 @@ export class APNS {
           break;
       }
     }
-    notification.topic = topic;
+
     notification.payload = payload;
-    notification.expiry = expirationTime / 1000;
+
+    notification.topic = headers.topic;
+    notification.expiry = headers.expirationTime / 1000;
+    notification.collapseId = headers.collapseId;
     return notification;
   }
 
