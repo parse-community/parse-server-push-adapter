@@ -4,6 +4,7 @@
 Status](https://travis-ci.org/parse-server-modules/parse-server-push-adapter.svg?branch=master)](https://travis-ci.org/parse-server-modules/parse-server-push-adapter)
 [![codecov.io](https://codecov.io/github/parse-server-modules/parse-server-push-adapter/coverage.svg?branch=master)](https://codecov.io/github/parse-server-modules/parse-server-push-adapter?branch=master)
 [![NPM Version](https://img.shields.io/npm/v/parse-server-push-adapter.svg?style=flat-square)](https://www.npmjs.com/package/parse-server-push-adapter)
+[![Greenkeeper badge](https://badges.greenkeeper.io/parse-server-modules/parse-server-push-adapter.svg)](https://greenkeeper.io/)
 
 Official Push adapter for parse-server
 
