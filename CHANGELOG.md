@@ -1,7 +1,16 @@
 # Change Log
 
+## [2.0.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/v2.0.0) (2017-03-14)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v2.0.0-alpha.1...v2.0.0)
+
+**What's new**
+
+- Adds support for APNS notification title
+- Adds support for APN collapse-id
+
+
 ## [2.0.0-alpha.1](https://github.com/parse-server-modules/parse-server-push-adapter/tree/2.0.0-alpha.1) (2017-03-14)
-[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v1.3.0...2.0.0-alpha.1)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v1.3.0...v2.0.0-alpha.1)
 
 **What's new**
 
