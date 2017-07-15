@@ -174,7 +174,7 @@ describe('APNS', () => {
 
     let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId });
 
-    expect(notification.aps.alert).toEqual(data.alert);
+    expect(notification.aps.alert).toEqual({ body: 'alert', title: 'title' });
     expect(notification.aps.badge).toEqual(data.badge);
     expect(notification.aps.sound).toEqual(data.sound);
     expect(notification.aps['content-available']).toEqual(1);
