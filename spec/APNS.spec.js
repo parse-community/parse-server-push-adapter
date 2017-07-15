@@ -160,6 +160,7 @@ describe('APNS', () => {
     //Mock request data
     let data = {
       'alert': 'alert',
+      'title': 'title',
       'badge': 100,
       'sound': 'test',
       'content-available': 1,
