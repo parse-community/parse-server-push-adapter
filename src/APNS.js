@@ -174,6 +174,9 @@ export class APNS {
     let payload = {};
     for (let key in coreData) {
       switch (key) {
+        case 'aps':
+          notification.aps = coreData.aps;
+          break;
         case 'alert':
           notification.setAlert(coreData.alert);
           break;
