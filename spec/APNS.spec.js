@@ -188,6 +188,39 @@ describe('APNS', () => {
     expect(notification.collapseId).toEqual(collapseId);
     done();
   });
+  
+    it('can generate APNS notification from raw data', (done) => {
+      //Mock request data
+      let data = {
+        'aps': {
+          'alert': {
+            "loc-key" : "GAME_PLAY_REQUEST_FORMAT",
+            "loc-args" : [ "Jenna", "Frank"]
+          },
+          'badge': 100,
+          'sound': 'test'
+        },
+        'key': 'value',
+        'keyAgain': 'valueAgain'
+      };
+      let expirationTime = 1454571491354;
+      let collapseId = "collapseIdentifier";
+  
+      let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId });
+  
+      expect(notification.expiry).toEqual(expirationTime / 1000);
+      expect(notification.collapseId).toEqual(collapseId);
+  
+      let stringifiedJSON = notification.compile();
+      let jsonObject = JSON.parse(stringifiedJSON);
+  
+      expect(jsonObject.aps.alert).toEqual({ "loc-key" : "GAME_PLAY_REQUEST_FORMAT", "loc-args" : [ "Jenna", "Frank"] });
+      expect(jsonObject.aps.badge).toEqual(100);
+      expect(jsonObject.aps.sound).toEqual('test');
+      expect(jsonObject.key).toEqual('value');
+      expect(jsonObject.keyAgain).toEqual('valueAgain');
+      done();
+    });
 
   it('can choose providers for device with valid appIdentifier', (done) => {
     let appIdentifier = 'topic';
