@@ -38,28 +38,18 @@ export class APNS {
       throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED, 'APNS Configuration is invalid');
     }
 
-    // Create Provider from each arg-object
-    for (let apnsArgs of apnsArgsList) {
-
-      // rewrite bundleId to topic for backward-compatibility
-      if (apnsArgs.bundleId) {
-        log.warn(LOG_PREFIX, 'bundleId is deprecated, use topic instead');
-        apnsArgs.topic = apnsArgs.bundleId
-      }
-
-      let provider = APNS._createProvider(apnsArgs);
-      this.providers.push(provider);
+    let restartInterval = 30*60*1000; // refresh the providers every 30 minutes
+    if (process.env.PARSE_SERVER_PUSH_ADAPTER_APNS_REFRESH) {
+      restartInterval = parseInt(process.env.PARSE_SERVER_PUSH_ADAPTER_APNS_REFRESH);
     }
-
-    // Sort the providers based on priority ascending, high pri first
-    this.providers.sort((s1, s2) => {
-      return s1.priority - s2.priority;
-    });
-
-    // Set index-property of providers
-    for (let index = 0; index < this.providers.length; index++) {
-      this.providers[index].index = index;
-    }
+    this._createProviders(apnsArgsList);
+    setInterval(() => {
+      this.providers.forEach((provider) => {
+        provider.shutdown();
+      });
+      log.info(LOG_PREFIX, 're-creating providers');
+      this._createProviders(apnsArgsList);
+    }, restartInterval);
   }
 
   /**
@@ -137,6 +127,30 @@ export class APNS {
       return true;
     }
     return !(apnsArgs.cert || apnsArgs.key || apnsArgs.pfx);
+  }
+
+  _createProviders(apnsArgsList) {
+        // Create Provider from each arg-object
+    for (let apnsArgs of apnsArgsList) {
+      // rewrite bundleId to topic for backward-compatibility
+      if (apnsArgs.bundleId) {
+        log.warn(LOG_PREFIX, 'bundleId is deprecated, use topic instead');
+        apnsArgs.topic = apnsArgs.bundleId
+      }
+
+      let provider = APNS._createProvider(apnsArgs);
+      this.providers.push(provider);
+    }
+
+    // Sort the providers based on priority ascending, high pri first
+    this.providers.sort((s1, s2) => {
+      return s1.priority - s2.priority;
+    });
+
+    // Set index-property of providers
+    for (let index = 0; index < this.providers.length; index++) {
+      this.providers[index].index = index;
+    }
   }
 
   /**
