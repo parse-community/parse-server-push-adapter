@@ -52,7 +52,7 @@ describe('ParsePushAdapter', () => {
     expect(iosSender instanceof APNS).toBe(true);
     var senderAgain = parsePushAdapter.senderMap['ios'];
     // A new instance should be generated at every calls
-    expect(senderAgain).not.toEqual(iosSender);
+    expect(senderAgain).toEqual(iosSender);
     // Check android
     var androidSender = parsePushAdapter.senderMap['android'];
     expect(androidSender instanceof GCM).toBe(true);
