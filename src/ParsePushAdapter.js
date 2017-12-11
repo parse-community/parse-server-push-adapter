@@ -29,7 +29,13 @@ export default class ParsePushAdapter {
         case 'ios':
         case 'tvos':
         case 'osx':
-          this.senderMap[pushType] = new APNS(pushConfig[pushType]);
+          // Create a new instance at every send
+          // This should mitigate the ping issues
+          Object.defineProperty(this.senderMap, pushType, {
+            get: () => {
+              return new APNS(pushConfig[pushType])
+            }
+          });
           break;
         case 'android':
         case 'fcm':

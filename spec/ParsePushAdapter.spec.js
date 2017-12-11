@@ -50,9 +50,14 @@ describe('ParsePushAdapter', () => {
     // Check ios
     var iosSender = parsePushAdapter.senderMap['ios'];
     expect(iosSender instanceof APNS).toBe(true);
+    var senderAgain = parsePushAdapter.senderMap['ios'];
+    // A new instance should be generated at every calls
+    expect(senderAgain).not.toEqual(iosSender);
     // Check android
     var androidSender = parsePushAdapter.senderMap['android'];
     expect(androidSender instanceof GCM).toBe(true);
+    var androidSenderAgain = parsePushAdapter.senderMap['android'];
+    expect(androidSenderAgain).toEqual(androidSender);
     done();
   });
 
