@@ -21,9 +21,10 @@ export default class ParsePushAdapter {
     let pushTypes = Object.keys(pushConfig);
 
     for (let pushType of pushTypes) {
-      if (this.validPushTypes.indexOf(pushType) < 0) {
+      // adapter may be passed as part of the parse-server initialization
+      if (this.validPushTypes.indexOf(pushType) < 0 && pushType != 'adapter') {
         throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
-                              'Push to ' + pushType + ' is not supported');
+                             'Push to ' + pushType + ' is not supported');
       }
       switch (pushType) {
         case 'ios':
