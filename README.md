@@ -26,3 +26,36 @@ VERBOSE_PARSE_SERVER_PUSH_ADAPTER=1
 ```
 
 This will produce a more verbose output for all the push sending attempts
+
+### Using a custom version on parse-server
+
+#### Install the push adapter
+
+```
+npm install --save @parse/push-adapter@VERSION
+```
+
+Replace VERSION with the version you want to install.
+
+#### Configure parse-server
+
+```js
+const PushAdapter = require('@parse/push-adapter').default;
+const pushOptions = {
+  ios: { /* iOS push options */ } ,
+  android: { /* android push options */ }   
+}
+// starting 3.0.0
+const options = {
+  appId: "****",
+  masterKey: "****",
+  push: {
+    adapter: new PushAdapter(pushOptions),
+  },
+  /* ... */ 
+}
+
+const server = new ParseServer(options);
+
+/* continue with the initialization of parse-server */
+```
