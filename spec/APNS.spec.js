@@ -184,7 +184,7 @@ describe('APNS', () => {
       'key': 'value',
       'keyAgain': 'valueAgain'
     });
-    expect(notification.expiry).toEqual(expirationTime / 1000);
+    expect(notification.expiry).toEqual(Math.round(expirationTime / 1000));
     expect(notification.collapseId).toEqual(collapseId);
     done();
   });
@@ -208,7 +208,7 @@ describe('APNS', () => {
   
       let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId });
   
-      expect(notification.expiry).toEqual(expirationTime / 1000);
+      expect(notification.expiry).toEqual(Math.round(expirationTime / 1000));
       expect(notification.collapseId).toEqual(collapseId);
   
       let stringifiedJSON = notification.compile();
@@ -307,7 +307,7 @@ describe('APNS', () => {
     let calledArgs = provider.send.calls.first().args;
     let notification = calledArgs[0];
     expect(notification.aps.alert).toEqual(data.data.alert);
-    expect(notification.expiry).toEqual(data['expiration_time'] / 1000);
+    expect(notification.expiry).toEqual(Math.round(data['expiration_time'] / 1000));
     expect(notification.collapseId).toEqual(data['collapse_id']);
     let apnDevices = calledArgs[1];
     expect(apnDevices.length).toEqual(4);
@@ -383,7 +383,7 @@ describe('APNS', () => {
     let calledArgs = provider.send.calls.first().args;
     let notification = calledArgs[0];
     expect(notification.aps.alert).toEqual(data.data.alert);
-    expect(notification.expiry).toEqual(data['expiration_time'] / 1000);
+    expect(notification.expiry).toEqual(Math.round(data['expiration_time'] / 1000));
     expect(notification.collapseId).toEqual(data['collapse_id']);
     let apnDevices = calledArgs[1];
     expect(apnDevices.length).toBe(3);
@@ -392,7 +392,7 @@ describe('APNS', () => {
     calledArgs = providerDev.send.calls.first().args;
     notification = calledArgs[0];
     expect(notification.aps.alert).toEqual(data.data.alert);
-    expect(notification.expiry).toEqual(data['expiration_time'] / 1000);
+    expect(notification.expiry).toEqual(Math.round(data['expiration_time'] / 1000));
     expect(notification.collapseId).toEqual(data['collapse_id']);
     apnDevices = calledArgs[1];
     expect(apnDevices.length).toBe(2);
