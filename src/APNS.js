@@ -209,7 +209,7 @@ export class APNS {
     notification.payload = payload;
 
     notification.topic = headers.topic;
-    notification.expiry = headers.expirationTime / 1000;
+    notification.expiry = Math.round(headers.expirationTime / 1000);
     notification.collapseId = headers.collapseId;
     return notification;
   }
