@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.0.3](https://github.com/parse-server-modules/parse-server-push-adapter/tree/v2.0.3) (2018-04-13)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v2.0.2...v2.0.3)
+
+**What's new**
+
+- Use updated node-gcm version from @parse org. with safe request version
+
 ## [2.0.2](https://github.com/parse-server-modules/parse-server-push-adapter/tree/v2.0.2) (2017-10-22)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v2.0.1...v2.0.2)
 

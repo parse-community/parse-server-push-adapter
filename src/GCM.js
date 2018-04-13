@@ -2,7 +2,7 @@
 
 import Parse from 'parse';
 import log from 'npmlog';
-import gcm from 'node-gcm';
+import gcm from '@parse/node-gcm';
 import { randomString } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter GCM';
