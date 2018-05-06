@@ -35,6 +35,7 @@
   "dependencies": {
     "apn": "^2.1.3",
     "@parse/node-gcm": "^0.14.0",
+    "firebase-admin": "5.12.0",
     "npmlog": "^4.0.2",
     "parse": "^1.9.2"
   },
