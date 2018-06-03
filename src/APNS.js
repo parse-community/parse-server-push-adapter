@@ -200,6 +200,12 @@ export class APNS {
         case 'category':
           notification.setCategory(coreData.category);
           break;
+        case 'threadId':
+          notification.setThreadId(coreData.threadId);
+          break;
+        case 'urlArgs':
+          notification.setUrlArgs(coreData.urlArgs);
+          break;
         default:
           payload[key] = coreData[key];
           break;
