@@ -166,6 +166,7 @@ describe('APNS', () => {
       'content-available': 1,
       'mutable-content': 1,
       'category': 'INVITE_CATEGORY',
+      'threadId': 'a-thread-id',
       'key': 'value',
       'keyAgain': 'valueAgain'
     };
@@ -180,6 +181,7 @@ describe('APNS', () => {
     expect(notification.aps['content-available']).toEqual(1);
     expect(notification.aps['mutable-content']).toEqual(1);
     expect(notification.aps.category).toEqual(data.category);
+    expect(notification.aps.threadId).toEqual(data.threadId);
     expect(notification.payload).toEqual({
       'key': 'value',
       'keyAgain': 'valueAgain'
