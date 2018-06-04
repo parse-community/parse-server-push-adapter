@@ -203,9 +203,6 @@ export class APNS {
         case 'threadId':
           notification.setThreadId(coreData.threadId);
           break;
-        case 'urlArgs':
-          notification.setUrlArgs(coreData.urlArgs);
-          break;
         default:
           payload[key] = coreData[key];
           break;
