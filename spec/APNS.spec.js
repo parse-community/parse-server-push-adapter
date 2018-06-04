@@ -181,7 +181,7 @@ describe('APNS', () => {
     expect(notification.aps['content-available']).toEqual(1);
     expect(notification.aps['mutable-content']).toEqual(1);
     expect(notification.aps.category).toEqual(data.category);
-    expect(notification.aps.['thread-id']).toEqual(data.threadId);
+    expect(notification.aps['thread-id']).toEqual(data.threadId);
     expect(notification.payload).toEqual({
       'key': 'value',
       'keyAgain': 'valueAgain'
