@@ -181,7 +181,7 @@ describe('APNS', () => {
     expect(notification.aps['content-available']).toEqual(1);
     expect(notification.aps['mutable-content']).toEqual(1);
     expect(notification.aps.category).toEqual(data.category);
-    expect(notification.aps.threadId).toEqual(data.threadId);
+    expect(notification.aps.['thread-id']).toEqual(data.threadId);
     expect(notification.payload).toEqual({
       'key': 'value',
       'keyAgain': 'valueAgain'
@@ -200,7 +200,8 @@ describe('APNS', () => {
             "loc-args" : [ "Jenna", "Frank"]
           },
           'badge': 100,
-          'sound': 'test'
+          'sound': 'test',
+          'thread-id': 'a-thread-id'
         },
         'key': 'value',
         'keyAgain': 'valueAgain'
@@ -219,6 +220,7 @@ describe('APNS', () => {
       expect(jsonObject.aps.alert).toEqual({ "loc-key" : "GAME_PLAY_REQUEST_FORMAT", "loc-args" : [ "Jenna", "Frank"] });
       expect(jsonObject.aps.badge).toEqual(100);
       expect(jsonObject.aps.sound).toEqual('test');
+      expect(jsonObject.aps['thread-id']).toEqual('a-thread-id');
       expect(jsonObject.key).toEqual('value');
       expect(jsonObject.keyAgain).toEqual('valueAgain');
       done();
