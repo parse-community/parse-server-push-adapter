@@ -53,6 +53,8 @@ export class APNS {
       } catch (e) {
         if (e.message.startsWith('certificate has expired')) {
           continue;
+        } else {
+          throw new Error(e.message);
         }
       }
       this.providers.push(provider);

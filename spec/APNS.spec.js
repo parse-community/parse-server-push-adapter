@@ -465,7 +465,7 @@ describe('APNS', () => {
 
   it('can handle expired certs', (done) => {
     const args = {
-      cert: path.resolve(__dirname, './support/expired-crt.pem'),
+      cert: path.resolve(__dirname, './support/expired-cert.pem'),
       key: path.resolve(__dirname, './support/expired-key.pem'),
       production: false,
       topic: 'topic',
@@ -477,7 +477,7 @@ describe('APNS', () => {
 
   it('can handle multiple certs one expired', (done) => {
     const args = [{
-      cert: path.resolve(__dirname, './support/expired-crt.pem'),
+      cert: path.resolve(__dirname, './support/expired-cert.pem'),
       key: path.resolve(__dirname, './support/expired-key.pem'),
       production: false,
       topic: 'topic',
@@ -489,6 +489,21 @@ describe('APNS', () => {
     }];
     const apns = new APNS(args);
     expect(apns.providers.length).toBe(1);
+    done();
+  });
+
+  it('can throw error for invalid certs', (done) => {
+    const args = {
+      cert: path.resolve(__dirname, './support/invalid-cert.pem'),
+      key: path.resolve(__dirname, './support/invalid-key.pem'),
+      production: false,
+      topic: 'topic',
+    };
+    try {
+      const apns = new APNS(args);
+    } catch (e) {
+      expect(e.message).toBe('certificate does not support configured environment, production: false');
+    }
     done();
   });
 });
