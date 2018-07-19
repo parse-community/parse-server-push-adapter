@@ -1,6 +1,7 @@
 const Parse = require('parse/node');
 const APNS = require('../src/APNS').default;
 const MockAPNProvider = require('./MockAPNProvider');
+const path = require('path');
 
 describe('APNS', () => {
 
@@ -104,7 +105,7 @@ describe('APNS', () => {
 
     var prodApnsConnection = apns.providers[0];
     expect(prodApnsConnection.index).toBe(0);
-    
+
     // TODO: Remove this checking onec we inject APNS
     var prodApnsOptions = prodApnsConnection.client.config;
     expect(prodApnsOptions.cert).toBe(args[1].cert);
@@ -190,7 +191,7 @@ describe('APNS', () => {
     expect(notification.collapseId).toEqual(collapseId);
     done();
   });
-  
+
     it('can generate APNS notification from raw data', (done) => {
       //Mock request data
       let data = {
@@ -208,15 +209,15 @@ describe('APNS', () => {
       };
       let expirationTime = 1454571491354;
       let collapseId = "collapseIdentifier";
-  
+
       let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId });
-  
+
       expect(notification.expiry).toEqual(Math.round(expirationTime / 1000));
       expect(notification.collapseId).toEqual(collapseId);
-  
+
       let stringifiedJSON = notification.compile();
       let jsonObject = JSON.parse(stringifiedJSON);
-  
+
       expect(jsonObject.aps.alert).toEqual({ "loc-key" : "GAME_PLAY_REQUEST_FORMAT", "loc-args" : [ "Jenna", "Frank"] });
       expect(jsonObject.aps.badge).toEqual(100);
       expect(jsonObject.aps.sound).toEqual('test');
@@ -460,5 +461,49 @@ describe('APNS', () => {
       expect(result.response.error).toBe('Unkown status');
       done();
     })
+  });
+
+  it('can handle expired certs', (done) => {
+    const args = {
+      cert: path.resolve(__dirname, './support/expired-cert.pem'),
+      key: path.resolve(__dirname, './support/expired-key.pem'),
+      production: false,
+      topic: 'topic',
+    };
+    const apns = new APNS(args);
+    expect(apns.providers.length).toBe(0);
+    done();
+  });
+
+  it('can handle multiple certs one expired', (done) => {
+    const args = [{
+      cert: path.resolve(__dirname, './support/expired-cert.pem'),
+      key: path.resolve(__dirname, './support/expired-key.pem'),
+      production: false,
+      topic: 'topic',
+    }, {
+      cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
+      key: new Buffer('testKey'),
+      production: true,
+      topic: 'topicAgain',
+    }];
+    const apns = new APNS(args);
+    expect(apns.providers.length).toBe(1);
+    done();
+  });
+
+  it('can throw error for invalid certs', (done) => {
+    const args = {
+      cert: path.resolve(__dirname, './support/invalid-cert.pem'),
+      key: path.resolve(__dirname, './support/invalid-key.pem'),
+      production: false,
+      topic: 'topic',
+    };
+    try {
+      const apns = new APNS(args);
+    } catch (e) {
+      expect(e.message).toBe('certificate does not support configured environment, production: false');
+    }
+    done();
   });
 });
