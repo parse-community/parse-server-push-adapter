@@ -47,7 +47,14 @@ export class APNS {
         apnsArgs.topic = apnsArgs.bundleId
       }
 
-      let provider = APNS._createProvider(apnsArgs);
+      let provider;
+      try {
+        provider = APNS._createProvider(apnsArgs);
+      } catch (e) {
+        if (e.message.startsWith('certificate has expired')) {
+          continue;
+        }
+      }
       this.providers.push(provider);
     }
 
