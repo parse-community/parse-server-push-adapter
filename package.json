@@ -1,6 +1,6 @@
 {
   "name": "@parse/push-adapter",
-  "version": "3.0.0-alpha2",
+  "version": "3.0.0",
   "description": "Base parse-server-push-adapter",
   "main": "lib/index.js",
   "files": [
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "apn": "^3.0.0-alpha1",
-    "@parse/node-gcm": "^0.14.0",
+    "@parse/node-gcm": "^1.0.0",
     "npmlog": "^4.0.2",
     "parse": "^1.9.2"
   },
