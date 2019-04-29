@@ -2,17 +2,18 @@
 import Parse from 'parse';
 import log from 'npmlog';
 import APNS from './APNS';
+import EXPO from './EXPO';
 import GCM from './GCM';
 import { classifyInstallations } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter';
 
-export default class ParsePushAdapter {
+export class ParsePushAdapter {
 
   supportsPushTracking = true;
 
   constructor(pushConfig = {}) {
-    this.validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm'];
+    this.validPushTypes = ['ios', 'android', 'fcm', 'expo'];
     this.senderMap = {};
     // used in PushController for Dashboard Features
     this.feature = {
@@ -21,16 +22,17 @@ export default class ParsePushAdapter {
     let pushTypes = Object.keys(pushConfig);
 
     for (let pushType of pushTypes) {
-      // adapter may be passed as part of the parse-server initialization
-      if (this.validPushTypes.indexOf(pushType) < 0 && pushType != 'adapter') {
+      if (this.validPushTypes.indexOf(pushType) < 0) {
         throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
-                             'Push to ' + pushType + ' is not supported');
+                              'Push to ' + pushTypes + ' is not supported');
       }
+      console.log(pushType);
       switch (pushType) {
         case 'ios':
-        case 'tvos':
-        case 'osx':
           this.senderMap[pushType] = new APNS(pushConfig[pushType]);
+          break;
+        case 'expo':
+          this.senderMap[pushType] = new EXPO(pushConfig[pushType]);
           break;
         case 'android':
         case 'fcm':
@@ -54,8 +56,8 @@ export default class ParsePushAdapter {
     for (let pushType in deviceMap) {
       let sender = this.senderMap[pushType];
       let devices = deviceMap[pushType];
-
-      if(Array.isArray(devices) && devices.length > 0) {
+      if(Array.isArray(devices) && devices.length > 0)
+      {
         if (!sender) {
           log.verbose(LOG_PREFIX, `Can not find sender for push type ${pushType}, ${data}`)
           let results = devices.map((device) => {
@@ -77,3 +79,5 @@ export default class ParsePushAdapter {
     })
   }
 }
+export default ParsePushAdapter;
+module.exports = ParsePushAdapter;

@@ -1,34 +1,4 @@
-var GCM = require('../src/GCM').default;
-
-function mockSender(gcm) {
-  return spyOn(gcm.sender, 'send').and.callFake(function(message, options, timeout, cb) {
-    /*{  "multicast_id":7680139367771848000,
-      "success":0,
-      "failure":4,
-      "canonical_ids":0,
-      "results":[ {"error":"InvalidRegistration"},
-        {"error":"InvalidRegistration"},
-        {"error":"InvalidRegistration"},
-        {"error":"InvalidRegistration"}] }*/
-    
-    let tokens = options.registrationTokens;
-    const response = {
-      multicast_id: 7680139367771848000,
-      success: tokens.length,
-      failure: 0,
-      cannonical_ids: 0,
-      results: tokens.map((token, index) => {
-        return {
-          message_id: 7680139367771848000+''+index,
-          registration_id: token
-        }
-      })
-    }
-    process.nextTick(() => {
-      cb(null, response);
-    });
-  });
-}
+var GCM = require('../src/GCM');
 
 describe('GCM', () => {
   it('can initialize', (done) => {
@@ -42,16 +12,6 @@ describe('GCM', () => {
 
   it('can throw on initializing with invalid args', (done) => {
     var args = 123
-    expect(function() {
-      new GCM(args);
-    }).toThrow();
-    args = {
-      apisKey: 'apiKey'
-    };
-    expect(function() {
-      new GCM(args);
-    }).toThrow();
-    args = undefined;
     expect(function() {
       new GCM(args);
     }).toThrow();
@@ -234,73 +194,15 @@ describe('GCM', () => {
         deviceToken: 'token4'
       }
     ];
-    mockSender(gcm);
+
     gcm.send(data, devices).then((response) => {
       expect(Array.isArray(response)).toBe(true);
       expect(response.length).toEqual(devices.length);
       expect(response.length).toEqual(4);
       response.forEach((res, index) => {
-        expect(res.transmitted).toEqual(true);
-        expect(res.device).toEqual(devices[index]);
-      })
-      done();
-    })
-  });
-
-  it('can send GCM request with slices', (done) => {
-    let originalMax = GCM.GCMRegistrationTokensMax;
-    GCM.GCMRegistrationTokensMax = 2;
-    var gcm = new GCM({
-      apiKey: 'apiKey'
-    });
-    // Mock data
-    var expirationTime = 2454538822113;
-    var data = {
-      'expiration_time': expirationTime,
-      'data': {
-        'alert': 'alert'
-      }
-    }
-    // Mock devices
-    var devices = [
-      {
-        deviceToken: 'token'
-      },
-      {
-        deviceToken: 'token2'
-      },
-      {
-        deviceToken: 'token3'
-      },
-      {
-        deviceToken: 'token4'
-      },
-      {
-        deviceToken: 'token5'
-      },
-      {
-        deviceToken: 'token6'
-      },
-      {
-        deviceToken: 'token7'
-      },
-      {
-        deviceToken: 'token8'
-      }
-    ];
-    spyOn(gcm, 'send').and.callThrough();
-    gcm.send(data, devices).then((response) => {
-      expect(Array.isArray(response)).toBe(true);
-      expect(response.length).toEqual(devices.length);
-      expect(response.length).toEqual(8);
-      response.forEach((res, index) => {
         expect(res.transmitted).toEqual(false);
         expect(res.device).toEqual(devices[index]);
-      });
-      // 1 original call
-      // 4 calls (1 per slice of 2)
-      expect(gcm.send.calls.count()).toBe(1+4);
-      GCM.GCMRegistrationTokensMax = originalMax;
+      })
       done();
     })
   });

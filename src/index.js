@@ -4,7 +4,6 @@
 // for ios push.
 import log from 'npmlog';
 
-/* istanbul ignore if */
 if (process.env.VERBOSE || process.env.VERBOSE_PARSE_SERVER_PUSH_ADAPTER) {
   log.level = 'verbose';
 }

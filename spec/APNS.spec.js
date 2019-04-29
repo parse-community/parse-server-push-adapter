@@ -1,464 +1,406 @@
-const Parse = require('parse/node');
-const APNS = require('../src/APNS').default;
-const MockAPNProvider = require('./MockAPNProvider');
+var APNS = require('../src/APNS');
 
 describe('APNS', () => {
 
-  it('can initialize with cert', (done) => {
-    let args = {
-      cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-      key: new Buffer('testKey'),
+  it('can initialize with single cert', (done) => {
+    var args = {
+      cert: 'prodCert.pem',
+      key: 'prodKey.pem',
       production: true,
-      topic: 'topic'
-    };
-    let apns = new APNS(args);
+      bundleId: 'bundleId'
+    }
+    var apns = new APNS(args);
 
-    expect(apns.providers.length).toBe(1);
-    let apnsProvider = apns.providers[0];
-    expect(apnsProvider.index).toBe(0);
-    expect(apnsProvider.topic).toBe(args.topic);
+    expect(apns.conns.length).toBe(1);
+    var apnsConnection = apns.conns[0];
+    expect(apnsConnection.index).toBe(0);
+    expect(apnsConnection.bundleId).toBe(args.bundleId);
     // TODO: Remove this checking onec we inject APNS
-    let prodApnsOptions = apnsProvider.client.config;
+    var prodApnsOptions = apnsConnection.options;
     expect(prodApnsOptions.cert).toBe(args.cert);
     expect(prodApnsOptions.key).toBe(args.key);
     expect(prodApnsOptions.production).toBe(args.production);
     done();
   });
 
-  it('fails to initialize with bad data', (done) => {
-    try {
-      new APNS("args");
-    } catch(e) {
-      expect(e.code).toBe(Parse.Error.PUSH_MISCONFIGURED);
-      done();
-      return;
-    }
-    fail('should not be reached');
-  });
-
-  it('fails to initialize with no options', (done) => {
-    try {
-      new APNS();
-    } catch(e) {
-      expect(e.code).toBe(Parse.Error.PUSH_MISCONFIGURED);
-      done();
-      return;
-    }
-    fail('should not be reached');
-  });
-
-  it('fails to initialize without a bundleID', (done) => {
-    expect(() => {
-      new APNS({
-        key: new Buffer('key'),
-        production: true,
-        bundle: 'hello'
-      });
-    }).toThrow();
-
-    expect(() => {
-      new APNS({
-        cert: 'pfx',
-        production: true,
-        bundle: 'hello'
-      });
-    }).toThrow();
-
-    expect(() => {
-      new APNS({
-        pfx: new Buffer(''),
-        production: true,
-        bundle: 'hello'
-      });
-    }).toThrow();
-    done();
-  });
-
   it('can initialize with multiple certs', (done) => {
     var args = [
       {
-        cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-        key: new Buffer('testKey'),
+        cert: 'devCert.pem',
+        key: 'devKey.pem',
         production: false,
         bundleId: 'bundleId'
       },
       {
-        cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-        key: new Buffer('testKey'),
+        cert: 'prodCert.pem',
+        key: 'prodKey.pem',
         production: true,
         bundleId: 'bundleIdAgain'
       }
     ]
 
     var apns = new APNS(args);
-    expect(apns.providers.length).toBe(2);
-    var devApnsConnection = apns.providers[1];
+    expect(apns.conns.length).toBe(2);
+    var devApnsConnection = apns.conns[1];
     expect(devApnsConnection.index).toBe(1);
-    var devApnsOptions = devApnsConnection.client.config;
+    var devApnsOptions = devApnsConnection.options;
     expect(devApnsOptions.cert).toBe(args[0].cert);
     expect(devApnsOptions.key).toBe(args[0].key);
     expect(devApnsOptions.production).toBe(args[0].production);
-    expect(devApnsOptions.bundleId).toBe(args[0].bundleId);
-    expect(devApnsOptions.topic).toBe(args[0].bundleId);
-    expect(devApnsConnection.topic).toBe(args[0].bundleId);
+    expect(devApnsConnection.bundleId).toBe(args[0].bundleId);
 
-    var prodApnsConnection = apns.providers[0];
+    var prodApnsConnection = apns.conns[0];
     expect(prodApnsConnection.index).toBe(0);
-    
     // TODO: Remove this checking onec we inject APNS
-    var prodApnsOptions = prodApnsConnection.client.config;
+    var prodApnsOptions = prodApnsConnection.options;
     expect(prodApnsOptions.cert).toBe(args[1].cert);
     expect(prodApnsOptions.key).toBe(args[1].key);
     expect(prodApnsOptions.production).toBe(args[1].production);
     expect(prodApnsOptions.bundleId).toBe(args[1].bundleId);
-    expect(prodApnsOptions.topic).toBe(args[1].bundleId);
-    expect(prodApnsConnection.topic).toBe(args[1].bundleId);
-    done();
-  });
-
-  it('can initialize with multiple certs', (done) => {
-    let args = [
-      {
-        cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-        key: new Buffer('testKey'),
-        production: false,
-        topic: 'topic'
-      },
-      {
-        cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-        key: new Buffer('testKey'),
-        production: true,
-        topic: 'topicAgain'
-      }
-    ];
-
-    let apns = new APNS(args);
-
-    expect(apns.providers.length).toBe(2);
-    let devApnsProvider = apns.providers[1];
-    expect(devApnsProvider.index).toBe(1);
-    expect(devApnsProvider.topic).toBe(args[0].topic);
-
-    let devApnsOptions = devApnsProvider.client.config;
-    expect(devApnsOptions.cert).toBe(args[0].cert);
-    expect(devApnsOptions.key).toBe(args[0].key);
-    expect(devApnsOptions.production).toBe(args[0].production);
-
-    let prodApnsProvider = apns.providers[0];
-    expect(prodApnsProvider.index).toBe(0);
-    expect(prodApnsProvider.topic).toBe(args[1].topic);
-
-    // TODO: Remove this checking onec we inject APNS
-    let prodApnsOptions = prodApnsProvider.client.config;
-    expect(prodApnsOptions.cert).toBe(args[1].cert);
-    expect(prodApnsOptions.key).toBe(args[1].key);
-    expect(prodApnsOptions.production).toBe(args[1].production);
     done();
   });
 
   it('can generate APNS notification', (done) => {
     //Mock request data
-    let data = {
+    var data = {
       'alert': 'alert',
-      'title': 'title',
       'badge': 100,
       'sound': 'test',
       'content-available': 1,
       'mutable-content': 1,
       'category': 'INVITE_CATEGORY',
-      'threadId': 'a-thread-id',
       'key': 'value',
       'keyAgain': 'valueAgain'
     };
-    let expirationTime = 1454571491354;
-    let collapseId = "collapseIdentifier";
+    var expirationTime = 1454571491354
 
-    let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId });
+    var notification = APNS.generateNotification(data, expirationTime);
 
-    expect(notification.aps.alert).toEqual({ body: 'alert', title: 'title' });
-    expect(notification.aps.badge).toEqual(data.badge);
-    expect(notification.aps.sound).toEqual(data.sound);
-    expect(notification.aps['content-available']).toEqual(1);
-    expect(notification.aps['mutable-content']).toEqual(1);
-    expect(notification.aps.category).toEqual(data.category);
-    expect(notification.aps['thread-id']).toEqual(data.threadId);
+    expect(notification.alert).toEqual(data.alert);
+    expect(notification.badge).toEqual(data.badge);
+    expect(notification.sound).toEqual(data.sound);
+    expect(notification.contentAvailable).toEqual(1);
+    expect(notification.mutableContent).toEqual(1);
+    expect(notification.category).toEqual(data.category);
     expect(notification.payload).toEqual({
       'key': 'value',
       'keyAgain': 'valueAgain'
     });
-    expect(notification.expiry).toEqual(Math.round(expirationTime / 1000));
-    expect(notification.collapseId).toEqual(collapseId);
-    done();
-  });
-  
-    it('can generate APNS notification from raw data', (done) => {
-      //Mock request data
-      let data = {
-        'aps': {
-          'alert': {
-            "loc-key" : "GAME_PLAY_REQUEST_FORMAT",
-            "loc-args" : [ "Jenna", "Frank"]
-          },
-          'badge': 100,
-          'sound': 'test',
-          'thread-id': 'a-thread-id'
-        },
-        'key': 'value',
-        'keyAgain': 'valueAgain'
-      };
-      let expirationTime = 1454571491354;
-      let collapseId = "collapseIdentifier";
-  
-      let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId });
-  
-      expect(notification.expiry).toEqual(Math.round(expirationTime / 1000));
-      expect(notification.collapseId).toEqual(collapseId);
-  
-      let stringifiedJSON = notification.compile();
-      let jsonObject = JSON.parse(stringifiedJSON);
-  
-      expect(jsonObject.aps.alert).toEqual({ "loc-key" : "GAME_PLAY_REQUEST_FORMAT", "loc-args" : [ "Jenna", "Frank"] });
-      expect(jsonObject.aps.badge).toEqual(100);
-      expect(jsonObject.aps.sound).toEqual('test');
-      expect(jsonObject.aps['thread-id']).toEqual('a-thread-id');
-      expect(jsonObject.key).toEqual('value');
-      expect(jsonObject.keyAgain).toEqual('valueAgain');
-      done();
-    });
-
-  it('can choose providers for device with valid appIdentifier', (done) => {
-    let appIdentifier = 'topic';
-    // Mock providers
-    let providers = [
-      {
-        topic: appIdentifier
-      },
-      {
-        topic: 'topicAgain'
-      }
-    ];
-
-    let qualifiedProviders = APNS.prototype._chooseProviders.call({providers: providers}, appIdentifier);
-    expect(qualifiedProviders).toEqual([{
-      topic: 'topic'
-    }]);
+    expect(notification.expiry).toEqual(expirationTime/1000);
     done();
   });
 
-  it('can choose providers for device with invalid appIdentifier', (done) => {
-    let appIdentifier = 'invalid';
-    // Mock providers
-    let providers = [
+  it('can choose conns for device without appIdentifier', (done) => {
+    // Mock conns
+    var conns = [
       {
-        topic: 'bundleId'
+        bundleId: 'bundleId'
       },
       {
-        topic: 'bundleIdAgain'
+        bundleId: 'bundleIdAgain'
       }
     ];
+    // Mock device
+    var device = {};
 
-    let qualifiedProviders = APNS.prototype._chooseProviders.call({providers: providers}, appIdentifier);
-    expect(qualifiedProviders).toEqual([]);
+    var qualifiedConns = APNS.chooseConns(conns, device);
+    expect(qualifiedConns).toEqual([0, 1]);
+    done();
+  });
+
+  it('can choose conns for device with valid appIdentifier', (done) => {
+    // Mock conns
+    var conns = [
+      {
+        bundleId: 'bundleId'
+      },
+      {
+        bundleId: 'bundleIdAgain'
+      }
+    ];
+    // Mock device
+    var device = {
+      appIdentifier: 'bundleId'
+    };
+
+    var qualifiedConns = APNS.chooseConns(conns, device);
+    expect(qualifiedConns).toEqual([0]);
+    done();
+  });
+
+  it('can choose conns for device with invalid appIdentifier', (done) => {
+    // Mock conns
+    var conns = [
+      {
+        bundleId: 'bundleId'
+      },
+      {
+        bundleId: 'bundleIdAgain'
+      }
+    ];
+    // Mock device
+    var device = {
+      appIdentifier: 'invalid'
+    };
+
+    var qualifiedConns = APNS.chooseConns(conns, device);
+    expect(qualifiedConns).toEqual([]);
+    done();
+  });
+
+  it('can handle transmission error when notification is not in cache or device is missing', (done) => {
+    // Mock conns
+    var conns = [];
+    var errorCode = 1;
+    var notification = undefined;
+    var device = {};
+
+    APNS.handleTransmissionError(conns, errorCode, notification, device);
+
+    var notification = {};
+    var device = undefined;
+
+    APNS.handleTransmissionError(conns, errorCode, notification, device);
+    done();
+  });
+
+  it('can handle transmission error when there are other qualified conns', (done) => {
+    // Mock conns
+    var conns = [
+      {
+        pushNotification: jasmine.createSpy('pushNotification'),
+        bundleId: 'bundleId1'
+      },
+      {
+        pushNotification: jasmine.createSpy('pushNotification'),
+        bundleId: 'bundleId1'
+      },
+      {
+        pushNotification: jasmine.createSpy('pushNotification'),
+        bundleId: 'bundleId2'
+      },
+    ];
+    var errorCode = 1;
+    var notification = {};
+    var apnDevice = {
+      connIndex: 0,
+      appIdentifier: 'bundleId1'
+    };
+
+    APNS.handleTransmissionError(conns, errorCode, notification, apnDevice);
+
+    expect(conns[0].pushNotification).not.toHaveBeenCalled();
+    expect(conns[1].pushNotification).toHaveBeenCalled();
+    expect(conns[2].pushNotification).not.toHaveBeenCalled();
+    done();
+  });
+
+  it('can handle transmission error when there is no other qualified conns', (done) => {
+    // Mock conns
+    var conns = [
+      {
+        pushNotification: jasmine.createSpy('pushNotification'),
+        bundleId: 'bundleId1'
+      },
+      {
+        pushNotification: jasmine.createSpy('pushNotification'),
+        bundleId: 'bundleId1'
+      },
+      {
+        pushNotification: jasmine.createSpy('pushNotification'),
+        bundleId: 'bundleId1'
+      },
+      {
+        pushNotification: jasmine.createSpy('pushNotification'),
+        bundleId: 'bundleId2'
+      },
+      {
+        pushNotification: jasmine.createSpy('pushNotification'),
+        bundleId: 'bundleId1'
+      }
+    ];
+    var errorCode = 1;
+    var notification = {};
+    var apnDevice = {
+      connIndex: 2,
+      appIdentifier: 'bundleId1'
+    };
+
+    APNS.handleTransmissionError(conns, errorCode, notification, apnDevice);
+
+    expect(conns[0].pushNotification).not.toHaveBeenCalled();
+    expect(conns[1].pushNotification).not.toHaveBeenCalled();
+    expect(conns[2].pushNotification).not.toHaveBeenCalled();
+    expect(conns[3].pushNotification).not.toHaveBeenCalled();
+    expect(conns[4].pushNotification).toHaveBeenCalled();
+    done();
+  });
+
+  it('can handle transmission error when device has no appIdentifier', (done) => {
+    // Mock conns
+    var conns = [
+      {
+        pushNotification: jasmine.createSpy('pushNotification'),
+        bundleId: 'bundleId1'
+      },
+      {
+        pushNotification: jasmine.createSpy('pushNotification'),
+        bundleId: 'bundleId2'
+      },
+      {
+        pushNotification: jasmine.createSpy('pushNotification'),
+        bundleId: 'bundleId3'
+      },
+    ];
+    var errorCode = 1;
+    var notification = {};
+    var apnDevice = {
+      connIndex: 1,
+    };
+
+    APNS.handleTransmissionError(conns, errorCode, notification, apnDevice);
+
+    expect(conns[0].pushNotification).not.toHaveBeenCalled();
+    expect(conns[1].pushNotification).not.toHaveBeenCalled();
+    expect(conns[2].pushNotification).toHaveBeenCalled();
     done();
   });
 
   it('can send APNS notification', (done) => {
-    let args = {
-      cert: new Buffer('testCert'),
-      key: new Buffer('testKey'),
-      production: true,
-      topic: 'topic'
-    };
-    let apns = new APNS(args);
-    let provider = apns.providers[0];
-    spyOn(provider, 'send').and.callFake((notification, devices) => {
-      return Promise.resolve({
-        sent: devices,
-        failed: []
-      })
-    });
-    // Mock data
-    let expirationTime = 1454571491354;
-    let collapseId = "collapseIdentifier";
-    let data = {
-      'collapse_id': collapseId,
-      'expiration_time': expirationTime,
-      'data': {
-        'alert': 'alert'
-      }
-    };
-    // Mock devices
-    let mockedDevices = [
-      {
-        deviceToken: '112233',
-        appIdentifier: 'topic'
-      },
-      {
-        deviceToken: '112234',
-        appIdentifier: 'topic'
-      },
-      {
-        deviceToken: '112235',
-        appIdentifier: 'topic'
-      },
-      {
-        deviceToken: '112236',
-        appIdentifier: 'topic'
-      }
-    ];
-    let promise = apns.send(data, mockedDevices);
-    expect(provider.send).toHaveBeenCalled();
-    let calledArgs = provider.send.calls.first().args;
-    let notification = calledArgs[0];
-    expect(notification.aps.alert).toEqual(data.data.alert);
-    expect(notification.expiry).toEqual(Math.round(data['expiration_time'] / 1000));
-    expect(notification.collapseId).toEqual(data['collapse_id']);
-    let apnDevices = calledArgs[1];
-    expect(apnDevices.length).toEqual(4);
-    done();
-  });
-
-  it('can send APNS notification to multiple bundles', (done) => {
-    let args = [{
-      cert: new Buffer('testCert'),
-      key: new Buffer('testKey'),
-      production: true,
-      topic: 'topic'
-    }, {
-      cert: new Buffer('testCert'),
-      key: new Buffer('testKey'),
-      production: false,
-      topic: 'topic.dev'
-    }];
-
-    let apns = new APNS(args);
-    let provider = apns.providers[0];
-    spyOn(provider, 'send').and.callFake((notification, devices) => {
-      return Promise.resolve({
-        sent: devices,
-        failed: []
-      })
-    });
-    let providerDev = apns.providers[1];
-    spyOn(providerDev, 'send').and.callFake((notification, devices) => {
-      return Promise.resolve({
-        sent: devices,
-        failed: []
-      })
-    });
-    apns.providers = [provider, providerDev];
-    // Mock data
-    let expirationTime = 1454571491354;
-    let collapseId = "collapseIdentifier";
-    let data = {
-      'collapse_id': collapseId,
-      'expiration_time': expirationTime,
-      'data': {
-        'alert': 'alert'
-      }
-    };
-    // Mock devices
-    let mockedDevices = [
-      {
-        deviceToken: '112233',
-        appIdentifier: 'topic'
-      },
-      {
-        deviceToken: '112234',
-        appIdentifier: 'topic'
-      },
-      {
-        deviceToken: '112235',
-        appIdentifier: 'topic'
-      },
-      {
-        deviceToken: '112235',
-        appIdentifier: 'topic.dev'
-      },
-      {
-        deviceToken: '112236',
-        appIdentifier: 'topic.dev'
-      }
-    ];
-
-    let promise = apns.send(data, mockedDevices);
-
-    expect(provider.send).toHaveBeenCalled();
-    let calledArgs = provider.send.calls.first().args;
-    let notification = calledArgs[0];
-    expect(notification.aps.alert).toEqual(data.data.alert);
-    expect(notification.expiry).toEqual(Math.round(data['expiration_time'] / 1000));
-    expect(notification.collapseId).toEqual(data['collapse_id']);
-    let apnDevices = calledArgs[1];
-    expect(apnDevices.length).toBe(3);
-
-    expect(providerDev.send).toHaveBeenCalled();
-    calledArgs = providerDev.send.calls.first().args;
-    notification = calledArgs[0];
-    expect(notification.aps.alert).toEqual(data.data.alert);
-    expect(notification.expiry).toEqual(Math.round(data['expiration_time'] / 1000));
-    expect(notification.collapseId).toEqual(data['collapse_id']);
-    apnDevices = calledArgs[1];
-    expect(apnDevices.length).toBe(2);
-    done();
-  });
-
-  it('reports proper error when no conn is available', (done) => {
-    var args = [{
-      cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-      key: new Buffer('testKey'),
+    var args = {
+      cert: 'prodCert.pem',
+      key: 'prodKey.pem',
       production: true,
       bundleId: 'bundleId'
-    }];
+    }
+    var apns = new APNS(args);
+    var conn = {
+      pushNotification: jasmine.createSpy('send'),
+      bundleId: 'bundleId'
+    };
+    apns.conns = [ conn ];
+    // Mock data
+    var expirationTime = 1454571491354
     var data = {
+      'expiration_time': expirationTime,
       'data': {
         'alert': 'alert'
       }
     }
+    // Mock devices
     var devices = [
       {
         deviceToken: '112233',
-        appIdentifier: 'invalidBundleId'
+        appIdentifier: 'bundleId'
       },
-    ]
-    var apns = new APNS(args);
-    apns.send(data, devices).then((results) => {
-      expect(results.length).toBe(1);
-      let result = results[0];
-      expect(result.transmitted).toBe(false);
-      expect(result.response.error).toBe('No Provider found');
-      done();
-    }, (err) => {
-      fail('should not fail');
-      done();
-    })
-  });
-
-  it('properly parses errors', (done) => {
-    APNS._handlePushFailure({
-      device: 'abcd',
-      status: -1,
-      response: {
-        reason: 'Something wrong happend'
+      {
+        deviceToken: '112234',
+        appIdentifier: 'bundleId'
+      },
+      {
+        deviceToken: '112235',
+        appIdentifier: 'bundleId'
+      },
+      {
+        deviceToken: '112236',
+        appIdentifier: 'bundleId'
       }
-    }).then((result) => {
-      expect(result.transmitted).toBe(false);
-      expect(result.device.deviceToken).toBe('abcd');
-      expect(result.device.deviceType).toBe('ios');
-      expect(result.response.error).toBe('Something wrong happend');
-      done();
+    ];
+
+    var promise = apns.send(data, devices);
+    expect(conn.pushNotification).toHaveBeenCalled();
+    var args = conn.pushNotification.calls.first().args;
+    var notification = args[0];
+    expect(notification.alert).toEqual(data.data.alert);
+    expect(notification.expiry).toEqual(data['expiration_time']/1000);
+    var apnDevices = args[1];
+    apnDevices.forEach((apnDevice) => {
+      expect(apnDevice.connIndex).toEqual(0);
+      expect(apnDevice.appIdentifier).toEqual('bundleId');
     })
+    done();
   });
 
-  it('properly parses errors again', (done) => {
-    APNS._handlePushFailure({
-      device: 'abcd',
-    }).then((result) => {
-      expect(result.transmitted).toBe(false);
-      expect(result.device.deviceToken).toBe('abcd');
-      expect(result.device.deviceType).toBe('ios');
-      expect(result.response.error).toBe('Unkown status');
-      done();
+  it('can send APNS notification to multiple bundles', (done) => {
+    var args = [{
+      cert: 'prodCert.pem',
+      key: 'prodKey.pem',
+      production: true,
+      bundleId: 'bundleId'
+    },{
+      cert: 'devCert.pem',
+      key: 'devKey.pem',
+      production: false,
+      bundleId: 'bundleId.dev'
+    }];
+
+    var apns = new APNS(args);
+    var conn = {
+      pushNotification: jasmine.createSpy('send'),
+      bundleId: 'bundleId'
+    };
+    var conndev = {
+      pushNotification: jasmine.createSpy('send'),
+      bundleId: 'bundleId.dev'
+    };
+    apns.conns = [ conn, conndev ];
+    // Mock data
+    var expirationTime = 1454571491354
+    var data = {
+      'expiration_time': expirationTime,
+      'data': {
+        'alert': 'alert'
+      }
+    }
+    // Mock devices
+    var devices = [
+      {
+        deviceToken: '112233',
+        appIdentifier: 'bundleId'
+      },
+      {
+        deviceToken: '112234',
+        appIdentifier: 'bundleId'
+      },
+      {
+        deviceToken: '112235',
+        appIdentifier: 'bundleId'
+      },
+      {
+        deviceToken: '112235',
+        appIdentifier: 'bundleId.dev'
+      },
+      {
+        deviceToken: '112236',
+        appIdentifier: 'bundleId.dev'
+      }
+    ];
+
+    var promise = apns.send(data, devices);
+
+    expect(conn.pushNotification).toHaveBeenCalled();
+    var args = conn.pushNotification.calls.first().args;
+    var notification = args[0];
+    expect(notification.alert).toEqual(data.data.alert);
+    expect(notification.expiry).toEqual(data['expiration_time']/1000);
+    var apnDevices = args[1];
+    expect(apnDevices.length).toBe(3);
+    apnDevices.forEach((apnDevice) => {
+      expect(apnDevice.connIndex).toEqual(0);
+      expect(apnDevice.appIdentifier).toEqual('bundleId');
     })
+
+    expect(conndev.pushNotification).toHaveBeenCalled();
+    args = conndev.pushNotification.calls.first().args;
+    notification = args[0];
+    expect(notification.alert).toEqual(data.data.alert);
+    expect(notification.expiry).toEqual(data['expiration_time']/1000);
+    apnDevices = args[1];
+    expect(apnDevices.length).toBe(2);
+    apnDevices.forEach((apnDevice) => {
+      expect(apnDevice.connIndex).toEqual(1);
+      expect(apnDevice.appIdentifier).toEqual('bundleId.dev');
+    });
+    done();
   });
 });
