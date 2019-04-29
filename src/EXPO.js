@@ -3,6 +3,7 @@
 import Parse from 'parse';
 import log from 'npmlog';
 import Expo from 'expo-server-sdk';
+import "babel-polyfill";
 import { randomString } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter EXPO';
@@ -33,10 +34,7 @@ EXPO.prototype.send = function(data, devices) {
   if (data['expiration_time']) {
     expirationTime = data['expiration_time'];
   }
-  // Generate gcm payload
-  // PushId is not a formal field of GCM, but Parse Android SDK uses this field to deduplicate push notifications
-  //let gcmPayload = generateEXPOPayload(data, pushId, timestamp, expirationTime);
-  // Make and send gcm request
+  
   let messages = [];
 
   // Build a device map
@@ -59,10 +57,10 @@ EXPO.prototype.send = function(data, devices) {
     messages.push({
       to: pushToken,
       sound: 'default',
-      body: data.alert,
-      title: data.title,
-      badge: data.badge ? data.badge : 1,
-      data: data,
+      body: data.data.alert,
+      title: data.data.title,
+      badge: data.badge ? data.data.badge : 1,
+      data: data.data,
       ttl: EXPOTimeToLiveMax,
       priority: 'high',
       channelId: 'fif-notifications'
@@ -75,7 +73,7 @@ EXPO.prototype.send = function(data, devices) {
   (async () => {
     for (let chunk of chunks) {
       try {
-        let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        let ticketChunk = await this.sender.sendPushNotificationsAsync(chunk);
         tickets.push(...ticketChunk);
       } catch (error) {
         console.error(error);
@@ -90,11 +88,11 @@ EXPO.prototype.send = function(data, devices) {
     }
   }
 
-  let receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds);
+  let receiptIdChunks = this.sender.chunkPushNotificationReceiptIds(receiptIds);
   (async () => {
     for (let chunk of receiptIdChunks) {
       try {
-        let receipts = await expo.getPushNotificationReceiptsAsync(chunk);
+        let receipts = await this.sender.getPushNotificationReceiptsAsync(chunk);
         console.log(receipts);
 
         // The receipts specify whether Apple or Google successfully received the

@@ -1,6 +1,7 @@
 {
     "presets": [
         "es2015",
+		    "babel-polyfill",
         "stage-0"
     ]
 }
