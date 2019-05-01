@@ -14,8 +14,6 @@ export default function EXPO(args) {
   this.sender = new Expo();
 }
 
-// GCM.GCMRegistrationTokensMax = GCMRegistrationTokensMax;
-
 /**
  * Send gcm request.
  * @param {Object} data The data we need to send, the format is the same with api request body
@@ -49,6 +47,12 @@ EXPO.prototype.send = function(data, devices) {
   let registrationTokens = deviceTokens;
   let length = registrationTokens.length;
   log.verbose(LOG_PREFIX, `sending to ${length} ${length > 1 ? 'devices' : 'device'}`);
+  let notificationData = {
+	body: data.data.alert,
+	title: data.data.title,
+	badge: data.data.badge ? data.data.badge : 1,
+	data: data.data,
+  };
   for (let pushToken of registrationTokens) {
     if (!Expo.isExpoPushToken(pushToken)) {
       console.error(`Push token ${pushToken} is not a valid Expo push token`);
@@ -57,10 +61,10 @@ EXPO.prototype.send = function(data, devices) {
     messages.push({
       to: pushToken,
       sound: 'default',
-      body: data.data.alert,
-      title: data.data.title,
-      badge: data.badge ? data.data.badge : 1,
-      data: data.data,
+      body: notificationData.body,
+      title: notificationData.title,
+      badge: notificationData.badge,
+      data: notificationData,
       ttl: EXPOTimeToLiveMax,
       priority: 'high',
       channelId: 'fif-notifications'
