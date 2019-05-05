@@ -67,7 +67,8 @@ EXPO.prototype.send = function(data, devices) {
       data: notificationData,
       ttl: EXPOTimeToLiveMax,
       priority: 'high',
-      channelId: 'fif-notifications'
+      channelId: 'fif-notifications',
+      'content-available': 1	    
     });
   }
 
