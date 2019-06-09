@@ -73,6 +73,7 @@ export class APNS {
     let coreData = data.data;
     let expirationTime = data['expiration_time'];
     let collapseId = data['collapse_id'];
+    let pushType = data['push_type'];
     let allPromises = [];
 
     let devicesPerAppIdentifier = {};
@@ -96,7 +97,7 @@ export class APNS {
         continue;
       }
 
-      let headers = { expirationTime: expirationTime, topic: appIdentifier, collapseId: collapseId }
+      let headers = { expirationTime: expirationTime, topic: appIdentifier, collapseId: collapseId, pushType: pushType }
       let notification = APNS._generateNotification(coreData, headers);
       const deviceIds = devices.map(device => device.deviceToken);
       let promise = this.sendThroughProvider(notification, deviceIds, providers);
@@ -166,7 +167,7 @@ export class APNS {
   /**
    * Generate the apns Notification from the data we get from api request.
    * @param {Object} coreData The data field under api request body
-   * @param {Object} headers The header properties for the notification (topic, expirationTime, collapseId)
+   * @param {Object} headers The header properties for the notification (topic, expirationTime, collapseId, pushType)
    * @returns {Object} A apns Notification
    */
   static _generateNotification(coreData, headers) {
@@ -214,6 +215,7 @@ export class APNS {
     notification.topic = headers.topic;
     notification.expiry = Math.round(headers.expirationTime / 1000);
     notification.collapseId = headers.collapseId;
+    notification.pushType = headers.pushType
     return notification;
   }
 
