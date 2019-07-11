@@ -1,6 +1,6 @@
 {
   "name": "@parse/push-adapter",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Base parse-server-push-adapter",
   "main": "lib/index.js",
   "files": [
@@ -23,11 +23,11 @@
   "author": "Parse",
   "license": "MIT",
   "devDependencies": {
-    "babel-cli": "^6.24.0",
-    "babel-core": "^6.24.0",
-    "babel-preset-es2015": "^6.24.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.22.0",
-    "codecov": "3.0.0",
+    "codecov": "^3.5.0",
     "jasmine": "2.8.0",
     "jasmine-spec-reporter": "^4.0.0",
     "nyc": "^11.0.2"

@@ -1,5 +1,15 @@
 # Change Log
 
+### master
+
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.1...master)
+
+
+## [3.0.1](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.1) (2019-07-11)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v2.0.3...3.0.1)
+Update Packages to address security alerts
+
+
 ## [2.0.3](https://github.com/parse-server-modules/parse-server-push-adapter/tree/v2.0.3) (2018-04-13)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v2.0.2...v2.0.3)
 
@@ -12,7 +22,7 @@
 
 **What's new**
 
-- Adds ability to pass apn key for iOS pushes 
+- Adds ability to pass apn key for iOS pushes
 
 ## [2.0.1](https://github.com/parse-server-modules/parse-server-push-adapter/tree/v2.0.1) (2017-10-21)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v2.0.0...v2.0.1)
