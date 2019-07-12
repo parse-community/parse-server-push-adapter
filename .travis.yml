@@ -5,6 +5,7 @@ after_success: "./node_modules/.bin/codecov"
 deploy:
   provider: npm
   on:
+    skip_cleanup: true
     tags: true
     repo: parse-community/parse-server-push-adapter
   api_key:
