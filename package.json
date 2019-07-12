@@ -30,7 +30,7 @@
     "codecov": "^3.5.0",
     "jasmine": "2.8.0",
     "jasmine-spec-reporter": "^4.0.0",
-    "nyc": "^11.0.2"
+    "nyc": "^14.1.1"
   },
   "dependencies": {
     "apn": "^3.0.0-alpha1",
