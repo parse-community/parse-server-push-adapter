@@ -6,7 +6,7 @@ deploy:
   provider: npm
   on:
     tags: true
-    repo: parse-server-modules/parse-server-push-adapter
+    repo: parse-community/parse-server-push-adapter
   api_key:
     secure: VBk+o3Si1MAe8KJ8qSveEsvKU/g4byTs6IO3og5FZSCNFLsn2HaIn12KFE/YTGbygTv1wusOf4qnKG/ag0VNaVaSZ7gIddYVCPw94k0M4Ig3r+FkUR+zHvx5VEWg3YVUSvC+j5lLUqcHXo4r0vbPWNLNcGjKcOsbSEC61T4juskkEC9lTmRaOCRBcZtI5DZ4iLzc+YqFToRL7YWm8i9MY9mB4oLcg/GO460wGuB5hKHPEsruy4dbYIezaUtxqpikZ1spQzzqSUrFFJLQoEcJdTraLBi1rRVb4P7kUErtq0ZUzBdqwAbwz+iowfyYWAONQqK45t1lD6x4vG2M4ps4UW7eMsRkFZakPafGZwIg24LIsHIH3V4qkcP0gc/AiKKXEluql/9bdcwDvBmy5439xSaid46QzcyPjrn7qTxjmwDlBJ1vPuJpADuUCDBc2H9KWOjpHNYPcOEInysjelXadzRFQqR51rOEK/nlYZEeUQLPGvNbntP+r0qcVNXyoDCvxDiq/aQdgJgdG0te5Smd/9cOwDOZxK9Z8lGJ1pWldJ0Da6YgdrJ9ui04GQdNlTb2vyFOsd6YIOgwQIWoSXFdOtkmDf+ozkEmDdu1p4ReezmBK7DIhBJ1X18HkaiNrZcc956UDYYsoI4fY+dwrS8bWzMg9GgjXcA/ldQh6hhdUXg=
   email:
