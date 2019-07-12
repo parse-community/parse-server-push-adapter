@@ -4,7 +4,7 @@
 
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.2...master)
 
-## [3.0.1](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.2) (2019-07-12)
+## [3.0.2](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.2) (2019-07-12)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.1...3.0.2)
 Update Travis to deploy the correct repo to npm
 
