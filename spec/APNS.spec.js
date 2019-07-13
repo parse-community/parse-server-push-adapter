@@ -173,7 +173,7 @@ describe('APNS', () => {
     let expirationTime = 1454571491354;
     let collapseId = "collapseIdentifier";
 
-    let pushType = "alert"
+    let pushType = "alert";
     let priority = 5;
     let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
 
@@ -235,8 +235,8 @@ describe('APNS', () => {
       };
       let expirationTime = 1454571491354;
       let collapseId = "collapseIdentifier";
-      let pushType = "background"
-      let priority = 5
+      let pushType = "background";
+      let priority = 5;
   
       let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
   
@@ -311,7 +311,7 @@ describe('APNS', () => {
     // Mock data
     let expirationTime = 1454571491354;
     let collapseId = "collapseIdentifier";
-    let pushType = "alert" // or background
+    let pushType = "alert"; // or background
     let data = {
       'collapse_id': collapseId,
       'push_type': pushType,
@@ -385,7 +385,7 @@ describe('APNS', () => {
     apns.providers = [provider, providerDev];
     // Mock data
     let expirationTime = 1454571491354;
-    let pushType = "alert" // or background
+    let pushType = "alert"; // or background
     let collapseId = "collapseIdentifier";
     let data = {
       'collapse_id': collapseId,
