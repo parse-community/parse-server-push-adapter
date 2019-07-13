@@ -156,6 +156,24 @@ describe('APNS', () => {
     done();
   });
 
+  it('sets priority to 10 if not set explicitly', (done) => {
+    let data = {
+      'alert': 'alert',
+      'title': 'title',
+      'badge': 100,
+      'sound': 'test',
+      'content-available': 1,
+      'mutable-content': 1,
+      'category': 'INVITE_CATEGORY',
+      'threadId': 'a-thread-id',
+      'key': 'value',
+      'keyAgain': 'valueAgain'
+    };
+    let notification = APNS._generateNotification(data, { });
+    expect(notification.priority).toEqual(10);
+    done();
+  });
+
   it('can generate APNS notification', (done) => {
     //Mock request data
     let data = {
