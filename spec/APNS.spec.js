@@ -194,6 +194,29 @@ describe('APNS', () => {
     expect(notification.priority).toEqual(priority);
     done();
   });
+
+  it('sets push type to alert if not defined explicitly', (done) => {
+    //Mock request data
+    let data = {
+      'alert': 'alert',
+      'title': 'title',
+      'badge': 100,
+      'sound': 'test',
+      'content-available': 1,
+      'mutable-content': 1,
+      'category': 'INVITE_CATEGORY',
+      'threadId': 'a-thread-id',
+      'key': 'value',
+      'keyAgain': 'valueAgain'
+    };
+    let expirationTime = 1454571491354;
+    let collapseId = "collapseIdentifier";
+
+    let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId });
+
+    expect(notification.pushType).toEqual('alert');
+    done();
+  });
   
     it('can generate APNS notification from raw data', (done) => {
       //Mock request data

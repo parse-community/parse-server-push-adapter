@@ -216,7 +216,11 @@ export class APNS {
     notification.topic = headers.topic;
     notification.expiry = Math.round(headers.expirationTime / 1000);
     notification.collapseId = headers.collapseId;
-    notification.pushType = headers.pushType
+    // set alert as default push type. If push type is not set notifications are not delivered to devices running iOS 13, watchOS 6 and later.
+    notification.pushType = 'alert';
+    if (headers.pushType) {
+      notification.pushType = headers.pushType;
+    }
     if (headers.priority) {
       // if headers priority is not set 'node-apn' defaults it to 5 which is min. required value for background pushes to launch the app in background.
       notification.priority = headers.priority
