@@ -218,7 +218,7 @@ describe('APNS', () => {
     done();
   });
   
-    it('can generate APNS notification from raw data', (done) => {
+  it('can generate APNS notification from raw data', (done) => {
       //Mock request data
       let data = {
         'aps': {
