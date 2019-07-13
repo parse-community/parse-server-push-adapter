@@ -235,7 +235,7 @@ describe('APNS', () => {
       };
       let expirationTime = 1454571491354;
       let collapseId = "collapseIdentifier";
-      let pushType = "alert"
+      let pushType = "background"
       let priority = 5
   
       let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
