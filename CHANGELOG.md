@@ -1,5 +1,22 @@
 # Change Log
 
+### master
+
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.3...master)
+
+## [3.0.3](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.3) (2019-07-12)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.2...3.0.3)
+Continuing attempt to get travis to deploy to npm on release.  Third time's a charm?
+
+## [3.0.2](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.2) (2019-07-12)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.1...3.0.2)
+Update Travis to deploy the correct repo to npm
+
+## [3.0.1](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.1) (2019-07-11)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v2.0.3...3.0.1)
+Update Packages to address security alerts
+
+
 ## [2.0.3](https://github.com/parse-server-modules/parse-server-push-adapter/tree/v2.0.3) (2018-04-13)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v2.0.2...v2.0.3)
 
@@ -12,7 +29,7 @@
 
 **What's new**
 
-- Adds ability to pass apn key for iOS pushes 
+- Adds ability to pass apn key for iOS pushes
 
 ## [2.0.1](https://github.com/parse-server-modules/parse-server-push-adapter/tree/v2.0.1) (2017-10-21)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v2.0.0...v2.0.1)

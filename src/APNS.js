@@ -74,6 +74,7 @@ export class APNS {
     let expirationTime = data['expiration_time'];
     let collapseId = data['collapse_id'];
     let pushType = data['push_type'];
+    let priority = data['priority'];
     let allPromises = [];
 
     let devicesPerAppIdentifier = {};
@@ -97,7 +98,7 @@ export class APNS {
         continue;
       }
 
-      let headers = { expirationTime: expirationTime, topic: appIdentifier, collapseId: collapseId, pushType: pushType }
+      let headers = { expirationTime: expirationTime, topic: appIdentifier, collapseId: collapseId, pushType: pushType, priority: priority }
       let notification = APNS._generateNotification(coreData, headers);
       const deviceIds = devices.map(device => device.deviceToken);
       let promise = this.sendThroughProvider(notification, deviceIds, providers);
@@ -167,7 +168,7 @@ export class APNS {
   /**
    * Generate the apns Notification from the data we get from api request.
    * @param {Object} coreData The data field under api request body
-   * @param {Object} headers The header properties for the notification (topic, expirationTime, collapseId, pushType)
+   * @param {Object} headers The header properties for the notification (topic, expirationTime, collapseId, pushType, priority)
    * @returns {Object} A apns Notification
    */
   static _generateNotification(coreData, headers) {
@@ -216,6 +217,10 @@ export class APNS {
     notification.expiry = Math.round(headers.expirationTime / 1000);
     notification.collapseId = headers.collapseId;
     notification.pushType = headers.pushType
+    if (headers.priority) {
+      // if headers priority is not set 'node-apn' defaults it to 5 which is min. required value for background pushes to launch the app in background.
+      notification.priority = headers.priority
+    }
     return notification;
   }
 
