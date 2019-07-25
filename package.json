@@ -36,7 +36,7 @@
     "@parse/node-gcm": "^1.0.0",
     "apn": "parse-community/node-apn#semver:^2.1.6-parse",
     "npmlog": "^4.0.2",
-    "parse": "^1.9.2"
+    "parse": "^1.11.1"
   },
   "engines": {
     "node": ">= 8.9.1"
