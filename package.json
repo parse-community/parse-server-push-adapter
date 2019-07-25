@@ -33,8 +33,8 @@
     "nyc": "^14.1.1"
   },
   "dependencies": {
-    "apn": "^3.0.0-alpha1",
     "@parse/node-gcm": "^1.0.0",
+    "apn": "parse-community/node-apn#semver:^2.1.6-parse",
     "npmlog": "^4.0.2",
     "parse": "^1.9.2"
   },
