@@ -2,7 +2,14 @@
 
 ### master
 
-[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.3...master)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.4...master)
+
+## [3.0.4](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.4) (2019-07-26)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.3...3.0.4)
+
+**What's new**
+
+- Add support for apns-push-type [\#1](https://github.com/parse-community/parse-server-push-adapter/pull/127) (thanks to [@funkenstrahlen](https://github.com/funkenstrahlen))
 
 ## [3.0.3](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.3) (2019-07-12)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.2...3.0.3)
