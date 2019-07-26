@@ -7,7 +7,7 @@
 ## [3.0.8](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.8) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.7...3.0.8)
 
-Last release had it lib/ folder published but it is failing in parse-server tests. Trying to fix.
+Last release had its lib/ folder published but it's failing in parse-server tests. Trying to fix.
 
 ## [3.0.7](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.7) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.6...3.0.7)
