@@ -1,6 +1,6 @@
 {
   "name": "@parse/push-adapter",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "Base parse-server-push-adapter",
   "main": "lib/index.js",
   "files": [
@@ -8,8 +8,7 @@
   ],
   "scripts": {
     "build": "./node_modules/.bin/babel src/ -d lib/",
-    "test": "TESTING=1 nyc ./node_modules/.bin/jasmine",
-    "prepublish": "npm run build"
+    "test": "TESTING=1 nyc ./node_modules/.bin/jasmine"
   },
   "keywords": [
     "parse-server",
