@@ -2,7 +2,12 @@
 
 ### master
 
-[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.4...master)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.5...master)
+
+## [3.0.5](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.5) (2019-07-12)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.4...3.0.5)
+
+Trying to make Travis publish to npm.
 
 ## [3.0.4](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.4) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.3...3.0.4)
