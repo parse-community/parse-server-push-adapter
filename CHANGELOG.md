@@ -2,7 +2,12 @@
 
 ### master
 
-[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.8...master)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.9...master)
+
+## [3.0.9](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.9) (2019-07-30)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.8...3.0.9)
+
+Fix: Update node-apn version and improve publish script ([#141](https://github.com/parse-community/parse-server-push-adapter/pull/141)) (thanks to [@davimacedo](https://github.com/davimacedo))
 
 ## [3.0.8](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.8) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.7...3.0.8)
