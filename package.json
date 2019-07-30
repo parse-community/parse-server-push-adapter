@@ -8,8 +8,8 @@
   ],
   "scripts": {
     "build": "./node_modules/.bin/babel src/ -d lib/",
-    "pretest": "npm run build",
-    "test": "TESTING=1 nyc ./node_modules/.bin/jasmine"
+    "test": "TESTING=1 nyc ./node_modules/.bin/jasmine",
+    "prepublish": "npm run build"
   },
   "keywords": [
     "parse-server",
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@parse/node-gcm": "^1.0.0",
-    "apn": "parse-community/node-apn#semver:^3.0.1-parse",
+    "apn": "parse-community/node-apn#semver:^v3.0.2-parse",
     "npmlog": "^4.0.2",
     "parse": "^1.11.1"
   },
