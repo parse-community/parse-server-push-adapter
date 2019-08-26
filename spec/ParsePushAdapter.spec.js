@@ -8,11 +8,11 @@ var MockAPNProvider = require('./MockAPNProvider');
 describe('ParsePushAdapter', () => {
 
   beforeEach(() => {
-    jasmine.mockLibrary('apn', 'Provider', MockAPNProvider);
+    jasmine.mockLibrary('@parse/node-apn', 'Provider', MockAPNProvider);
   });
 
   afterEach(() => {
-    jasmine.restoreLibrary('apn', 'Provider');
+    jasmine.restoreLibrary('@parse/node-apn', 'Provider');
   });
 
   it('properly export the module', () => {

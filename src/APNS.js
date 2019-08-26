@@ -1,5 +1,5 @@
 'use strict';
-import apn from 'apn';
+import apn from '@parse/node-apn';
 import Parse from 'parse';
 import log from 'npmlog';
 
