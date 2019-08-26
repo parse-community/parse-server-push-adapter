@@ -2,7 +2,12 @@
 
 ### master
 
-[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.9...master)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.10...master)
+
+## [3.0.10](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.10) (2019-08-26)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.9...3.0.10)
+Use @parse/node-apn served from npm instead of using our fork served from github.
+
 
 ## [3.0.9](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.9) (2019-07-30)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.8...3.0.9)
@@ -17,12 +22,12 @@ Last release had its lib/ folder published but it's failing in parse-server test
 ## [3.0.7](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.7) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.6...3.0.7)
 
-New attempt to fix last realease since it was published empty to npm.
+New attempt to fix last release since it was published empty to npm.
 
 ## [3.0.6](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.6) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.5...3.0.6)
 
-Fix last realease since it was published empty to npm.
+Fix last release since it was published empty to npm.
 
 ## [3.0.5](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.5) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.4...3.0.5)
