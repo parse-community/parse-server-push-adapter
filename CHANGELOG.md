@@ -6,6 +6,7 @@
 
 ## [3.0.10](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.10) (2019-08-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.9...3.0.10)
+
 Use @parse/node-apn served from npm instead of using our fork served from github.
 
 
