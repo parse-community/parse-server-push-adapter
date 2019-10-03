@@ -41,11 +41,11 @@ GCM.prototype.send = function(data, devices) {
       memo.push(promise);
       return memo;
     }, [])
-    return Parse.Promise.when(promises).then((results) => {
+    return Promise.all(promises).then((results) => {
       let allResults = results.reduce((memo, result) => {
         return memo.concat(result);
       }, []);
-      return Parse.Promise.as(allResults);
+      return Promise.resolve(allResults);
     });
   }
   // get the devices back...
@@ -70,8 +70,9 @@ GCM.prototype.send = function(data, devices) {
   }, {});
 
   let deviceTokens = Object.keys(devicesMap);
-
-  let promises = deviceTokens.map(() => new Parse.Promise());
+  
+  const resolvers = [];
+  const promises = deviceTokens.map(() => new Promise(resolve => resolvers.push(resolve)));
   let registrationTokens = deviceTokens;
   let length = registrationTokens.length;
   log.verbose(LOG_PREFIX, `sending to ${length} ${length > 1 ? 'devices' : 'device'}`);
@@ -94,7 +95,7 @@ GCM.prototype.send = function(data, devices) {
     }
     let { results, multicast_id } = response || {};
     registrationTokens.forEach((token, index) => {
-      let promise = promises[index];
+      let resolve = resolvers[index];
       let result = results ? results[index] : undefined;
       let device = devicesMap[token];
       device.deviceType = 'android';
@@ -108,10 +109,10 @@ GCM.prototype.send = function(data, devices) {
       } else {
         resolution.transmitted = true;
       }
-      promise.resolve(resolution);
+      resolve(resolution);
     });
   });
-  return Parse.Promise.when(promises);
+  return Promise.all(promises);
 }
 
 /**
