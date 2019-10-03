@@ -71,11 +71,8 @@ GCM.prototype.send = function(data, devices) {
 
   let deviceTokens = Object.keys(devicesMap);
   
-  const promises = [];
   const resolvers = [];
-  deviceTokens.forEach(() => {
-    promises.push(new Promise(resolve => resolvers.push(resolve)))
-  });
+  const promises = deviceTokens.map(() => new Promise(resolve => resolvers.push(resolve)));
   let registrationTokens = deviceTokens;
   let length = registrationTokens.length;
   log.verbose(LOG_PREFIX, `sending to ${length} ${length > 1 ? 'devices' : 'device'}`);
