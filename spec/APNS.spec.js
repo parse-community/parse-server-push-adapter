@@ -372,6 +372,67 @@ describe('APNS', () => {
     done();
   });
 
+  it('can send APNS notification headers in data', (done) => {
+    let args = {
+      cert: new Buffer('testCert'),
+      key: new Buffer('testKey'),
+      production: true,
+      topic: 'topic'
+    };
+    let apns = new APNS(args);
+    let provider = apns.providers[0];
+    spyOn(provider, 'send').and.callFake((notification, devices) => {
+      return Promise.resolve({
+        sent: devices,
+        failed: []
+      })
+    });
+    // Mock data
+    let expirationTime = 1454571491354;
+    let collapseId = "collapseIdentifier";
+    let pushType = "alert"; // or background
+    let data = {
+      'expiration_time': expirationTime,
+      'data': {
+        'alert': 'alert',
+        'collapse_id': collapseId,
+        'push_type': pushType,
+        'priority': 6,
+      }
+    };
+    // Mock devices
+    let mockedDevices = [
+      {
+        deviceToken: '112233',
+        appIdentifier: 'topic'
+      },
+      {
+        deviceToken: '112234',
+        appIdentifier: 'topic'
+      },
+      {
+        deviceToken: '112235',
+        appIdentifier: 'topic'
+      },
+      {
+        deviceToken: '112236',
+        appIdentifier: 'topic'
+      }
+    ];
+    let promise = apns.send(data, mockedDevices);
+    expect(provider.send).toHaveBeenCalled();
+    let calledArgs = provider.send.calls.first().args;
+    let notification = calledArgs[0];
+    expect(notification.aps.alert).toEqual(data.data.alert);
+    expect(notification.expiry).toEqual(Math.round(data['expiration_time'] / 1000));
+    expect(notification.collapseId).toEqual(collapseId);
+    expect(notification.pushType).toEqual(pushType);
+    expect(notification.priority).toEqual(6);
+    let apnDevices = calledArgs[1];
+    expect(apnDevices.length).toEqual(4);
+    done();
+  });
+
   it('can send APNS notification to multiple bundles', (done) => {
     let args = [{
       cert: new Buffer('testCert'),
