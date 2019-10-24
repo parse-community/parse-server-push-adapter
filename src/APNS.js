@@ -71,10 +71,10 @@ export class APNS {
    */
   send(data, allDevices) {
     let coreData = data.data;
-    let expirationTime = data['expiration_time'];
-    let collapseId = data['collapse_id'];
-    let pushType = data['push_type'];
-    let priority = data['priority'];
+    let expirationTime = data['expiration_time'] || coreData['expiration_time'];
+    let collapseId = data['collapse_id'] || coreData['collapse_id'];
+    let pushType = data['push_type'] || coreData['push_type'];
+    let priority = data['priority'] || coreData['priority'];
     let allPromises = [];
 
     let devicesPerAppIdentifier = {};
