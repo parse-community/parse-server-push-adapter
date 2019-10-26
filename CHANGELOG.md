@@ -2,7 +2,13 @@
 
 ### master
 
-[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.1.0...master)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.2.0...master)
+
+## [3.2.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.2.0) (2019-10-26)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.1.0...3.2.0)
+
+- Support headers (expiration_time, collapse_id, push_type, priority) in data field ([#148](https://github.com/parse-community/parse-server-push-adapter/pull/148)) (thanks to [@dplewis](https://github.com/dplewis))
+- parse@2.8.0
 
 ## [3.1.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.1.0) (2019-10-03)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.10...3.1.0)
