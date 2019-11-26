@@ -14,7 +14,7 @@ export default function GCM(args) {
     throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
                           'GCM Configuration is invalid');
   }
-  this.sender = new gcm.Sender(args.apiKey);
+  this.sender = new gcm.Sender(args.apiKey, args.requestOptions);
 }
 
 GCM.GCMRegistrationTokensMax = GCMRegistrationTokensMax;
