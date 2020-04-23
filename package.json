@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@parse/node-apn": "^3.1.0",
-    "@parse/node-gcm": "^1.0.0",
+    "@parse/node-gcm": "^1.0.2",
     "npmlog": "^4.0.2",
     "parse": "2.8.0"
   },
