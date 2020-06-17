@@ -76,12 +76,14 @@ EXPO.prototype.send = function(data, devices) {
   let tickets = [];
 
   (async () => {
-    for (let chunk of chunks) {
-      try {
-        let ticketChunk = await this.sender.sendPushNotificationsAsync(chunk);
-        tickets.push(...ticketChunk);
-      } catch (error) {
-        console.error(error);
+    for (let chunkList of chunks) {
+      for (let chunk of chunkList) {
+        try {
+          let ticketChunk = await this.sender.sendPushNotificationsAsync([chunk]);
+          tickets.push(...ticketChunk);
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
   })();
