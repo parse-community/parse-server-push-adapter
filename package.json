@@ -36,7 +36,7 @@
     "@parse/node-apn": "^3.1.0",
     "@parse/node-gcm": "^1.0.2",
     "npmlog": "^4.0.2",
-    "parse": "2.8.0"
+    "parse": "2.13.0"
   },
   "engines": {
     "node": ">= 8.9.1"
