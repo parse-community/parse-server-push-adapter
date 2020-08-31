@@ -70,7 +70,7 @@ GCM.prototype.send = function(data, devices) {
   }, {});
 
   let deviceTokens = Object.keys(devicesMap);
-  
+
   const resolvers = [];
   const promises = deviceTokens.map(() => new Promise(resolve => resolvers.push(resolve)));
   let registrationTokens = deviceTokens;
@@ -132,8 +132,8 @@ function generateGCMPayload(requestData, pushId, timeStamp, expirationTime) {
     push_id: pushId,
     time: new Date(timeStamp).toISOString()
   }
-  const optionalKeys = ['content_available', 'notification'];
-  optionalKeys.forEach((key, index, array) => {
+  const optionalKeys = ['contentAvailable', 'notification'];
+  optionalKeys.forEach((key) => {
     if (requestData.hasOwnProperty(key)) {
       payload[key] = requestData[key];
     }
