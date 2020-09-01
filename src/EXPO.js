@@ -1,3 +1,5 @@
+// Babel-Config-> presets: es2015, babel-polyfill, stage-0
+
 "use strict";
 
 import Parse from 'parse';
