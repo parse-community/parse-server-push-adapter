@@ -2,7 +2,15 @@
 
 ### master
 
-[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.2.0...master)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.3.0...master)
+
+## [3.3.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.3.0) (2020-09-24)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.2.0...3.3.0)
+
+- Update @parse/node-apn ([#170](https://github.com/parse-community/parse-server-push-adapter/pull/170))
+- Fixed wrong usage of contentAvailable for iOS push notifications via Firebase ([#165](https://github.com/parse-community/parse-server-push-adapter/pull/165)) (thanks to [@supermar1010](https://github.com/supermar1010))
+- Adds request options for the gcm.Sender ([#153](https://github.com/parse-community/parse-server-push-adapter/pull/153)) (thanks to [@simonegiacco](https://github.com/simonegiacco))
+- parse@2.16.0
 
 ## [3.2.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.2.0) (2019-10-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.1.0...3.2.0)
