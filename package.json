@@ -23,20 +23,20 @@
   "author": "Parse",
   "license": "MIT",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.0",
-    "codecov": "^3.5.0",
+    "babel-cli": "6.26.0",
+    "babel-core": "6.26.3",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-stage-0": "6.24.1",
+    "codecov": "3.5.0",
     "jasmine": "2.8.0",
-    "jasmine-spec-reporter": "^4.0.0",
-    "nyc": "^14.1.1"
+    "jasmine-spec-reporter": "4.0.0",
+    "nyc": "14.1.1"
   },
   "dependencies": {
-    "@parse/node-apn": "^3.2.0",
-    "@parse/node-gcm": "^1.0.2",
-    "npmlog": "^4.0.2",
-    "parse": "2.15.0"
+    "@parse/node-apn": "3.2.0",
+    "@parse/node-gcm": "1.0.2",
+    "npmlog": "4.0.2",
+    "parse": "2.16.0"
   },
   "engines": {
     "node": ">= 8.9.1"
