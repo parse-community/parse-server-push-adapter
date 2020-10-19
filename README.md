@@ -59,3 +59,19 @@ const server = new ParseServer(options);
 
 /* continue with the initialization of parse-server */
 ```
+
+## Want to ride the bleeding edge?
+
+We recommend using the most recent tagged build published to npm for production. However, you can test not-yet-released versions of the parse-server-push-adapter by referencing specific branches in your `package.json`. For example, to use the master branch:
+
+```
+npm install parse-community/parse-server-push-adapter.git#master
+```
+
+### Experimenting
+
+You can also use your own forks, and work in progress branches by specifying them:
+
+```
+npm install github:myUsername/parse-server-push-adapter#my-awesome-feature
+```
