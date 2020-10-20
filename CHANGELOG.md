@@ -2,7 +2,14 @@
 
 ### master
 
-[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.3.0...master)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.4.0...master)
+
+## [3.4.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.4.0) (2020-10-19)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.3.0...3.4.0)
+
+- Support installing from branch ([#177](https://github.com/parse-community/parse-server-push-adapter/pull/177)) (thanks to [@dplewis](https://github.com/dplewis))
+- Update @parse/node-apn@4.0.0
+- Update parse@2.17.0
 
 ## [3.3.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.3.0) (2020-09-24)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.2.0...3.3.0)
