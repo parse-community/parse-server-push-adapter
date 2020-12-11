@@ -25,4 +25,4 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run test
-      - run: ./node_modules/.bin/codecov
+      - run: ./node_modules/.bin/codecov -t ${{secrets.CODECOV_REPOSITORY_TOKEN}}
