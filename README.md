@@ -1,9 +1,10 @@
 # parse-server-push-adapter
 
-[![Build
-Status](https://travis-ci.org/parse-community/parse-server-push-adapter.svg?branch=master)](https://travis-ci.org/parse-community/parse-server-push-adapter)
-[![codecov.io](https://codecov.io/github/parse-community/parse-server-push-adapter/coverage.svg?branch=master)](https://codecov.io/github/parse-community/parse-server-push-adapter?branch=master)
 [![NPM Version](https://img.shields.io/npm/v/@parse/push-adapter.svg?style=flat-square)](https://www.npmjs.com/package/@parse/push-adapter)
+[![codecov.io](https://codecov.io/github/parse-community/parse-server-push-adapter/coverage.svg?branch=master)](https://codecov.io/github/parse-community/parse-server-push-adapter?branch=master)
+<a href="https://github.com/parse-community/parse-server-push-adapter/actions?query=workflow%3Aci+branch%3Amaster">
+  <img alt="Build status" src="https://github.com/parse-community/parse-server-push-adapter/workflows/ci/badge.svg?branch=master">
+</a>
 
 Official Push adapter for parse-server
 
