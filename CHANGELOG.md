@@ -2,7 +2,12 @@
 
 ### master
 
-[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.4.0...master)
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.4.1...master)
+
+## 3.4.1
+[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.4.0...3.4.1)
+
+- Security fixes (Manuel Trezza) [#193](https://github.com/parse-community/parse-server-push-adapter/pull/193)
 
 ## [3.4.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.4.0) (2020-10-19)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.3.0...3.4.0)
