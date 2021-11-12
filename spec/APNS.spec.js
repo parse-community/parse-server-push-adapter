@@ -183,6 +183,8 @@ describe('APNS', () => {
       'sound': 'test',
       'content-available': 1,
       'mutable-content': 1,
+      'targetContentIdentifier': 'window1',
+      'interruptionLevel': 'passive',
       'category': 'INVITE_CATEGORY',
       'threadId': 'a-thread-id',
       'key': 'value',
@@ -200,6 +202,8 @@ describe('APNS', () => {
     expect(notification.aps.sound).toEqual(data.sound);
     expect(notification.aps['content-available']).toEqual(1);
     expect(notification.aps['mutable-content']).toEqual(1);
+    expect(notification.aps['target-content-id']).toEqual('window1');
+    expect(notification.aps['interruption-level']).toEqual('passive');
     expect(notification.aps.category).toEqual(data.category);
     expect(notification.aps['thread-id']).toEqual(data.threadId);
     expect(notification.payload).toEqual({

@@ -199,6 +199,12 @@ export class APNS {
           let isMutable = coreData['mutable-content'] === 1;
           notification.setMutableContent(isMutable);
           break;
+        case 'targetContentIdentifier':
+          notification.setTargetContentIdentifier(coreData.targetContentIdentifier);
+          break;
+        case 'interruptionLevel':
+          notification.setInterruptionLevel(coreData.interruptionLevel);
+          break;
         case 'category':
           notification.setCategory(coreData.category);
           break;
