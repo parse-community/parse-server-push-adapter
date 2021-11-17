@@ -7,7 +7,7 @@
 ## 4.0.0
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.4.1...4.0.0)
 
-## BREAKING CHANGE
+### BREAKING CHANGE
 - node-apns 5 requires node >= 12 ([#198](https://github.com/parse-community/parse-server-push-adapter/pull/198))
 
 ### Bug Fixes
