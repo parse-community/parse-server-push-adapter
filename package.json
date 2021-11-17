@@ -1,6 +1,6 @@
 {
   "name": "@parse/push-adapter",
-  "version": "3.4.1",
+  "version": "4.0.0",
   "description": "Base parse-server-push-adapter",
   "main": "lib/index.js",
   "files": [
@@ -33,12 +33,12 @@
     "nyc": "14.1.1"
   },
   "dependencies": {
-    "@parse/node-apn": "4.1.1",
+    "@parse/node-apn": "5.0.0",
     "@parse/node-gcm": "1.0.2",
     "npmlog": "4.1.2",
     "parse": "3.3.0"
   },
   "engines": {
-    "node": ">= 8.9.1"
+    "node": ">= 12"
   }
 }
