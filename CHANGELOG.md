@@ -1,10 +1,4 @@
-# Change Log
-
-### master
-
-[Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/4.0.0...master)
-
-## 4.0.0
+# 4.0.0
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.4.1...4.0.0)
 
 ### BREAKING CHANGE
@@ -13,19 +7,19 @@
 ### Bug Fixes
 - bump node-apn to 5.0 ([#198](https://github.com/parse-community/parse-server-push-adapter/pull/198))
 
-## 3.4.1
+# 3.4.1
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.4.0...3.4.1)
 
 - Security fixes (Manuel Trezza) [#193](https://github.com/parse-community/parse-server-push-adapter/pull/193)
 
-## [3.4.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.4.0) (2020-10-19)
+# [3.4.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.4.0) (2020-10-19)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.3.0...3.4.0)
 
 - Support installing from branch ([#177](https://github.com/parse-community/parse-server-push-adapter/pull/177)) (thanks to [@dplewis](https://github.com/dplewis))
 - Update @parse/node-apn@4.0.0
 - Update parse@2.17.0
 
-## [3.3.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.3.0) (2020-09-24)
+# [3.3.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.3.0) (2020-09-24)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.2.0...3.3.0)
 
 - Update @parse/node-apn ([#170](https://github.com/parse-community/parse-server-push-adapter/pull/170))
@@ -33,67 +27,67 @@
 - Adds request options for the gcm.Sender ([#153](https://github.com/parse-community/parse-server-push-adapter/pull/153)) (thanks to [@simonegiacco](https://github.com/simonegiacco))
 - parse@2.16.0
 
-## [3.2.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.2.0) (2019-10-26)
+# [3.2.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.2.0) (2019-10-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.1.0...3.2.0)
 
 - Support headers (expiration_time, collapse_id, push_type, priority) in data field ([#148](https://github.com/parse-community/parse-server-push-adapter/pull/148)) (thanks to [@dplewis](https://github.com/dplewis))
 - parse@2.8.0
 
-## [3.1.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.1.0) (2019-10-03)
+# [3.1.0](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.1.0) (2019-10-03)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.10...3.1.0)
 
 - Update @parse/node-apn.
 - Update parse.
 
-## [3.0.10](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.10) (2019-08-26)
+# [3.0.10](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.10) (2019-08-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.9...3.0.10)
 
 Use @parse/node-apn served from npm instead of using our fork served from github.
 
 
-## [3.0.9](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.9) (2019-07-30)
+# [3.0.9](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.9) (2019-07-30)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.8...3.0.9)
 
 Fix: Update node-apn version and improve publish script ([#141](https://github.com/parse-community/parse-server-push-adapter/pull/141)) (thanks to [@davimacedo](https://github.com/davimacedo))
 
-## [3.0.8](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.8) (2019-07-26)
+# [3.0.8](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.8) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.7...3.0.8)
 
 Last release had its lib/ folder published but it's failing in parse-server tests. Trying to fix.
 
-## [3.0.7](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.7) (2019-07-26)
+# [3.0.7](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.7) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.6...3.0.7)
 
 New attempt to fix last release since it was published empty to npm.
 
-## [3.0.6](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.6) (2019-07-26)
+# [3.0.6](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.6) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.5...3.0.6)
 
 Fix last release since it was published empty to npm.
 
-## [3.0.5](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.5) (2019-07-26)
+# [3.0.5](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.5) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.4...3.0.5)
 
 Trying to make Travis publish to npm.
 
-## [3.0.4](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.4) (2019-07-26)
+# [3.0.4](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.4) (2019-07-26)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.3...3.0.4)
 
 **What's new**
 
 - Add support for apns-push-type [\#1](https://github.com/parse-community/parse-server-push-adapter/pull/127) (thanks to [@funkenstrahlen](https://github.com/funkenstrahlen))
 
-## [3.0.3](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.3) (2019-07-12)
+# [3.0.3](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.3) (2019-07-12)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.2...3.0.3)
 
 Continuing attempt to get travis to deploy to npm on release.  Third time's a charm?
 
-## [3.0.2](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.2) (2019-07-12)
+# [3.0.2](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.2) (2019-07-12)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.0.1...3.0.2)
 
 Update Travis to deploy the correct repo to npm
 
-## [3.0.1](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.1) (2019-07-11)
+# [3.0.1](https://github.com/parse-server-modules/parse-server-push-adapter/tree/3.0.1) (2019-07-11)
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/v2.0.3...3.0.1)
 
 Update Packages to address security alerts

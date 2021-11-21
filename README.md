@@ -1,20 +1,31 @@
-# parse-server-push-adapter
+# Parse Server Push Adapter <!-- omit in toc -->
 
-[![NPM Version](https://img.shields.io/npm/v/@parse/push-adapter.svg?style=flat-square)](https://www.npmjs.com/package/@parse/push-adapter)
-[![codecov.io](https://codecov.io/github/parse-community/parse-server-push-adapter/coverage.svg?branch=master)](https://codecov.io/github/parse-community/parse-server-push-adapter?branch=master)
-<a href="https://github.com/parse-community/parse-server-push-adapter/actions?query=workflow%3Aci+branch%3Amaster">
-  <img alt="Build status" src="https://github.com/parse-community/parse-server-push-adapter/workflows/ci/badge.svg?branch=master">
-</a>
+[![Build Status](https://github.com/parse-community/parse-server-push-adapter/workflows/ci/badge.svg?branch=master)](https://github.com/parse-community/parse-server-push-adapter/actions?query=workflow%3Aci+branch%3Amaster)
+[![Snyk Badge](https://snyk.io/test/github/parse-community/parse-server-push-adapter/badge.svg)](https://snyk.io/test/github/parse-community/parse-server-push-adapter)
+[![Coverage](https://img.shields.io/codecov/c/github/parse-community/parse-server-push-adapter/master.svg)](https://codecov.io/github/parse-community/parse-server-push-adapter?branch=master)
+[![auto-release](https://img.shields.io/badge/%F0%9F%9A%80-auto--release-9e34eb.svg)](https://github.com/parse-community/parse-server-push-adapter/releases)
 
-Official Push adapter for parse-server
+[![npm latest version](https://img.shields.io/npm/v/@parse/push-adapter.svg)](https://www.npmjs.com/package/@parse/push-adapter)
 
-See [parse-server push configuration](http://docs.parseplatform.org/parse-server/guide/#push-notifications)
+---
 
-## Silent Notifications
+The official Push Notification adapter for Parse Server. See [Parse Server Push Configuration](http://docs.parseplatform.org/parse-server/guide/#push-notifications) for more details. 
+
+---
+
+- [Silent Notifications](#silent-notifications)
+- [Logging](#logging)
+- [Using a Custom Version on Parse Server](#using-a-custom-version-on-parse-server)
+  - [Install Push Adapter](#install-push-adapter)
+  - [Configure Parse Server](#configure-parse-server)
+
+
+
+# Silent Notifications
 
 If you have migrated from parse.com and you are seeing situations where silent (newsstand-like presentless) notifications are failing to deliver please ensure that your payload is setting the content-available attribute to Int(1) and not "1" This value will be explicitly checked.
 
-### see more logs
+# Logging
 
 You can enable verbose logging with environment variables:
 
@@ -28,9 +39,9 @@ VERBOSE_PARSE_SERVER_PUSH_ADAPTER=1
 
 This will produce a more verbose output for all the push sending attempts
 
-### Using a custom version on parse-server
+# Using a Custom Version on Parse Server
 
-#### Install the push adapter
+## Install Push Adapter
 
 ```
 npm install --save @parse/push-adapter@VERSION
@@ -38,7 +49,7 @@ npm install --save @parse/push-adapter@VERSION
 
 Replace VERSION with the version you want to install.
 
-#### Configure parse-server
+## Configure Parse Server
 
 ```js
 const PushAdapter = require('@parse/push-adapter').default;
@@ -59,20 +70,4 @@ const options = {
 const server = new ParseServer(options);
 
 /* continue with the initialization of parse-server */
-```
-
-## Want to ride the bleeding edge?
-
-We recommend using the most recent tagged build published to npm for production. However, you can test not-yet-released versions of the parse-server-push-adapter by referencing specific branches in your `package.json`. For example, to use the master branch:
-
-```
-npm install parse-community/parse-server-push-adapter.git#master
-```
-
-### Experimenting
-
-You can also use your own forks, and work in progress branches by specifying them:
-
-```
-npm install github:myUsername/parse-server-push-adapter#my-awesome-feature
 ```
