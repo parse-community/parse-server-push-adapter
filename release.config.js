@@ -79,7 +79,7 @@ async function config() {
         'changelogFile': changelogFile,
       }],
       ['@semantic-release/npm', {
-        'npmPublish': false,
+        'npmPublish': true,
       }],
       ['@semantic-release/git', {
         assets: [changelogFile, 'package.json', 'package-lock.json'],
