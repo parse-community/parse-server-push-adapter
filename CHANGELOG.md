@@ -1,10 +1,3 @@
-# [4.1.0](https://github.com/parse-community/parse-server-push-adapter/compare/4.0.0...4.1.0) (2021-11-21)
-
-
-### Features
-
-* add support for APNS `interruption-level` and `target-content-id` ([#197](https://github.com/parse-community/parse-server-push-adapter/issues/197)) ([e0541ec](https://github.com/parse-community/parse-server-push-adapter/commit/e0541ecc5fd894c5bf34815f837ce41cb467c86f))
-
 # 4.0.0
 [Full Changelog](https://github.com/parse-server-modules/parse-server-push-adapter/compare/3.4.1...4.0.0)
 
