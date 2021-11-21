@@ -47,9 +47,9 @@ async function config() {
       // { name: 'release-3', range: '3.x.x', channel: '3.x' },
       // { name: 'release-4', range: '4.x.x', channel: '4.x' },
     ],
-    dryRun: false,
+    dryRun: true,
     debug: true,
-    ci: false,
+    ci: true,
     tagFormat: '${version}',
     plugins: [
       ['@semantic-release/commit-analyzer', {
