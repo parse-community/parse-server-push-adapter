@@ -28,5 +28,5 @@ jobs:
         run: npm run build
       - name: Run tests
         run: npm run test
-      - name: Upload code coverage
-        run: ./node_modules/.bin/codecov -t ${{secrets.CODECOV_REPOSITORY_TOKEN}}
+      - name: Code coverage
+        run: bash <(curl -s https://codecov.io/bash)
