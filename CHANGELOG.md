@@ -1,3 +1,10 @@
+## [4.1.2](https://github.com/parse-community/parse-server-push-adapter/compare/4.1.1...4.1.2) (2022-03-27)
+
+
+### Bug Fixes
+
+* security bump node-apn 5.1.0 to 5.1.3 ([#207](https://github.com/parse-community/parse-server-push-adapter/issues/207)) ([7257c9a](https://github.com/parse-community/parse-server-push-adapter/commit/7257c9af57eb95e2d4931151bf1e7020ae6b00b7))
+
 ## [4.1.1](https://github.com/parse-community/parse-server-push-adapter/compare/4.1.0...4.1.1) (2022-03-27)
 
 
