@@ -43,7 +43,7 @@
     "@parse/node-apn": "5.1.0",
     "@parse/node-gcm": "1.0.2",
     "npmlog": "4.1.2",
-    "parse": "3.3.0"
+    "parse": "3.4.0"
   },
   "engines": {
     "node": ">= 12"
