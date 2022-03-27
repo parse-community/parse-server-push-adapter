@@ -1,3 +1,10 @@
+## [4.1.1](https://github.com/parse-community/parse-server-push-adapter/compare/4.1.0...4.1.1) (2022-03-27)
+
+
+### Bug Fixes
+
+* security bump node-fetch from 2.6.6 to 2.6.7 ([#206](https://github.com/parse-community/parse-server-push-adapter/issues/206)) ([3b41a4e](https://github.com/parse-community/parse-server-push-adapter/commit/3b41a4ef04c9ae9e3fb61c0042bcd8e5ab66dfb0))
+
 # [4.1.0](https://github.com/parse-community/parse-server-push-adapter/compare/4.0.0...4.1.0) (2021-11-21)
 
 
