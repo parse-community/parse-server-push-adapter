@@ -37,7 +37,7 @@
     "jasmine": "2.8.0",
     "jasmine-spec-reporter": "4.0.0",
     "nyc": "14.1.1",
-    "semantic-release": "17.4.6"
+    "semantic-release": "19.0.3"
   },
   "dependencies": {
     "@parse/node-apn": "5.1.3",
