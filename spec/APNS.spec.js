@@ -316,7 +316,7 @@ describe('APNS', () => {
   });
 
   it('does log on invalid APNS notification', async () => {
-    let args = {
+    const args = {
       cert: new Buffer('testCert'),
       key: new Buffer('testKey'),
       production: true,

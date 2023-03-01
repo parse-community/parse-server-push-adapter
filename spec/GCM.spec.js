@@ -61,10 +61,7 @@ describe('GCM', () => {
   it('does log on invalid APNS notification', async () => {
     const log = require('npmlog');
     const spy = spyOn(log, 'warn');
-    var args = {
-      apiKey: 'apiKey'
-    };
-    const gcm = new GCM(args);
+    const gcm = new GCM({apiKey: 'apiKey'});
     gcm.send();
     expect(spy).toHaveBeenCalled();
   });
