@@ -10,7 +10,7 @@ function mockSender(gcm) {
         {"error":"InvalidRegistration"},
         {"error":"InvalidRegistration"},
         {"error":"InvalidRegistration"}] }*/
-    
+
     let tokens = options.registrationTokens;
     const response = {
       multicast_id: 7680139367771848000,
@@ -56,6 +56,14 @@ describe('GCM', () => {
       new GCM(args);
     }).toThrow();
     done();
+  });
+
+  it('does log on invalid APNS notification', async () => {
+    const log = require('npmlog');
+    const spy = spyOn(log, 'warn');
+    const gcm = new GCM({apiKey: 'apiKey'});
+    gcm.send();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('can generate GCM Payload without expiration time', (done) => {

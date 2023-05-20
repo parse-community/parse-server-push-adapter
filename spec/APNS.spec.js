@@ -104,7 +104,7 @@ describe('APNS', () => {
 
     var prodApnsConnection = apns.providers[0];
     expect(prodApnsConnection.index).toBe(0);
-    
+
     // TODO: Remove this checking onec we inject APNS
     var prodApnsOptions = prodApnsConnection.client.config;
     expect(prodApnsOptions.cert).toBe(args[1].cert);
@@ -239,7 +239,7 @@ describe('APNS', () => {
     expect(notification.pushType).toEqual('alert');
     done();
   });
-  
+
   it('can generate APNS notification from raw data', (done) => {
       //Mock request data
       let data = {
@@ -259,17 +259,17 @@ describe('APNS', () => {
       let collapseId = "collapseIdentifier";
       let pushType = "background";
       let priority = 5;
-  
+
       let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
-  
+
       expect(notification.expiry).toEqual(Math.round(expirationTime / 1000));
       expect(notification.collapseId).toEqual(collapseId);
       expect(notification.pushType).toEqual(pushType);
       expect(notification.priority).toEqual(priority);
-  
+
       let stringifiedJSON = notification.compile();
       let jsonObject = JSON.parse(stringifiedJSON);
-  
+
       expect(jsonObject.aps.alert).toEqual({ "loc-key" : "GAME_PLAY_REQUEST_FORMAT", "loc-args" : [ "Jenna", "Frank"] });
       expect(jsonObject.aps.badge).toEqual(100);
       expect(jsonObject.aps.sound).toEqual('test');
@@ -313,6 +313,20 @@ describe('APNS', () => {
     let qualifiedProviders = APNS.prototype._chooseProviders.call({providers: providers}, appIdentifier);
     expect(qualifiedProviders).toEqual([]);
     done();
+  });
+
+  it('does log on invalid APNS notification', async () => {
+    const args = {
+      cert: new Buffer('testCert'),
+      key: new Buffer('testKey'),
+      production: true,
+      topic: 'topic'
+    };
+    const log = require('npmlog');
+    const spy = spyOn(log, 'warn');
+    const apns = new APNS(args);
+    apns.send();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('can send APNS notification', (done) => {
