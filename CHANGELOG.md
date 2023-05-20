@@ -1,3 +1,10 @@
+## [4.1.3](https://github.com/parse-community/parse-server-push-adapter/compare/4.1.2...4.1.3) (2023-05-20)
+
+
+### Bug Fixes
+
+* Validate push notification payload; fixes a security vulnerability in which the adapter can crash Parse Server due to an invalid push notification payload ([#217](https://github.com/parse-community/parse-server-push-adapter/issues/217)) ([598cb84](https://github.com/parse-community/parse-server-push-adapter/commit/598cb84d0866b7c5850ca96af920e8cb5ba243ec))
+
 ## [4.1.2](https://github.com/parse-community/parse-server-push-adapter/compare/4.1.1...4.1.2) (2022-03-27)
 
 
