@@ -1,3 +1,10 @@
+# [4.2.0](https://github.com/parse-community/parse-server-push-adapter/compare/4.1.3...4.2.0) (2023-08-06)
+
+
+### Features
+
+* Upgrade @parse/node-apn from 5.1.3 to 5.2.1 ([#220](https://github.com/parse-community/parse-server-push-adapter/issues/220)) ([3b932d1](https://github.com/parse-community/parse-server-push-adapter/commit/3b932d1e40ddf81d38fcd7f3bbb71bbdcf848978))
+
 ## [4.1.3](https://github.com/parse-community/parse-server-push-adapter/compare/4.1.2...4.1.3) (2023-05-20)
 
 
