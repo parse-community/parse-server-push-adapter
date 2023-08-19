@@ -43,7 +43,8 @@
     "@parse/node-apn": "6.0.1",
     "@parse/node-gcm": "1.0.2",
     "npmlog": "7.0.1",
-    "parse": "4.2.0"
+    "parse": "4.2.0",
+    "firebase-admin": "11.10.1"
   },
   "engines": {
     "node": ">= 14"
