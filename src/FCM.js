@@ -16,7 +16,7 @@ export default function FCM(args) {
   }
   console.log("FIREBASE_SVC_ACCOUNT_PATH", args.firebaseServiceAccount);
   const app = admin.initializeApp({credential: admin.credential.cert(args.firebaseServiceAccount)});
-  this.sender = getMessaging(app);
+  this.sender = admin.getMessaging(app);
   //this.sender = new gcm.Sender(args.apiKey, args.requestOptions);
 }
 
@@ -65,6 +65,7 @@ FCM.prototype.send = function(data, devices) {
   // Generate gcm payload
   // PushId is not a formal field of FCM, but Parse Android SDK uses this field to deduplicate push notifications
   let fcmPayload = generateFCMPayload(data, pushId, timestamp, expirationTime);
+  console.log("FCM PAYLOAD", fcmPayload);
   // Make and send gcm request
   //let message = new gcm.Message(fcmPayload);
 
