@@ -16,7 +16,7 @@ export default function FCM(args) {
   }
   console.log("FIREBASE_SVC_ACCOUNT_PATH", args.firebaseServiceAccount);
   const app = admin.initializeApp({credential: admin.credential.cert(args.firebaseServiceAccount)});
-  this.sender = admin.getMessaging(app);
+  this.sender = app.admin.messaging();
   //this.sender = new gcm.Sender(args.apiKey, args.requestOptions);
 }
 
