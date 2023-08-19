@@ -3,6 +3,7 @@
 import Parse from 'parse';
 import log from 'npmlog';
 import { initializeApp } from 'firebase-admin/app';
+import { credential } from 'firebase-admin';
 import { randomString } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter FCM';
@@ -14,7 +15,7 @@ export default function FCM(args) {
     throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
                           'FCM Configuration is invalid');
   }
-  initializeApp({credential: args.firebaseServiceAccount});
+  initializeApp({credential: credential.cert(args.firebaseServiceAccount)});
   this.sender = getMessaging();
   //this.sender = new gcm.Sender(args.apiKey, args.requestOptions);
 }
