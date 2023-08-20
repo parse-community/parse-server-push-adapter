@@ -69,7 +69,7 @@ FCM.prototype.send = function(data, devices) {
         response.responses.forEach((resp, idx) => {
           if (resp.success) {
             successfulTokens.push(deviceTokens[idx]);
-            promises.push(createSuccesfullPromise(deviceTokens[idx], devicesMap[deviceTokens[idx]].deviceType));
+            promises.push(createSuccessfulPromise(deviceTokens[idx], devicesMap[deviceTokens[idx]].deviceType));
           } else {
             failedTokens.push(deviceTokens[idx]);
             promises.push(createErrorPromise(deviceTokens[idx], devicesMap[deviceTokens[idx]].deviceType, resp.error));
@@ -157,7 +157,7 @@ function createErrorPromise(token, deviceType, errorMessage) {
  * @param {String} token Device-Token
  * @param {String} deviceType Device-Type
  */
-function createSuccesfullPromise(token, deviceType) {
+function createSuccessfulPromise(token, deviceType) {
   return Promise.resolve({
     transmitted: true,
     device: {
