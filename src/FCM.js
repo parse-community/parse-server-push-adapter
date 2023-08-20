@@ -59,7 +59,7 @@ FCM.prototype.send = function(data, devices) {
     let fcmPayload = generateFCMPayload(data, pushId, timestamp, deviceTokens);
     let registrationTokens = deviceTokens;
     let length = registrationTokens.length;
-    log.verbose(LOG_PREFIX, `sending push to ${length} devices`);
+    log.info(LOG_PREFIX, `sending push to ${length} devices`);
 
     return this.sender.sendEachForMulticast(fcmPayload.payload.data)
       .then((response) => {
@@ -74,12 +74,12 @@ FCM.prototype.send = function(data, devices) {
           } else {
             failedTokens.push(registrationTokens[idx]);
             promises.push(createErrorPromise(registrationTokens[idx], devicesMap[registrationTokens[idx]].deviceType, resp.error));
-            log.verbose(LOG_PREFIX, `failed to send to ${registrationTokens[idx]} with error: ${JSON.stringify(resp.error)}`);
+            log.error(LOG_PREFIX, `failed to send to ${registrationTokens[idx]} with error: ${JSON.stringify(resp.error)}`);
           }
         });
 
         if (failedTokens.length) {
-          log.verbose(LOG_PREFIX, `tokens with failed pushes: ${JSON.stringify(failedTokens)}`);
+          log.error(LOG_PREFIX, `tokens with failed pushes: ${JSON.stringify(failedTokens)}`);
         }
 
         if (successfulTokens.length) {

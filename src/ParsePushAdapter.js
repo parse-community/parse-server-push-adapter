@@ -28,10 +28,10 @@ export default class ParsePushAdapter {
                              'Push to ' + pushType + ' is not supported');
       }
       switch (pushType) {
+        case 'ios':
         case 'tvos':
         case 'osx':
         case 'android':
-        case 'ios':
         case 'fcm':
           this.senderMap[pushType] = new FCM(pushConfig[pushType]);
           break;
