@@ -43,22 +43,21 @@ FCM.prototype.send = function(data, devices) {
 
   // We can only have 500 recepients per send, so we need to slice devices to
   // chunk if necessary
-  let slices = sliceDevices(devices, FCM.FCMRegistrationTokensMax);
+  const slices = sliceDevices(devices, FCM.FCMRegistrationTokensMax);
 
   const sendToDeviceSlice = (deviceSlice) => {
-    let pushId = randomString(10);
-    let timestamp = Date.now();
+    const pushId = randomString(10);
+    const timestamp = Date.now();
 
     // Build a device map
-    let devicesMap = deviceSlice.reduce((memo, device) => {
+    const devicesMap = deviceSlice.reduce((memo, device) => {
       memo[device.deviceToken] = device;
       return memo;
     }, {});
 
-    let deviceTokens = Object.keys(devicesMap);
-    let fcmPayload = generateFCMPayload(data, pushId, timestamp, deviceTokens);
-    let registrationTokens = deviceTokens;
-    let length = registrationTokens.length;
+    const deviceTokens = Object.keys(devicesMap);
+    const fcmPayload = generateFCMPayload(data, pushId, timestamp, deviceTokens);
+    const length = deviceTokens.length;
     log.info(LOG_PREFIX, `sending push to ${length} devices`);
 
     return this.sender.sendEachForMulticast(fcmPayload.payload.data)
@@ -69,12 +68,12 @@ FCM.prototype.send = function(data, devices) {
 
         response.responses.forEach((resp, idx) => {
           if (resp.success) {
-            successfulTokens.push(registrationTokens[idx]);
-            promises.push(createSuccesfullPromise(registrationTokens[idx], devicesMap[registrationTokens[idx]].deviceType));
+            successfulTokens.push(deviceTokens[idx]);
+            promises.push(createSuccesfullPromise(deviceTokens[idx], devicesMap[deviceTokens[idx]].deviceType));
           } else {
-            failedTokens.push(registrationTokens[idx]);
-            promises.push(createErrorPromise(registrationTokens[idx], devicesMap[registrationTokens[idx]].deviceType, resp.error));
-            log.error(LOG_PREFIX, `failed to send to ${registrationTokens[idx]} with error: ${JSON.stringify(resp.error)}`);
+            failedTokens.push(deviceTokens[idx]);
+            promises.push(createErrorPromise(deviceTokens[idx], devicesMap[deviceTokens[idx]].deviceType, resp.error));
+            log.error(LOG_PREFIX, `failed to send to ${deviceTokens[idx]} with error: ${JSON.stringify(resp.error)}`);
           }
         });
 
@@ -108,7 +107,7 @@ FCM.prototype.send = function(data, devices) {
 function generateFCMPayload(requestData, pushId, timeStamp, deviceTokens) {
   delete requestData['where'];
   requestData.tokens = deviceTokens;
-  let payload = {}
+  const payload = {}
 
   payload.payload = {
     data: requestData,
@@ -126,7 +125,7 @@ function generateFCMPayload(requestData, pushId, timeStamp, deviceTokens) {
  * @returns {Array} An array which contains several arrays of devices with fixed chunk size
  */
 function sliceDevices(devices, chunkSize) {
-  let chunkDevices = [];
+  const chunkDevices = [];
   while (devices.length > 0) {
     chunkDevices.push(devices.splice(0, chunkSize));
   }
