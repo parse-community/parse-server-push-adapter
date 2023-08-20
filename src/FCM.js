@@ -7,7 +7,6 @@ import { getMessaging } from 'firebase-admin/messaging';
 import { randomString } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter FCM';
-const FCMTimeToLiveMax = 4 * 7 * 24 * 60 * 60; // FCM allows a max of 4 weeks
 const FCMRegistrationTokensMax = 500;
 
 export default function FCM(args) {
