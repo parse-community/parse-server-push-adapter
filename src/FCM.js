@@ -123,7 +123,7 @@ function generateFCMPayload(requestData, pushId, timeStamp, deviceTokens) {
  * Slice a list of devices to several list of devices with fixed chunk size.
  * @param {Array} devices An array of devices
  * @param {Number} chunkSize The size of the a chunk
- * @returns {Array} An array which contaisn several arries of devices with fixed chunk size
+ * @returns {Array} An array which contains several arrays of devices with fixed chunk size
  */
 function sliceDevices(devices, chunkSize) {
   let chunkDevices = [];
