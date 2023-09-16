@@ -8,6 +8,7 @@ import { randomString } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter FCM';
 const FCMRegistrationTokensMax = 500;
+const FCMTimeToLiveMax = 4 * 7 * 24 * 60 * 60; // FCM allows a max of 4 weeks
 
 export default function FCM(args) {
   if (typeof args !== 'object' || !args.firebaseServiceAccount) {
@@ -40,7 +41,6 @@ FCM.prototype.send = function(data, devices) {
     return;
   }
 
-
   // We can only have 500 recepients per send, so we need to slice devices to
   // chunk if necessary
   const slices = sliceDevices(devices, FCM.FCMRegistrationTokensMax);
@@ -60,7 +60,7 @@ FCM.prototype.send = function(data, devices) {
     const length = deviceTokens.length;
     log.info(LOG_PREFIX, `sending push to ${length} devices`);
 
-    return this.sender.sendEachForMulticast(fcmPayload.payload.data)
+    return this.sender.sendEachForMulticast(fcmPayload.data)
       .then((response) => {
         const promises = [];
         const failedTokens = [];
@@ -101,21 +101,59 @@ FCM.prototype.send = function(data, devices) {
  * Generate the fcm payload from the data we get from api request.
  * @param {Object} requestData The request body
  * @param {String} pushId A random string
- * @param {Number} timeStamp A number whose format is the Unix Epoch
+ * @param {Number} timeStamp A number in milliseconds since the Unix Epoch
  * @returns {Object} A payload for FCM
  */
 function generateFCMPayload(requestData, pushId, timeStamp, deviceTokens) {
   delete requestData['where'];
-  requestData.tokens = deviceTokens;
-  const payload = {}
 
-  payload.payload = {
-    data: requestData,
-    push_id: pushId,
-    time: new Date(timeStamp).toISOString()
+  const payloadToUse = {
+      data: {},
+      push_id: pushId,
+      time: new Date(timeStamp).toISOString()
+  };
+
+  // Use rawPayload instead of the GCM implementation if it exists
+  if (requestData.hasOwnProperty('rawPayload')) {
+      payloadToUse.data = {
+          ...requestData.rawPayload,
+          tokens: deviceTokens
+      };
+  } else {
+      // Android payload according to GCM implementation
+      const androidPayload = {
+          android: {
+              priority: 'high'
+          },
+          tokens: deviceTokens
+      };
+
+      if (requestData.hasOwnProperty('notification')) {
+          androidPayload.notification = requestData.notification;
+      }
+
+      if (requestData.hasOwnProperty('data')) {
+          androidPayload.data = requestData.data;
+      }
+
+      if (requestData['expiration_time']) {
+          const expirationTime = requestData['expiration_time'];
+          // Convert to seconds
+          let timeToLive = Math.floor((expirationTime - timeStamp) / 1000);
+          if (timeToLive < 0) {
+            timeToLive = 0;
+          }
+          if (timeToLive >= FCMTimeToLiveMax) {
+            timeToLive = FCMTimeToLiveMax;
+          }
+
+          androidPayload.android.ttl = timeToLive;
+      }
+
+      payloadToUse.data = androidPayload;
   }
 
-  return payload;
+  return payloadToUse;
 }
 
 /**
@@ -131,7 +169,6 @@ function sliceDevices(devices, chunkSize) {
   }
   return chunkDevices;
 }
-
 
 /**
  * Creates an errorPromise for return.
