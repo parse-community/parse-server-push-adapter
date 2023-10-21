@@ -40,12 +40,12 @@
     "semantic-release": "17.4.6"
   },
   "dependencies": {
-    "@parse/node-apn": "5.2.3",
+    "@parse/node-apn": "6.0.1",
     "@parse/node-gcm": "1.0.2",
     "npmlog": "4.1.2",
-    "parse": "3.4.0"
+    "parse": "4.2.0"
   },
   "engines": {
-    "node": ">= 12"
+    "node": ">= 14"
   }
 }
