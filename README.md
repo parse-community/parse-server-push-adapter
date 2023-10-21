@@ -19,8 +19,6 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
   - [Install Push Adapter](#install-push-adapter)
   - [Configure Parse Server](#configure-parse-server)
 
-
-
 # Silent Notifications
 
 If you have migrated from parse.com and you are seeing situations where silent (newsstand-like presentless) notifications are failing to deliver please ensure that your payload is setting the content-available attribute to Int(1) and not "1" This value will be explicitly checked.
@@ -44,30 +42,26 @@ This will produce a more verbose output for all the push sending attempts
 ## Install Push Adapter
 
 ```
-npm install --save @parse/push-adapter@VERSION
+npm install --save @parse/push-adapter@<VERSION>
 ```
 
-Replace VERSION with the version you want to install.
+Replace `<VERSION>` with the version you want to install.
 
 ## Configure Parse Server
 
 ```js
 const PushAdapter = require('@parse/push-adapter').default;
-const pushOptions = {
-  ios: { /* iOS push options */ } ,
-  android: { /* android push options */ }   
-}
-// starting 3.0.0
-const options = {
-  appId: "****",
-  masterKey: "****",
+const parseServerOptions = {
   push: {
-    adapter: new PushAdapter(pushOptions),
+    adapter: new PushAdapter({
+      ios: {
+        /* Apple push notification options */
+      },
+      android: {
+        /* Android push options */
+      }
+    })
   },
-  /* ... */ 
+  /* Other Parse Server options */
 }
-
-const server = new ParseServer(options);
-
-/* continue with the initialization of parse-server */
 ```

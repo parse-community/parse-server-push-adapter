@@ -26,6 +26,10 @@ GCM.GCMRegistrationTokensMax = GCMRegistrationTokensMax;
  * @returns {Object} A promise which is resolved after we get results from gcm
  */
 GCM.prototype.send = function(data, devices) {
+  if (!data || !devices || !Array.isArray(devices)) {
+    log.warn(LOG_PREFIX, 'invalid push payload');
+    return;
+  }
   let pushId = randomString(10);
   // Make a new array
   devices=devices.slice(0);
