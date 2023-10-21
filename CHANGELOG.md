@@ -1,3 +1,10 @@
+## [4.2.5](https://github.com/parse-community/parse-server-push-adapter/compare/4.2.4...4.2.5) (2023-10-21)
+
+
+### Bug Fixes
+
+* Security upgrade json-schema and jsprim ([#226](https://github.com/parse-community/parse-server-push-adapter/issues/226)) ([83ca68f](https://github.com/parse-community/parse-server-push-adapter/commit/83ca68f028222a38cdcb7d8a7296509a1189b258))
+
 ## [4.2.4](https://github.com/parse-community/parse-server-push-adapter/compare/4.2.3...4.2.4) (2023-10-21)
 
 
