@@ -70,7 +70,11 @@ export class APNS {
    * @returns {Object} A promise which is resolved immediately
    */
   send(data, allDevices) {
-    let coreData = data.data;
+    let coreData = data && data.data;
+    if (!coreData || !allDevices || !Array.isArray(allDevices)) {
+      log.warn(LOG_PREFIX, 'invalid push payload');
+      return;
+    }
     let expirationTime = data['expiration_time'] || coreData['expiration_time'];
     let collapseId = data['collapse_id'] || coreData['collapse_id'];
     let pushType = data['push_type'] || coreData['push_type'];
