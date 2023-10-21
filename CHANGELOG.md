@@ -1,3 +1,10 @@
+## [5.0.2](https://github.com/parse-community/parse-server-push-adapter/compare/5.0.1...5.0.2) (2023-10-21)
+
+
+### Bug Fixes
+
+* Security upgrade semver-regex from 3.1.3 to 3.1.4 ([#210](https://github.com/parse-community/parse-server-push-adapter/issues/210)) ([089149b](https://github.com/parse-community/parse-server-push-adapter/commit/089149b70347200b7df37c280029f84c829d6798))
+
 ## [5.0.1](https://github.com/parse-community/parse-server-push-adapter/compare/5.0.0...5.0.1) (2023-10-21)
 
 
