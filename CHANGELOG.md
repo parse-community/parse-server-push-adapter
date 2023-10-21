@@ -1,3 +1,17 @@
+## [4.2.3](https://github.com/parse-community/parse-server-push-adapter/compare/4.2.2...4.2.3) (2023-10-21)
+
+
+### Bug Fixes
+
+* Security upgrade decode-uri-component from 0.2.0 to 0.2.2 ([#214](https://github.com/parse-community/parse-server-push-adapter/issues/214)) ([16863c0](https://github.com/parse-community/parse-server-push-adapter/commit/16863c09f08fa346462711d906e6fbdc38721222))
+
+## [4.2.2](https://github.com/parse-community/parse-server-push-adapter/compare/4.2.1...4.2.2) (2023-10-21)
+
+
+### Bug Fixes
+
+* Security upgrade http-cache-semantics from 4.1.0 to 4.1.1 ([#216](https://github.com/parse-community/parse-server-push-adapter/issues/216)) ([ba48dd6](https://github.com/parse-community/parse-server-push-adapter/commit/ba48dd66741f136847ae93684dc2f0184ca9512f))
+
 ## [4.2.1](https://github.com/parse-community/parse-server-push-adapter/compare/4.2.0...4.2.1) (2023-10-02)
 
 
