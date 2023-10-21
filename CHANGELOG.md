@@ -1,3 +1,10 @@
+## [4.2.4](https://github.com/parse-community/parse-server-push-adapter/compare/4.2.3...4.2.4) (2023-10-21)
+
+
+### Bug Fixes
+
+* Security upgrade @babel/traverse from 7.17.3 to 7.23.2 ([#225](https://github.com/parse-community/parse-server-push-adapter/issues/225)) ([afdb28e](https://github.com/parse-community/parse-server-push-adapter/commit/afdb28e8d1eccc1b848612210804bd2fe6973622))
+
 ## [4.2.3](https://github.com/parse-community/parse-server-push-adapter/compare/4.2.2...4.2.3) (2023-10-21)
 
 
