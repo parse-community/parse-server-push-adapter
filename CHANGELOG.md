@@ -1,3 +1,15 @@
+# [5.0.0](https://github.com/parse-community/parse-server-push-adapter/compare/4.2.5...5.0.0) (2023-10-21)
+
+
+### Features
+
+* Upgrade to node-apn 6.0.1, parse 4.2.0 ([#227](https://github.com/parse-community/parse-server-push-adapter/issues/227)) ([615e730](https://github.com/parse-community/parse-server-push-adapter/commit/615e73012056c6702a9f7eb1ab9359f7f88b8efc))
+
+
+### BREAKING CHANGES
+
+* This release removes support for Node 12; the minimum required version is Node 14. ([615e730](615e730))
+
 ## [4.2.5](https://github.com/parse-community/parse-server-push-adapter/compare/4.2.4...4.2.5) (2023-10-21)
 
 
