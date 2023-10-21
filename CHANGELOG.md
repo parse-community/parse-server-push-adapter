@@ -1,3 +1,10 @@
+## [4.2.2](https://github.com/parse-community/parse-server-push-adapter/compare/4.2.1...4.2.2) (2023-10-21)
+
+
+### Bug Fixes
+
+* Security upgrade http-cache-semantics from 4.1.0 to 4.1.1 ([#216](https://github.com/parse-community/parse-server-push-adapter/issues/216)) ([ba48dd6](https://github.com/parse-community/parse-server-push-adapter/commit/ba48dd66741f136847ae93684dc2f0184ca9512f))
+
 ## [4.2.1](https://github.com/parse-community/parse-server-push-adapter/compare/4.2.0...4.2.1) (2023-10-02)
 
 
