@@ -42,7 +42,7 @@
   "dependencies": {
     "@parse/node-apn": "6.0.1",
     "@parse/node-gcm": "1.0.2",
-    "npmlog": "4.1.2",
+    "npmlog": "7.0.1",
     "parse": "4.2.0"
   },
   "engines": {
