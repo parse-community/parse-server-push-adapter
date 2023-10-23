@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto';
-
+const axios = require('axios');
 /**g
    * Classify the device token of installations based on its device type.
    * @param {Object} installations An array of installations
@@ -42,4 +42,14 @@ export function randomString(size) {
     objectId += chars[bytes.readUInt8(i) % chars.length];
   }
   return objectId;
+}
+
+export async function updateReciepientStatus(receipts) {
+  try {
+    await axios.post('https://api.fixitfaster.com/webhooks/push', {
+      receipts,
+    });
+  } catch (e) {
+    console.log('e', e);
+  }
 }

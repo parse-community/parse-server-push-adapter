@@ -6,7 +6,7 @@ import Parse from 'parse';
 import log from 'npmlog';
 import Expo from 'expo-server-sdk';
 import "babel-polyfill";
-import { randomString } from './PushAdapterUtils';
+import { randomString, updateReciepientStatus } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter EXPO';
 const GCMRegistrationTokensMax = 1000;
@@ -34,7 +34,7 @@ EXPO.prototype.send = function(data, devices) {
   if (data['expiration_time']) {
     expirationTime = data['expiration_time'];
   }
-  
+
   let messages = [];
 
   // Build a device map
@@ -102,8 +102,7 @@ EXPO.prototype.send = function(data, devices) {
     for (let chunk of receiptIdChunks) {
       try {
         let receipts = await this.sender.getPushNotificationReceiptsAsync(chunk);
-        console.log(receipts);
-
+        updateReciepientStatus(receipts);
         // The receipts specify whether Apple or Google successfully received the
         // notification and information about an error, if one occurred.
         receipts.forEach((receipt, index) => {
