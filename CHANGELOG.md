@@ -1,3 +1,10 @@
+## [5.1.1](https://github.com/parse-community/parse-server-push-adapter/compare/5.1.0...5.1.1) (2024-03-02)
+
+
+### Bug Fixes
+
+* Security upgrade firebase-admin from 11.10.1 to 12.0.0 ([#231](https://github.com/parse-community/parse-server-push-adapter/issues/231)) ([2c3d61d](https://github.com/parse-community/parse-server-push-adapter/commit/2c3d61deac9665c42ee8d41f14a04930758eea1c))
+
 # [5.1.0](https://github.com/parse-community/parse-server-push-adapter/compare/5.0.2...5.1.0) (2024-03-02)
 
 
