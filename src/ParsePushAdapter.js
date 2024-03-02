@@ -3,6 +3,7 @@ import Parse from 'parse';
 import log from 'npmlog';
 import APNS from './APNS';
 import GCM from './GCM';
+import FCM from './FCM';
 import { classifyInstallations } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter';
@@ -30,11 +31,19 @@ export default class ParsePushAdapter {
         case 'ios':
         case 'tvos':
         case 'osx':
-          this.senderMap[pushType] = new APNS(pushConfig[pushType]);
+          if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
+            this.senderMap[pushType] = new FCM(pushConfig[pushType]);
+          } else {
+            this.senderMap[pushType] = new APNS(pushConfig[pushType]);
+          }
           break;
         case 'android':
         case 'fcm':
-          this.senderMap[pushType] = new GCM(pushConfig[pushType]);
+          if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
+            this.senderMap[pushType] = new FCM(pushConfig[pushType]);
+          } else {
+            this.senderMap[pushType] = new GCM(pushConfig[pushType]);
+          }
           break;
       }
     }
