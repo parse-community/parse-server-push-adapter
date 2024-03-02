@@ -1,6 +1,6 @@
 {
   "name": "@parse/push-adapter",
-  "version": "5.0.2",
+  "version": "5.1.0",
   "description": "Base parse-server-push-adapter",
   "main": "lib/index.js",
   "files": [

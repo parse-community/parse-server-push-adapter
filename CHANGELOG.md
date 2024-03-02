@@ -1,3 +1,10 @@
+# [5.1.0](https://github.com/parse-community/parse-server-push-adapter/compare/5.0.2...5.1.0) (2024-03-02)
+
+
+### Features
+
+* Send Android push notifications to Firebase Cloud Messaging API (HTTP v1) by setting the push adapter option `firebaseServiceAccount` ([#222](https://github.com/parse-community/parse-server-push-adapter/issues/222)) ([be40b1d](https://github.com/parse-community/parse-server-push-adapter/commit/be40b1dfa1893e00eded9192446b40269d4cb93e))
+
 ## [5.0.2](https://github.com/parse-community/parse-server-push-adapter/compare/5.0.1...5.0.2) (2023-10-21)
 
 
