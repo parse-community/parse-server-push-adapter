@@ -4,6 +4,8 @@ var randomString = require('../src/PushAdapterUtils').randomString;
 var APNS = require('../src/APNS').default;
 var GCM = require('../src/GCM').default;
 var MockAPNProvider = require('./MockAPNProvider');
+var FCM = require('../src/FCM').default
+const path = require('path');
 
 describe('ParsePushAdapter', () => {
 
@@ -52,6 +54,72 @@ describe('ParsePushAdapter', () => {
     expect(iosSender instanceof APNS).toBe(true);
     // Check android
     var androidSender = parsePushAdapter.senderMap['android'];
+    expect(androidSender instanceof GCM).toBe(true);
+    done();
+  });
+
+  it("can be initialized with FCM for android and ios", (done) => {
+    var pushConfig = {
+      android: {
+        firebaseServiceAccount: path.join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+      },
+      ios: {
+        firebaseServiceAccount: path.join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+      },
+    };
+
+    var parsePushAdapter = new ParsePushAdapter(pushConfig);
+    var iosSender = parsePushAdapter.senderMap["ios"];
+    expect(iosSender instanceof FCM).toBe(true);
+    var androidSender = parsePushAdapter.senderMap["android"];
+    expect(androidSender instanceof FCM).toBe(true);
+    done();
+  });
+
+  it("can be initialized with FCM for android and APNS for apple", (done) => {
+    var pushConfig = {
+      android: {
+        firebaseServiceAccount: path.join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+      },
+      ios: [
+        {
+          cert: new Buffer("testCert"),
+          key: new Buffer("testKey"),
+          production: true,
+          topic: "topic",
+        },
+        {
+          cert: new Buffer("testCert"),
+          key: new Buffer("testKey"),
+          production: false,
+          topic: "topicAgain",
+        },
+      ],
+    };
+
+    var parsePushAdapter = new ParsePushAdapter(pushConfig);
+    var iosSender = parsePushAdapter.senderMap["ios"];
+    expect(iosSender instanceof APNS).toBe(true);
+    var androidSender = parsePushAdapter.senderMap["android"];
+    expect(androidSender instanceof FCM).toBe(true);
+    done();
+  });
+
+  it("can be initialized with FCM for apple and GCM for android", (done) => {
+    var pushConfig = {
+      android: {
+        senderId: "senderId",
+        apiKey: "apiKey",
+      },
+      ios: {
+        firebaseServiceAccount: path.join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+      },
+    };
+
+    var parsePushAdapter = new ParsePushAdapter(pushConfig);
+    var iosSender = parsePushAdapter.senderMap["ios"];
+    expect(iosSender instanceof FCM).toBe(true);
+    var androidSender = parsePushAdapter.senderMap["android"];
     expect(androidSender instanceof GCM).toBe(true);
     done();
   });

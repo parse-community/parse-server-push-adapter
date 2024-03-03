@@ -32,7 +32,7 @@ export default class ParsePushAdapter {
         case 'tvos':
         case 'osx':
           if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
-            this.senderMap[pushType] = new FCM(pushConfig[pushType]);
+            this.senderMap[pushType] = new FCM(pushConfig[pushType], 'apple');
           } else {
             this.senderMap[pushType] = new APNS(pushConfig[pushType]);
           }
@@ -40,7 +40,7 @@ export default class ParsePushAdapter {
         case 'android':
         case 'fcm':
           if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
-            this.senderMap[pushType] = new FCM(pushConfig[pushType]);
+            this.senderMap[pushType] = new FCM(pushConfig[pushType], 'android');
           } else {
             this.senderMap[pushType] = new GCM(pushConfig[pushType]);
           }
