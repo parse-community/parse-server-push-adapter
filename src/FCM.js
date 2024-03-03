@@ -272,6 +272,7 @@ function _GCMToFCMPayload(requestData, timeStamp) {
  * If the key rawPayload is present in the requestData, a raw payload will be used. Otherwise, conversion is done.
  * @param {Object} requestData The request body
  * @param {String} pushType Either apple or android.
+ * @param {Number} timeStamp Used during GCM payload conversion for ttl
  * @returns {Object} A FCMv1-compatible payload.
  */
 function payloadConverter(requestData, pushType, timeStamp) {
