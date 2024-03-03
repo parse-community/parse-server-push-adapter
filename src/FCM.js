@@ -131,7 +131,7 @@ FCM.prototype.send = function (data, devices) {
 function _APNSToFCMPayload(requestData) {
   let coreData = requestData;
 
-  // Do not understand the intention of having a data var in the APNS payloads
+  // Do not understand the intention of having a data object in the APNS payloads
   // Users are also confused about this
   // https://github.com/parse-community/parse-server/issues/6369#issuecomment-721095800
   // but doing it like this to try and match how APNS does things currently even if it's strange.
