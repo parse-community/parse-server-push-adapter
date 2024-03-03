@@ -60,7 +60,7 @@ describe('FCM', () => {
     );
 
     // Up to the user to declare a payload compatible with the FCM v1 API
-    // so not checking anythhttps://docs.parseplatform.org/rest/guide/#sending-optionsing else
+    // so not checking anything else
 
     expect(payload.data.tokens).toEqual(['testToken']);
     expect(payload.time).toEqual(timeStampISOStr);
