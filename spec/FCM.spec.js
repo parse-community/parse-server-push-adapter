@@ -59,9 +59,12 @@ describe('FCM', () => {
       'android',
     );
 
-    // Up to the user to declare a payload compatible with the FCM v1 API
-    // so not checking anything else
-
+    expect(payload.data.data).toEqual(requestData.rawPayload.data);
+    expect(payload.data.notification).toEqual(
+      requestData.rawPayload.notification,
+    );
+    expect(payload.data.android).toEqual(requestData.rawPayload.android);
+    expect(payload.data.apns).toEqual(requestData.rawPayload.apns);
     expect(payload.data.tokens).toEqual(['testToken']);
     expect(payload.time).toEqual(timeStampISOStr);
     expect(payload['push_id']).toEqual(pushId);
@@ -461,9 +464,6 @@ describe('FCM', () => {
 
       const fcmPayload = payload.data;
 
-      // Not exactly the same as in APNS, think the APNS test case for this is wrong.
-      // According to https://docs.parseplatform.org/rest/guide/#sending-options
-      // This should be the alert message, and this is satisifed with a body key inside alert.
       expect(fcmPayload.apns.payload.aps.alert).toEqual({ body: 'alert' });
       expect(fcmPayload.apns.headers['apns-expiration']).toEqual(
         Math.round(expirationTime / 1000),
