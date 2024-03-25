@@ -2,7 +2,7 @@ const FCM = require('../src/FCM').default;
 const path = require('path');
 
 describe('FCM', () => {
-  it('can initialize', (done) => {
+  it('can initialize', () => {
     const args = {
       firebaseServiceAccount: path.join(
         __dirname,
@@ -14,10 +14,9 @@ describe('FCM', () => {
     };
     const fcm = new FCM(args);
     expect(fcm).toBeDefined();
-    done();
   });
 
-  it('can use a raw FCM payload', (done) => {
+  it('can use a raw FCM payload', () => {
     // If the payload is wrapped inside a key named 'rawPayload', a user can use the raw FCM payload structure
     // See: https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages
     // And: https://firebase.google.com/docs/reference/admin/node/firebase-admin.messaging.multicastmessage.md#multicastmessage_interface
@@ -68,10 +67,9 @@ describe('FCM', () => {
     expect(payload.data.tokens).toEqual(['testToken']);
     expect(payload.time).toEqual(timeStampISOStr);
     expect(payload['push_id']).toEqual(pushId);
-    done();
   });
 
-  it('can slice devices', (done) => {
+  it('can slice devices', () => {
     // Mock devices
     var devices = [makeDevice(1), makeDevice(2), makeDevice(3), makeDevice(4)];
 
@@ -80,11 +78,10 @@ describe('FCM', () => {
       [makeDevice(1), makeDevice(2), makeDevice(3)],
       [makeDevice(4)],
     ]);
-    done();
   });
 
   describe('GCM payloads can be converted to compatible FCMv1 payloads', () => {
-    it('can generate GCM Payload without expiration time', (done) => {
+    it('can generate GCM Payload without expiration time', () => {
       // To maintain backwards compatibility with GCM payload format
       // See corresponding test with same test label in GCM.spec.js
 
@@ -122,10 +119,9 @@ describe('FCM', () => {
 
       const dataFromUser = fcmPayload.android.data;
       expect(dataFromUser).toEqual(requestData.data);
-      done();
     });
 
-    it('can generate GCM Payload with valid expiration time', (done) => {
+    it('can generate GCM Payload with valid expiration time', () => {
       // To maintain backwards compatibility with GCM payload format
       // See corresponding test with same test label in GCM.spec.js
 
@@ -172,10 +168,9 @@ describe('FCM', () => {
 
       const dataFromUser = fcmPayload.android.data;
       expect(dataFromUser).toEqual(requestData.data);
-      done();
     });
 
-    it('can generate GCM Payload with too early expiration time', (done) => {
+    it('can generate GCM Payload with too early expiration time', () => {
       // To maintain backwards compatibility with GCM payload format
       // See corresponding test with same test label in GCM.spec.js
 
@@ -213,10 +208,9 @@ describe('FCM', () => {
 
       const dataFromUser = fcmPayload.android.data;
       expect(dataFromUser).toEqual(requestData.data);
-      done();
     });
 
-    it('can generate GCM Payload with too late expiration time', (done) => {
+    it('can generate GCM Payload with too late expiration time', () => {
       const expirationTime = 2454538822113;
 
       const requestData = {
@@ -255,7 +249,6 @@ describe('FCM', () => {
 
       const dataFromUser = fcmPayload.android.data;
       expect(dataFromUser).toEqual(requestData.data);
-      done();
     });
   });
 
@@ -265,7 +258,7 @@ describe('FCM', () => {
   // We also do not need to pass APNS headers like expiration_time, collapse_id etc to FCM.generatePayload() as is done for APNS._generateNotification() for generating the payload.
   // APNS headers get set if present in the payload data.
   describe('APNS payloads can be converted to compatible FCMv1 payloads', () => {
-    it('can generate APNS notification', (done) => {
+    it('can generate APNS notification', () => {
       // To maintain backwards compatibility with APNS payload format
       // See corresponding test with same test label in APNS.spec.js
 
@@ -339,10 +332,9 @@ describe('FCM', () => {
 
       expect(payload.time).toEqual(timeStampISOStr);
       expect(payload['push_id']).toEqual(pushId);
-      done();
     });
 
-    it('sets push type to alert if not defined explicitly', (done) => {
+    it('sets push type to alert if not defined explicitly', () => {
       let data = {
         alert: 'alert',
         title: 'title',
@@ -372,10 +364,9 @@ describe('FCM', () => {
       expect(fcmPayload.apns.headers['apns-push-type']).toEqual('alert');
       expect(payload.time).toEqual(timeStampISOStr);
       expect(payload['push_id']).toEqual(pushId);
-      done();
     });
 
-    it('can generate APNS notification from raw data', (done) => {
+    it('can generate APNS notification from raw data', () => {
       let expirationTime = 1454571491354;
       let collapseId = 'collapseIdentifier';
       let pushType = 'background';
@@ -429,10 +420,9 @@ describe('FCM', () => {
 
       expect(payload.time).toEqual(timeStampISOStr);
       expect(payload['push_id']).toEqual(pushId);
-      done();
     });
 
-    it('can generate an APNS notification with headers in data', (done) => {
+    it('can generate an APNS notification with headers in data', () => {
       // See 'can send APNS notification headers in data' in APNS.spec.js
       // Not mocking sends currently, only payload generation
 
@@ -474,7 +464,6 @@ describe('FCM', () => {
 
       expect(payload.time).toEqual(timeStampISOStr);
       expect(payload['push_id']).toEqual(pushId);
-      done();
     });
   });
 
