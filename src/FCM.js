@@ -9,6 +9,13 @@ import { randomString } from './PushAdapterUtils';
 const LOG_PREFIX = 'parse-server-push-adapter FCM';
 const FCMRegistrationTokensMax = 500;
 const FCMTimeToLiveMax = 4 * 7 * 24 * 60 * 60; // FCM allows a max of 4 weeks
+const apnsIntegerDataKeys = [
+  'badge',
+  'content-available',
+  'mutable-content',
+  'priority',
+  'expiration_time',
+];
 
 export default function FCM(args, pushType) {
   if (typeof args !== 'object' || !args.firebaseServiceAccount) {
@@ -242,6 +249,12 @@ function _GCMToFCMPayload(requestData, timeStamp) {
   }
 
   if (requestData.hasOwnProperty('data')) {
+    // FCM gives an error on send if we have apns keys that should have integer values
+    for (const key of apnsIntegerDataKeys) {
+      if (requestData.data.hasOwnProperty(key)) {
+        requestData.data[key] = requestData.data[key].toString();
+      }
+    }
     androidPayload.android.data = requestData.data;
   }
 
