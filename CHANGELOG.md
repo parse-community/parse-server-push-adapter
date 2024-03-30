@@ -1,3 +1,10 @@
+# [5.2.0](https://github.com/parse-community/parse-server-push-adapter/compare/5.1.1...5.2.0) (2024-03-30)
+
+
+### Features
+
+* Add backwards compatibility with APNS payloads when using Firebase Cloud Messaging API (HTTP v1) ([#234](https://github.com/parse-community/parse-server-push-adapter/issues/234)) ([b9a41d1](https://github.com/parse-community/parse-server-push-adapter/commit/b9a41d1d8b11792911a2bb9abb8649465f5eff15))
+
 ## [5.1.1](https://github.com/parse-community/parse-server-push-adapter/compare/5.1.0...5.1.1) (2024-03-02)
 
 
