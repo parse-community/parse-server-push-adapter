@@ -1,3 +1,15 @@
+# [6.0.0](https://github.com/parse-community/parse-server-push-adapter/compare/5.2.0...6.0.0) (2024-03-30)
+
+
+### Features
+
+* Remove Node 14 and 16 support ([#236](https://github.com/parse-community/parse-server-push-adapter/issues/236)) ([bb0ff82](https://github.com/parse-community/parse-server-push-adapter/commit/bb0ff82a04ca07f02f10c1639b3aa89835aedbf0))
+
+
+### BREAKING CHANGES
+
+* Removes support for Node 14 and 16 ([bb0ff82](bb0ff82))
+
 # [5.2.0](https://github.com/parse-community/parse-server-push-adapter/compare/5.1.1...5.2.0) (2024-03-30)
 
 
