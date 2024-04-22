@@ -76,6 +76,7 @@ export default class ParsePushAdapter {
           });
           sendPromises.push(Promise.all(results));
         } else {
+          log.info(LOG_PREFIX, `invoking send on pushType ${pushType}, with data: ${JSON.stringify(data)}`)
           sendPromises.push(sender.send(data, devices));
         }
       }
