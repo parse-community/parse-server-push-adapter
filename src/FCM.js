@@ -78,6 +78,8 @@ FCM.prototype.send = function (data, devices) {
     const length = deviceTokens.length;
     log.info(LOG_PREFIX, `sending push to ${length} devices`);
 
+    log.info(LOG_PREFIX, `sending push ${JSON.stringify(fcmPayload)}`);
+
     return this.sender
       .sendEachForMulticast(fcmPayload.data)
       .then((response) => {
@@ -326,6 +328,8 @@ function generateFCMPayload(
 ) {
   delete requestData['where'];
 
+  log.info(LOG_PREFIX, `generateFCMPayload pushId: ${pushId}, timeStamp: ${timeStamp}, requestData: ${JSON.stringify(requestData)}`)
+
   const payloadToUse = {
     data: {},
     push_id: pushId,
@@ -337,6 +341,8 @@ function generateFCMPayload(
     ...fcmPayload,
     tokens: deviceTokens,
   };
+
+  log.info(LOG_PREFIX, `generateFCMPayload returning: ${JSON.stringify(payloadToUse)}`)
 
   return payloadToUse;
 }
