@@ -331,14 +331,15 @@ function generateFCMPayload(
   log.info(LOG_PREFIX, `generateFCMPayload pushId: ${pushId}, timeStamp: ${timeStamp}, requestData: ${JSON.stringify(requestData)}`)
 
   const payloadToUse = {
-    data: {},
-    push_id: pushId,
-    time: new Date(timeStamp).toISOString(),
+    data: {
+    }
   };
 
   const fcmPayload = payloadConverter(requestData, pushType, timeStamp);
   payloadToUse.data = {
     ...fcmPayload,
+    push_id: pushId,
+    time: new Date(timeStamp).toISOString(),
     tokens: deviceTokens,
   };
 
