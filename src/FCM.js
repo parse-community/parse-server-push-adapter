@@ -266,7 +266,7 @@ function _GCMToFCMPayload(requestData, pushId, timeStamp) {
         delete requestData.data[key]
       }
     }
-    androidPayload.android.data = {
+    androidPayload.data = {
       push_id: pushId,
       time: new Date(timeStamp).toISOString(),
       ...requestData.data
