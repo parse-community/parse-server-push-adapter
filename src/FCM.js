@@ -66,8 +66,6 @@ FCM.prototype.send = function (data, devices) {
 
     const deviceTokens = Object.keys(devicesMap);
 
-    log.info(LOG_PREFIX, `going to generateFCMPayload from pushId ${pushId}, timestampt: ${timestamp} and data: ${JSON.stringify(data)}`)
-
     const fcmPayload = generateFCMPayload(
       data,
       pushId,
@@ -243,8 +241,6 @@ function _APNSToFCMPayload(requestData) {
 
 function _GCMToFCMPayload(requestData, pushId, timeStamp) {
 
-  log.info(LOG_PREFIX, `_GCMToFCMPayload requestData: ${JSON.stringify(requestData)}`)
-
   const androidPayload = {
     android: {
       priority: 'high',
@@ -282,8 +278,6 @@ function _GCMToFCMPayload(requestData, pushId, timeStamp) {
 
     androidPayload.android.ttl = timeToLive;
   }
-
-  log.info(LOG_PREFIX, `_GCMToFCMPayload returning: ${JSON.stringify(androidPayload)}`)
 
   return androidPayload;
 }
