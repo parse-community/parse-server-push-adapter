@@ -325,24 +325,13 @@ function generateFCMPayload(
   delete requestData['where'];
 
   const payloadToUse = {
-    data: {
-      android: {
-        data: {
-          push_id: pushId,
-          time: new Date(timeStamp).toISOString(),
-        }
-      }
-    }
+    data: {}
   };
 
   const fcmPayload = payloadConverter(requestData, pushType, pushId, timeStamp);
   payloadToUse.data = {
-    android: {
-      data: {
-      }
-    },
     ...fcmPayload,
-  tokens: deviceTokens,
+    tokens: deviceTokens,
   };
 
   return payloadToUse;
