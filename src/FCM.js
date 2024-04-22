@@ -241,13 +241,17 @@ function _APNSToFCMPayload(requestData) {
   return apnsPayload;
 }
 
-function _GCMToFCMPayload(requestData, timeStamp) {
+function _GCMToFCMPayload(requestData, pushId, timeStamp) {
 
   log.info(LOG_PREFIX, `_GCMToFCMPayload requestData: ${JSON.stringify(requestData)}`)
 
   const androidPayload = {
     android: {
       priority: 'high',
+      data: {
+        push_id: pushId,
+        time: new Date(timeStamp).toISOString(),
+      }
     },
   };
 
@@ -262,7 +266,11 @@ function _GCMToFCMPayload(requestData, timeStamp) {
         delete requestData.data[key]
       }
     }
-    androidPayload.android.data = requestData.data;
+    androidPayload.android.data = {
+      push_id: pushId,
+      time: new Date(timeStamp).toISOString(),
+      ...requestData.data
+    }
   }
 
   if (requestData['expiration_time']) {
@@ -293,7 +301,7 @@ function _GCMToFCMPayload(requestData, timeStamp) {
  * @param {Number} timeStamp Used during GCM payload conversion for ttl
  * @returns {Object} A FCMv1-compatible payload.
  */
-function payloadConverter(requestData, pushType, timeStamp) {
+function payloadConverter(requestData, pushType, pushId, timeStamp) {
   if (requestData.hasOwnProperty('rawPayload')) {
     return requestData.rawPayload;
   }
@@ -301,7 +309,7 @@ function payloadConverter(requestData, pushType, timeStamp) {
   if (pushType === 'apple') {
     return _APNSToFCMPayload(requestData);
   } else if (pushType === 'android') {
-    return _GCMToFCMPayload(requestData, timeStamp);
+    return _GCMToFCMPayload(requestData, pushId, timeStamp);
   } else {
     throw new Parse.Error(
       Parse.Error.PUSH_MISCONFIGURED,
@@ -341,12 +349,10 @@ function generateFCMPayload(
     }
   };
 
-  const fcmPayload = payloadConverter(requestData, pushType, timeStamp);
+  const fcmPayload = payloadConverter(requestData, pushType, pushId, timeStamp);
   payloadToUse.data = {
     android: {
       data: {
-        push_id: pushId,
-        time: new Date(timeStamp).toISOString(),
       }
     },
     ...fcmPayload,
