@@ -332,15 +332,25 @@ function generateFCMPayload(
 
   const payloadToUse = {
     data: {
+      android: {
+        data: {
+          push_id: pushId,
+          time: new Date(timeStamp).toISOString(),
+        }
+      }
     }
   };
 
   const fcmPayload = payloadConverter(requestData, pushType, timeStamp);
   payloadToUse.data = {
+    android: {
+      data: {
+        push_id: pushId,
+        time: new Date(timeStamp).toISOString(),
+      }
+    },
     ...fcmPayload,
-    push_id: pushId,
-    time: new Date(timeStamp).toISOString(),
-    tokens: deviceTokens,
+  tokens: deviceTokens,
   };
 
   log.info(LOG_PREFIX, `generateFCMPayload returning: ${JSON.stringify(payloadToUse)}`)
