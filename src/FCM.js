@@ -248,10 +248,6 @@ function _GCMToFCMPayload(requestData, pushId, timeStamp) {
   const androidPayload = {
     android: {
       priority: 'high',
-      data: {
-        push_id: pushId,
-        time: new Date(timeStamp).toISOString(),
-      }
     },
   };
 
@@ -266,7 +262,7 @@ function _GCMToFCMPayload(requestData, pushId, timeStamp) {
         delete requestData.data[key]
       }
     }
-    androidPayload.data = {
+    androidPayload.android.data = {
       push_id: pushId,
       time: new Date(timeStamp).toISOString(),
       data: JSON.stringify(requestData.data),
