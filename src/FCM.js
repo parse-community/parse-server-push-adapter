@@ -326,8 +326,6 @@ function generateFCMPayload(
 ) {
   delete requestData['where'];
 
-  log.info(LOG_PREFIX, `generateFCMPayload pushId: ${pushId}, timeStamp: ${timeStamp}, requestData: ${JSON.stringify(requestData)}`)
-
   const payloadToUse = {
     data: {
       android: {
@@ -348,8 +346,6 @@ function generateFCMPayload(
     ...fcmPayload,
   tokens: deviceTokens,
   };
-
-  log.info(LOG_PREFIX, `generateFCMPayload returning: ${JSON.stringify(payloadToUse)}`)
 
   return payloadToUse;
 }
