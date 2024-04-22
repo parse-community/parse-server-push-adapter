@@ -269,7 +269,7 @@ function _GCMToFCMPayload(requestData, pushId, timeStamp) {
     androidPayload.data = {
       push_id: pushId,
       time: new Date(timeStamp).toISOString(),
-      ...requestData.data
+      data: JSON.stringify(requestData.data),
     }
   }
 
