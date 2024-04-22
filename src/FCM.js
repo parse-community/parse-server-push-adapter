@@ -76,8 +76,6 @@ FCM.prototype.send = function (data, devices) {
     const length = deviceTokens.length;
     log.info(LOG_PREFIX, `sending push to ${length} devices`);
 
-    log.info(LOG_PREFIX, `sending push ${JSON.stringify(fcmPayload)}`);
-
     return this.sender
       .sendEachForMulticast(fcmPayload.data)
       .then((response) => {
