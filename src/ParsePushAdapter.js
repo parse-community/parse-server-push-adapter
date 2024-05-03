@@ -4,6 +4,7 @@ import log from 'npmlog';
 import APNS from './APNS';
 import GCM from './GCM';
 import FCM from './FCM';
+import WEB from './WEB';
 import { classifyInstallations } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter';
@@ -13,7 +14,7 @@ export default class ParsePushAdapter {
   supportsPushTracking = true;
 
   constructor(pushConfig = {}) {
-    this.validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm'];
+    this.validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm', 'web'];
     this.senderMap = {};
     // used in PushController for Dashboard Features
     this.feature = {
@@ -36,6 +37,9 @@ export default class ParsePushAdapter {
           } else {
             this.senderMap[pushType] = new APNS(pushConfig[pushType]);
           }
+          break;
+        case 'web':
+          this.senderMap[pushType] = new WEB(pushConfig[pushType]);
           break;
         case 'android':
         case 'fcm':
