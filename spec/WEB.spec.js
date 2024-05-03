@@ -10,7 +10,7 @@ const pushSubscription = {
 };
 
 const vapidDetails = {
-  subject: 'test@test.com',
+  subject: 'test@example.com',
   publicKey: 'publicKey',
   privateKey: 'privateKey',
 };

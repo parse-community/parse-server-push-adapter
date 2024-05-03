@@ -32,7 +32,7 @@ describe('ParsePushAdapter', () => {
     var pushConfig = {
       web: {
         vapidDetails: {
-          subject: 'test@test.com',
+          subject: 'test@example.com',
           publicKey: 'publicKey',
           privateKey: 'privateKey',
         },
@@ -371,7 +371,7 @@ describe('ParsePushAdapter', () => {
     var pushConfig = {
       web: {
         vapidDetails: {
-          subject: 'test@test.com',
+          subject: 'test@example.com',
           publicKey: 'publicKey',
           privateKey: 'privateKey',
         },
