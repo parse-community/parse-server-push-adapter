@@ -80,7 +80,7 @@ describe('WEB', () => {
     expect(WEB.sendNotifications).toHaveBeenCalled();
     const args = WEB.sendNotifications.calls.first().args;
     expect(args.length).toEqual(3);
-    expect(args[0]).toEqual(data);
+    expect(args[0]).toEqual(data.data);
     expect(args[1]).toEqual(['token']);
     expect(args[2].vapidDetails).toEqual('apiKey');
     expect(spy).toHaveBeenCalled();
@@ -109,7 +109,7 @@ describe('WEB', () => {
     expect(WEB.sendNotifications).toHaveBeenCalled();
     const args = WEB.sendNotifications.calls.first().args;
     expect(args.length).toEqual(3);
-    expect(args[0]).toEqual(data);
+    expect(args[0]).toEqual(data.data);
     expect(args[1]).toEqual(['token']);
     expect(args[2].vapidDetails).toEqual('apiKey');
     expect(spy).toHaveBeenCalled();

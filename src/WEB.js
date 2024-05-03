@@ -43,7 +43,7 @@ export class WEB {
     let length = deviceTokens.length;
     log.verbose(LOG_PREFIX, `sending to ${length} ${length > 1 ? 'devices' : 'device'}`);
 
-    const response = await WEB.sendNotifications(data, deviceTokens, this.options);
+    const response = await WEB.sendNotifications(coreData, deviceTokens, this.options);
     const { results, sent, failed } = response;
     if (sent) {
       log.verbose(LOG_PREFIX, `WEB Response: %d out of %d sent successfully`, sent, results.length);
