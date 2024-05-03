@@ -62,6 +62,9 @@ const parseServerOptions = {
       android: {
         /* Android push options */
       }
+      web: {
+        /* Web push options */
+      }
     })
   },
   /* Other Parse Server options */
