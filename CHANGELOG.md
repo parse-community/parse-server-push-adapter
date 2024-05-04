@@ -1,3 +1,10 @@
+# [6.1.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.0.0...6.1.0) (2024-05-04)
+
+
+### Features
+
+* Add support for web push notifications ([#239](https://github.com/parse-community/parse-server-push-adapter/issues/239)) ([93b6a48](https://github.com/parse-community/parse-server-push-adapter/commit/93b6a48890bb78bce19d778aa74751a8f515fe56))
+
 # [6.0.0](https://github.com/parse-community/parse-server-push-adapter/compare/5.2.0...6.0.0) (2024-03-30)
 
 
