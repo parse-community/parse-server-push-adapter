@@ -178,20 +178,26 @@ function _APNSToFCMPayload(requestData) {
         apnsPayload['apns']['payload']['aps'] = coreData.aps;
         break;
       case 'alert':
-        if (!apnsPayload['apns']['payload']['aps'].hasOwnProperty('alert')) {
+        if (typeof coreData.alert == 'object') {
+          // When we receive a dictionary, use as is to remain
+          // compatible with how the APNS.js + node-apn work
+          apnsPayload['apns']['payload']['aps']['alert'] = coreData.alert;
+        } else {
+          // When we receive a value, prepare `alert` dictionary
+          // and set its `body` property
           apnsPayload['apns']['payload']['aps']['alert'] = {};
+          apnsPayload['apns']['payload']['aps']['alert']['body'] = coreData.alert;
         }
-        // In APNS.js we set a body with the same value as alert in requestData.
-        // See L200 in APNS.spec.js
-        apnsPayload['apns']['payload']['aps']['alert']['body'] = coreData.alert;
+        if (!apnsPayload['apns']['payload']['aps'].hasOwnProperty('alert')) {
+        }
         break;
       case 'title':
         // Ensure the alert object exists before trying to assign the title
+        // title always goes into the nested `alert` dictionary
         if (!apnsPayload['apns']['payload']['aps'].hasOwnProperty('alert')) {
           apnsPayload['apns']['payload']['aps']['alert'] = {};
         }
-        apnsPayload['apns']['payload']['aps']['alert']['title'] =
-          coreData.title;
+        apnsPayload['apns']['payload']['aps']['alert']['title'] = coreData.title;
         break;
       case 'badge':
         apnsPayload['apns']['payload']['aps']['badge'] = coreData.badge;
