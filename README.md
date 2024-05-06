@@ -11,7 +11,7 @@
 
 ---
 
-The official Push Notification adapter for Parse Server. See [Parse Server Push Configuration](http://docs.parseplatform.org/parse-server/guide/#push-notifications) for more details. 
+The official Push Notification adapter for Parse Server. See [Parse Server Push Configuration](http://docs.parseplatform.org/parse-server/guide/#push-notifications) for more details.
 
 ---
 
@@ -32,7 +32,7 @@ You can enable verbose logging with environment variables:
 ```
 VERBOSE=1
 
-or 
+or
 
 VERBOSE_PARSE_SERVER_PUSH_ADAPTER=1
 ```
@@ -57,10 +57,79 @@ const parseServerOptions = {
   push: {
     adapter: new PushAdapter({
       ios: {
-        /* Apple push notification options */
+        /* Apple push notification options, see below for more info */
       },
       android: {
-        /* Android push options */
+        /* Android push options, see below for more info */
+      }
+      web: {
+        /* Web push options */
+      }
+    })
+  },
+  /* Other Parse Server options */
+}
+```
+
+### Apple configuration
+
+Delivering push notifications to Apple devices can be done either via Apple APNS (Apple Push Notification Service), or via FCM (Firebase Cloud Messaging) service. Note that each category of Apple devices require their own configuration section. Parse Server Push Adapter currently supports these types of Apple devices:
+
+- `ios` -> iPhone, iPad, and iPod touch apps
+- `osx` -> macOS, and macCatalyst apps
+- `tvos` -> tvOS apps
+
+
+Apple Push Notification Service requires a p8 encoded private key that can be generated and downloaded in Apple Developer Member Center under Certificates, Identifiers & Profiles.
+
+Google Firebase Cloud Messaging requires Firebase Service Account json encoded private key that can be downloaded in Firebase Console under your project Settings, and Cloud Messaging tab.
+
+Here is an example configuration for both methods:
+
+```js
+const PushAdapter = require('@parse/push-adapter').default;
+const parseServerOptions = {
+  push: {
+    adapter: new PushAdapter({
+      ios: {
+        /* Deliver push notifications to iOS devices via Apple APNS */
+        /* You will need app id, team id, and auth key available on developer.apple.com/account */
+        token: {
+          key: __dirname + '/AuthKey_XXXXXXXXXX.p8',
+          keyId: "XXXXXXXXXX",
+          teamId: "AAAAAAAAAA"
+        },
+        topic: 'com.example.yourawesomeapp',
+        production: true
+      },
+      osx: {
+        /* Deliver push notifications to macOS devices via Google FCM */
+        /* You will need admin key available on console.firebase.google.com */
+        firebaseServiceAccount: __dirname + "/your-awesome-app-firebase-adminsdk-abcd-efgh.json"
+      }
+    })
+  },
+  /* Other Parse Server options */
+}
+```
+
+### Android configuration
+
+Delivering push notifications to Android devices can be done via FCM (Firebase Cloud Messaging) service.
+
+Google Firebase Cloud Messaging requires Firebase Service Account json encoded private key that can be downloaded in Firebase Console under your project Settings, and Cloud Messaging tab.
+
+Here is an example configuration:
+
+```js
+const PushAdapter = require('@parse/push-adapter').default;
+const parseServerOptions = {
+  push: {
+    adapter: new PushAdapter({
+      android: {
+        /* Deliver push notifications to Android devices via Google FCM */
+        /* You will need admin key available on console.firebase.google.com */
+        firebaseServiceAccount: __dirname + "/your-awesome-app-firebase-adminsdk-abcd-efgh.json"
       }
     })
   },
