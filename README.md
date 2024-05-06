@@ -131,6 +131,9 @@ const parseServerOptions = {
         /* You will need admin key available on console.firebase.google.com */
         firebaseServiceAccount: __dirname + "/your-awesome-app-firebase-adminsdk-abcd-efgh.json"
       }
+      web: {
+        /* Web push options */
+      }
     })
   },
   /* Other Parse Server options */

@@ -3,6 +3,7 @@ var ParsePushAdapter = ParsePushAdapterPackage.ParsePushAdapter;
 var randomString = require('../src/PushAdapterUtils').randomString;
 var APNS = require('../src/APNS').default;
 var GCM = require('../src/GCM').default;
+var WEB = require('../src/WEB').default;
 var MockAPNProvider = require('./MockAPNProvider');
 var FCM = require('../src/FCM').default
 const path = require('path');
@@ -22,12 +23,20 @@ describe('ParsePushAdapter', () => {
     expect(typeof ParsePushAdapterPackage.ParsePushAdapter).toBe('function');
     expect(typeof ParsePushAdapterPackage.APNS).toBe('function');
     expect(typeof ParsePushAdapterPackage.GCM).toBe('function');
+    expect(typeof ParsePushAdapterPackage.WEB).toBe('function');
     expect(typeof ParsePushAdapterPackage.utils).toBe('object');
   });
 
   it('can be initialized', (done) => {
     // Make mock config
     var pushConfig = {
+      web: {
+        vapidDetails: {
+          subject: 'test@example.com',
+          publicKey: 'publicKey',
+          privateKey: 'privateKey',
+        },
+      },
       android: {
         senderId: 'senderId',
         apiKey: 'apiKey'
@@ -55,6 +64,9 @@ describe('ParsePushAdapter', () => {
     // Check android
     var androidSender = parsePushAdapter.senderMap['android'];
     expect(androidSender instanceof GCM).toBe(true);
+    // Check web
+    var webSender = parsePushAdapter.senderMap['web'];
+    expect(webSender instanceof WEB).toBe(true);
     done();
   });
 
@@ -142,13 +154,13 @@ describe('ParsePushAdapter', () => {
   it('can get valid push types', (done) => {
     var parsePushAdapter = new ParsePushAdapter();
 
-    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'osx', 'tvos', 'android', 'fcm']);
+    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'osx', 'tvos', 'android', 'fcm', 'web']);
     done();
   });
 
   it('can classify installation', (done) => {
     // Mock installations
-    var validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm'];
+    var validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm', 'web'];
     var installations = [
       {
         deviceType: 'android',
@@ -171,6 +183,10 @@ describe('ParsePushAdapter', () => {
         deviceToken: 'winToken'
       },
       {
+        deviceType: 'web',
+        deviceToken: 'webToken'
+      },
+      {
         deviceType: 'android',
         deviceToken: undefined
       }
@@ -181,6 +197,7 @@ describe('ParsePushAdapter', () => {
     expect(deviceMap['ios']).toEqual([makeDevice('iosToken', 'ios')]);
     expect(deviceMap['osx']).toEqual([makeDevice('osxToken', 'osx')]);
     expect(deviceMap['tvos']).toEqual([makeDevice('tvosToken', 'tvos')]);
+    expect(deviceMap['web']).toEqual([makeDevice('webToken', 'web')]);
     expect(deviceMap['win']).toBe(undefined);
     done();
   });
@@ -198,10 +215,14 @@ describe('ParsePushAdapter', () => {
     var osxSender = {
       send: jasmine.createSpy('send')
     }
+    var webSender = {
+      send: jasmine.createSpy('send')
+    }
     var senderMap = {
       osx: osxSender,
       ios: iosSender,
-      android: androidSender
+      android: androidSender,
+      web: webSender,
     };
     parsePushAdapter.senderMap = senderMap;
     // Mock installations
@@ -217,6 +238,10 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'osx',
         deviceToken: 'osxToken'
+      },
+      {
+        deviceType: 'web',
+        deviceToken: 'webToken'
       },
       {
         deviceType: 'win',
@@ -250,6 +275,13 @@ describe('ParsePushAdapter', () => {
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('osxToken', 'osx')
+    ]);
+    // Check web sender
+    expect(webSender.send).toHaveBeenCalled();
+    args = webSender.send.calls.first().args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
+      makeDevice('webToken', 'web')
     ]);
     done();
   });
@@ -337,6 +369,13 @@ describe('ParsePushAdapter', () => {
 
   it('reports properly results', (done) => {
     var pushConfig = {
+      web: {
+        vapidDetails: {
+          subject: 'test@example.com',
+          publicKey: 'publicKey',
+          privateKey: 'privateKey',
+        },
+      },
       android: {
         senderId: 'senderId',
         apiKey: 'apiKey'
@@ -384,6 +423,10 @@ describe('ParsePushAdapter', () => {
         appIdentifier: 'iosbundleId' // ios and tvos share the same bundleid
       },
       {
+        deviceType: 'web',
+        deviceToken: JSON.stringify({ endpoint: 'https://fcm.googleapis.com/fcm/send/123' }),
+      },
+      {
         deviceType: 'win',
         deviceToken: 'winToken'
       },
@@ -397,8 +440,8 @@ describe('ParsePushAdapter', () => {
     parsePushAdapter.send({ data: { alert: 'some' } }, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
-      // 2x iOS, 1x android, 1x osx, 1x tvos
-      expect(results.length).toBe(5);
+      // 2x iOS, 1x android, 1x osx, 1x tvos, 1x web
+      expect(results.length).toBe(6);
       results.forEach((result) => {
         expect(typeof result.device).toBe('object');
         if (!result.device) {
@@ -408,7 +451,7 @@ describe('ParsePushAdapter', () => {
         const device = result.device;
         expect(typeof device.deviceType).toBe('string');
         expect(typeof device.deviceToken).toBe('string');
-        if (device.deviceType === 'ios' || device.deviceType === 'osx') {
+        if (['ios', 'osx', 'web'].includes(device.deviceType)) {
           expect(result.transmitted).toBe(true);
         } else {
           expect(result.transmitted).toBe(false);
@@ -496,7 +539,7 @@ describe('ParsePushAdapter', () => {
     parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
-      // 2x iOS, 1x android, 1x osx, 1x tvos
+      // 1x iOS
       expect(results.length).toBe(1);
       const result = results[0];
       expect(typeof result.device).toBe('object');
