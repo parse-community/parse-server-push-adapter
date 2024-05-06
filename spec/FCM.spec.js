@@ -65,8 +65,6 @@ describe('FCM', () => {
     expect(payload.data.android).toEqual(requestData.rawPayload.android);
     expect(payload.data.apns).toEqual(requestData.rawPayload.apns);
     expect(payload.data.tokens).toEqual(['testToken']);
-    expect(payload.time).toEqual(timeStampISOStr);
-    expect(payload['push_id']).toEqual(pushId);
   });
 
   it('can slice devices', () => {
@@ -87,7 +85,7 @@ describe('FCM', () => {
 
       const requestData = {
         data: {
-          alert: 'alert',
+          alert: { body: 'alert', title: 'title' }
         },
         notification: {
           title: 'I am a title',
@@ -114,10 +112,10 @@ describe('FCM', () => {
       expect(fcmPayload.android.ttl).toEqual(undefined);
       expect(fcmPayload.android.notification).toEqual(requestData.notification);
 
-      expect(payload.time).toEqual(timeStampISOStr);
-      expect(payload['push_id']).toEqual(pushId);
+      expect(fcmPayload.android.data['time']).toEqual(timeStampISOStr);
+      expect(fcmPayload.android.data['push_id']).toEqual(pushId);
 
-      const dataFromUser = fcmPayload.android.data;
+      const dataFromUser = JSON.parse(fcmPayload.android.data.data);
       expect(dataFromUser).toEqual(requestData.data);
     });
 
@@ -134,7 +132,7 @@ describe('FCM', () => {
       const requestData = {
         expiration_time: expirationTime,
         data: {
-          alert: 'alert',
+          alert: { body: 'alert', title: 'title' }
         },
         notification: {
           title: 'I am a title',
@@ -163,10 +161,10 @@ describe('FCM', () => {
       );
       expect(fcmPayload.android.notification).toEqual(requestData.notification);
 
-      expect(payload.time).toEqual(timeStampISOStr);
-      expect(payload['push_id']).toEqual(pushId);
+      expect(fcmPayload.android.data['time']).toEqual(timeStampISOStr);
+      expect(fcmPayload.android.data['push_id']).toEqual(pushId);
 
-      const dataFromUser = fcmPayload.android.data;
+      const dataFromUser = JSON.parse(fcmPayload.android.data.data);
       expect(dataFromUser).toEqual(requestData.data);
     });
 
@@ -179,7 +177,7 @@ describe('FCM', () => {
       const requestData = {
         expiration_time: expirationTime,
         data: {
-          alert: 'alert',
+          alert: { body: 'alert', title: 'title' }
         },
         notification: {
           title: 'I am a title',
@@ -203,10 +201,10 @@ describe('FCM', () => {
       expect(fcmPayload.android.ttl).toEqual(0);
       expect(fcmPayload.android.notification).toEqual(requestData.notification);
 
-      expect(payload.time).toEqual(timeStampISOStr);
-      expect(payload['push_id']).toEqual(pushId);
+      expect(fcmPayload.android.data['time']).toEqual(timeStampISOStr);
+      expect(fcmPayload.android.data['push_id']).toEqual(pushId);
 
-      const dataFromUser = fcmPayload.android.data;
+      const dataFromUser = JSON.parse(fcmPayload.android.data.data);
       expect(dataFromUser).toEqual(requestData.data);
     });
 
@@ -216,7 +214,7 @@ describe('FCM', () => {
       const requestData = {
         expiration_time: expirationTime,
         data: {
-          alert: 'alert',
+          alert: { body: 'alert', title: 'title' }
         },
         notification: {
           title: 'I am a title',
@@ -244,10 +242,10 @@ describe('FCM', () => {
       expect(fcmPayload.android.ttl).toEqual(4 * 7 * 24 * 60 * 60);
       expect(fcmPayload.android.notification).toEqual(requestData.notification);
 
-      expect(payload.time).toEqual(timeStampISOStr);
-      expect(payload['push_id']).toEqual(pushId);
+      expect(fcmPayload.android.data['time']).toEqual(timeStampISOStr);
+      expect(fcmPayload.android.data['push_id']).toEqual(pushId);
 
-      const dataFromUser = fcmPayload.android.data;
+      const dataFromUser = JSON.parse(fcmPayload.android.data.data);
       expect(dataFromUser).toEqual(requestData.data);
     });
   });
@@ -329,9 +327,6 @@ describe('FCM', () => {
       expect(fcmPayload.apns.headers['apns-collapse-id']).toEqual(collapseId);
       expect(fcmPayload.apns.headers['apns-push-type']).toEqual(pushType);
       expect(fcmPayload.apns.headers['apns-priority']).toEqual(priority);
-
-      expect(payload.time).toEqual(timeStampISOStr);
-      expect(payload['push_id']).toEqual(pushId);
     });
 
     it('sets push type to alert if not defined explicitly', () => {
@@ -348,22 +343,19 @@ describe('FCM', () => {
         keyAgain: 'valueAgain',
       };
 
-      const pushId = 'pushId';
-      const timeStamp = 1454538822113;
-      const timeStampISOStr = new Date(timeStamp).toISOString();
+      const unusedPushId = 'pushId';
+      const unusedTimeStamp = 1454538822113;
 
       const payload = FCM.generateFCMPayload(
         data,
-        pushId,
-        timeStamp,
+        unusedPushId,
+        unusedTimeStamp,
         ['tokenTest'],
         'apple',
       );
       const fcmPayload = payload.data;
 
       expect(fcmPayload.apns.headers['apns-push-type']).toEqual('alert');
-      expect(payload.time).toEqual(timeStampISOStr);
-      expect(payload['push_id']).toEqual(pushId);
     });
 
     it('can generate APNS notification from raw data', () => {
@@ -389,14 +381,13 @@ describe('FCM', () => {
         keyAgain: 'valueAgain',
       };
 
-      const pushId = 'pushId';
-      const timeStamp = 1454538822113;
-      const timeStampISOStr = new Date(timeStamp).toISOString();
+      const unusedPushId = 'pushId';
+      const unusedTimeStamp = 1454538822113;
 
       const payload = FCM.generateFCMPayload(
         data,
-        pushId,
-        timeStamp,
+        unusedPushId,
+        unusedTimeStamp,
         ['tokenTest'],
         'apple',
       );
@@ -417,9 +408,6 @@ describe('FCM', () => {
       expect(fcmPayload.apns.payload.aps['thread-id']).toEqual('a-thread-id');
       expect(fcmPayload.apns.payload.key).toEqual('value');
       expect(fcmPayload.apns.payload.keyAgain).toEqual('valueAgain');
-
-      expect(payload.time).toEqual(timeStampISOStr);
-      expect(payload['push_id']).toEqual(pushId);
     });
 
     it('can generate an APNS notification with headers in data', () => {
@@ -433,37 +421,33 @@ describe('FCM', () => {
       let data = {
         expiration_time: expirationTime,
         data: {
-          alert: 'alert',
+          alert: { body: 'alert', title: 'title' },
           collapse_id: collapseId,
           push_type: pushType,
           priority: 6,
         },
       };
 
-      const pushId = 'pushId';
-      const timeStamp = 1454538822113;
-      const timeStampISOStr = new Date(timeStamp).toISOString();
+      const unusedPushId = 'pushId';
+      const unusedTimeStamp = 1454538822113;
 
       const payload = FCM.generateFCMPayload(
         data,
-        pushId,
-        timeStamp,
+        unusedPushId,
+        unusedTimeStamp,
         ['tokenTest'],
         'apple',
       );
 
       const fcmPayload = payload.data;
 
-      expect(fcmPayload.apns.payload.aps.alert).toEqual({ body: 'alert' });
+      expect(fcmPayload.apns.payload.aps.alert).toEqual({ body: 'alert', title: 'title' });
       expect(fcmPayload.apns.headers['apns-expiration']).toEqual(
         Math.round(expirationTime / 1000),
       );
       expect(fcmPayload.apns.headers['apns-collapse-id']).toEqual(collapseId);
       expect(fcmPayload.apns.headers['apns-push-type']).toEqual(pushType);
       expect(fcmPayload.apns.headers['apns-priority']).toEqual(6);
-
-      expect(payload.time).toEqual(timeStampISOStr);
-      expect(payload['push_id']).toEqual(pushId);
     });
   });
 
