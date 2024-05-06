@@ -188,8 +188,6 @@ function _APNSToFCMPayload(requestData) {
           apnsPayload['apns']['payload']['aps']['alert'] = {};
           apnsPayload['apns']['payload']['aps']['alert']['body'] = coreData.alert;
         }
-        if (!apnsPayload['apns']['payload']['aps'].hasOwnProperty('alert')) {
-        }
         break;
       case 'title':
         // Ensure the alert object exists before trying to assign the title
