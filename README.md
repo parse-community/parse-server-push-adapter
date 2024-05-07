@@ -131,8 +131,32 @@ const parseServerOptions = {
         /* You will need admin key available on console.firebase.google.com */
         firebaseServiceAccount: __dirname + "/your-awesome-app-firebase-adminsdk-abcd-efgh.json"
       }
-      web: {
-        /* Web push options */
+    })
+  },
+  /* Other Parse Server options */
+}
+```
+
+#### Migration from GCM to FCM (June 2024)
+
+Sending push notifications to Android devices was originally implemented using GCM (Google Cloud Messaging) API. GCM API was deprecated on June 20 2023 and will stop working after June 20 2024.
+
+You will need to update your existing push configuration for Android to remove GCM `apiKey` and add FCM `firebaseServiceAccount` key.
+
+Here is an example configuration:
+
+```js
+const PushAdapter = require('@parse/push-adapter').default;
+const parseServerOptions = {
+  push: {
+    adapter: new PushAdapter({
+      android: {
+        /* The legacy GCM `apiKey`, remove once you add `firebaseServiceAccount` */
+        apiKey: "AAABBBCCCDDD....YYYZZZ"
+
+        /* Deliver push notifications to Android devices via Google FCM */
+        /* You will need admin key available on console.firebase.google.com */
+        firebaseServiceAccount: __dirname + "/your-awesome-app-firebase-adminsdk-abcd-efgh.json"
       }
     })
   },
