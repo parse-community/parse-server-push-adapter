@@ -80,7 +80,7 @@ Delivering push notifications to Apple devices can be done either via Apple APNS
 - `tvos` -> tvOS apps
 
 
-Apple Push Notification Service requires a p8 encoded private key that can be generated and downloaded in Apple Developer Member Center under Certificates, Identifiers & Profiles.
+Apple Push Notification Service requires a p8 encoded private key that can be generated and downloaded in the Apple Developer Center under Certificates > Identifiers & Profiles.
 
 Google Firebase Cloud Messaging requires a Firebase Service Account JSON encoded private key that can be downloaded in the Firebase Console under your project's Settings > Cloud Messaging tab.
 
