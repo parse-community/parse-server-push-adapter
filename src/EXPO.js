@@ -9,7 +9,7 @@ const LOG_PREFIX = 'parse-server-push-adapter EXPO';
 export class EXPO {
   expo = undefined;
   /**
-   * Create a new EXPO push adapter. Based on Web Adapter
+   * Create a new EXPO push adapter. Based on Web Adapter.
    *
    * @param {Object} args https://github.com/expo/expo-server-sdk-node / https://docs.expo.dev/push-notifications/sending-notifications/
    */
@@ -23,7 +23,7 @@ export class EXPO {
   }
 
   /**
-   * Send web push notification request.
+   * Send Expo push notification request.
    *
    * @param {Object} data The data we need to send, the format is the same with api request body
    * @param {Array} devices An array of devices
@@ -69,7 +69,7 @@ export class EXPO {
   }
 
   /**
-   * Send multiple web push notification request.
+   * Send multiple Expo push notification request.
    *
    * @param {Object} payload The data we need to send, the format is the same with api request body
    * @param {Array} deviceTokens An array of devicesTokens
