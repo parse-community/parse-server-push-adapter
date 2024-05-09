@@ -61,9 +61,14 @@ const parseServerOptions = {
       },
       android: {
         /* Android push options */
-      }
+      },
       web: {
         /* Web push options */
+      },
+      expo: {
+        /* Expo push options (https://docs.expo.dev/push-notifications/overview/) 
+         * If you setup access token, add `accessToken: '<token>'`.
+         */
       }
     })
   },
