@@ -20,6 +20,7 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
 - [Using a Custom Version on Parse Server](#using-a-custom-version-on-parse-server)
   - [Install Push Adapter](#install-push-adapter)
   - [Configure Parse Server](#configure-parse-server)
+    - [Expo Push Options](#expo-push-options)
 
 # Silent Notifications
 
@@ -57,7 +58,7 @@ const parseServerOptions = {
   push: {
     adapter: new PushAdapter({
       ios: {
-        /* Apple push notification options */
+        /* Apple push options */
       },
       android: {
         /* Android push options */
@@ -66,12 +67,23 @@ const parseServerOptions = {
         /* Web push options */
       },
       expo: {
-        /* Expo push options (https://docs.expo.dev/push-notifications/overview/) 
-         * If you setup access token, add `accessToken: '<token>'`.
-         */
-      }
-    })
+        /* Expo push options */
+      },
+    }),
   },
   /* Other Parse Server options */
 }
 ```
+
+### Expo Push Options
+
+Example options:
+
+```js
+expo: {
+  accessToken: '<EXPO_ACCESS_TOKEN>',
+},
+```
+
+For more information see the [Expo docs](https://docs.expo.dev/push-notifications/overview/).
+         
