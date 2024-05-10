@@ -2,7 +2,7 @@
 
 import Parse from 'parse';
 import log from 'npmlog';
-import { Expo, ExpoPushMessage, ExpoPushTicket } from 'expo-server-sdk';
+import { Expo } from 'expo-server-sdk';
 
 const LOG_PREFIX = 'parse-server-push-adapter EXPO';
 
@@ -48,7 +48,7 @@ export class EXPO {
 
     log.verbose(LOG_PREFIX, `sending to ${length} ${length > 1 ? 'devices' : 'device'}`);
 
-    const response = await this.sendNotifications(coreData, deviceTokens, this.options);
+    const response = await this.sendNotifications(coreData, deviceTokens);
 
     log.verbose(LOG_PREFIX, `EXPO Response: %d sent`, response.length);
 
@@ -59,7 +59,8 @@ export class EXPO {
       const resolution = {
         transmitted: result.status === 'ok',
         device: {
-          deviceToken: token
+          ...device,
+          pushType: 'expo'
         },
         response: result,
       };
@@ -76,10 +77,9 @@ export class EXPO {
    * @param {Object} options The options for the request
    * @returns {Object} A promise which is resolved immediately
    */
-  async sendNotifications({alert, title, body, ...payload}, deviceTokens, options) {
+  async sendNotifications({alert, body, ...payload}, deviceTokens) {
     const messages = deviceTokens.map((token) => ({
       to: token,
-      title: title,
       body: body || alert,
       ...payload
     }));
