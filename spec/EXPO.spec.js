@@ -55,7 +55,7 @@ describe('EXPO', () => {
     const log = require('npmlog');
     const expo = new EXPO({ vapidDetails: 'apiKey' });
     spyOn(EXPO.prototype, 'sendNotifications').and.callFake(() => {
-      return Promise.resolve([{ status: 'error', message: 'Failed' }])});
+      return Promise.resolve([{ status: 'error', message: 'DeviceNotRegistered' }])});
     const data = { data: { alert: 'alert' } };
     const devices = [{ deviceToken: 'token' }];
     const response = await expo.send(data, devices);
@@ -68,7 +68,7 @@ describe('EXPO', () => {
 
     expect(response).toEqual([{
       device: { deviceToken: 'token', pushType: 'expo' },
-      response: { status: 'error', message: 'Failed' },
+      response: { status: 'error', message: 'DeviceNotRegistered', error: 'NotRegistered' },
       transmitted: false
     }]);
   });

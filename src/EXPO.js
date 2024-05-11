@@ -6,6 +6,22 @@ import { Expo } from 'expo-server-sdk';
 
 const LOG_PREFIX = 'parse-server-push-adapter EXPO';
 
+function expoResultToParseResponse(result) {
+    if (result.status === 'ok') {
+      return result;
+    } else  {
+      // ParseServer looks for "error", and supports ceratin codes like 'NotRegistered' for
+      // cleanup. Expo returns slighyly different ones so changing to match what is expected
+      // This can be taken out if the responsibility gets moved to the adapter itself.
+      const error = result.message === 'DeviceNotRegistered' ?
+        'NotRegistered' : result.message;
+      return {
+        error,
+        ...result
+      }
+    }
+}
+
 export class EXPO {
   expo = undefined;
   /**
@@ -62,7 +78,7 @@ export class EXPO {
           ...device,
           pushType: 'expo'
         },
-        response: result,
+        response: expoResultToParseResponse(result),
       };
       resolve(resolution);
     });
