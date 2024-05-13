@@ -132,7 +132,7 @@ describe('FCM', () => {
       const requestData = {
         expiration_time: expirationTime,
         data: {
-          alert: { body: 'alert', title: 'title' }
+          alert: 'alert',
         },
         notification: {
           title: 'I am a title',
@@ -177,7 +177,7 @@ describe('FCM', () => {
       const requestData = {
         expiration_time: expirationTime,
         data: {
-          alert: { body: 'alert', title: 'title' }
+          alert: 'alert',
         },
         notification: {
           title: 'I am a title',
@@ -214,7 +214,7 @@ describe('FCM', () => {
       const requestData = {
         expiration_time: expirationTime,
         data: {
-          alert: { body: 'alert', title: 'title' }
+          alert: 'alert',
         },
         notification: {
           title: 'I am a title',
