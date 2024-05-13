@@ -343,13 +343,14 @@ describe('FCM', () => {
         keyAgain: 'valueAgain',
       };
 
-      const unusedPushId = 'pushId';
-      const unusedTimeStamp = 1454538822113;
+      // unused when generating apple payload, required by Parse Android SDK
+      const pushId = 'pushId';
+      const timeStamp = 1454538822113;
 
       const payload = FCM.generateFCMPayload(
         data,
-        unusedPushId,
-        unusedTimeStamp,
+        pushId,
+        timeStamp,
         ['tokenTest'],
         'apple',
       );
@@ -381,13 +382,14 @@ describe('FCM', () => {
         keyAgain: 'valueAgain',
       };
 
-      const unusedPushId = 'pushId';
-      const unusedTimeStamp = 1454538822113;
+      // unused when generating apple payload, required by Parse Android SDK
+      const pushId = 'pushId';
+      const timeStamp = 1454538822113;
 
       const payload = FCM.generateFCMPayload(
         data,
-        unusedPushId,
-        unusedTimeStamp,
+        pushId,
+        timeStamp,
         ['tokenTest'],
         'apple',
       );
@@ -428,13 +430,14 @@ describe('FCM', () => {
         },
       };
 
-      const unusedPushId = 'pushId';
-      const unusedTimeStamp = 1454538822113;
+      // unused when generating apple payload, required by Parse Android SDK
+      const pushId = 'pushId';
+      const timeStamp = 1454538822113;
 
       const payload = FCM.generateFCMPayload(
         data,
-        unusedPushId,
-        unusedTimeStamp,
+        pushId,
+        timeStamp,
         ['tokenTest'],
         'apple',
       );
