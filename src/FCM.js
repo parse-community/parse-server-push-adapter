@@ -247,11 +247,16 @@ function _GCMToFCMPayload(requestData, timeStamp) {
   if (requestData.hasOwnProperty('notification')) {
     androidPayload.android.notification = requestData.notification;
   } else if (requestData.hasOwnProperty('data')) {
-    ;
     androidPayload.android.notification = {};
-    if (requestData.data.title) androidPayload.android.notification['title'] = requestData.data.title;
-    if (requestData.data.alert) androidPayload.android.notification['body'] = requestData.data.alert;
-    else if (requestData.data.body) androidPayload.android.notification['body'] = requestData.data.body;
+    if (requestData.data.title) {
+      androidPayload.android.notification['title'] = requestData.data.title;
+    }
+    if (requestData.data.alert) {
+        androidPayload.android.notification['body'] = requestData.data.alert;
+    }
+    else if (requestData.data.body) {
+      androidPayload.android.notification['body'] = requestData.data.body;
+    }
   }
 
   if (requestData.hasOwnProperty('data')) {
@@ -261,22 +266,26 @@ function _GCMToFCMPayload(requestData, timeStamp) {
         delete requestData.data[key]
       }
     }
-    if (requestData.data && requestData.data.alert && typeof requestData.data.alert == "object") {
+    if (requestData.data && requestData.data.alert && typeof requestData.data.alert == 'object') {
       androidPayload.android.data = {
         ...requestData.data,
         alert: JSON.stringify(requestData.data.alert)
       }
     }
-    else androidPayload.android.data = requestData.data;
+    else {
+      androidPayload.android.data = requestData.data;
+    }
   }
 
-  if (requestData.data && requestData.data.alert && typeof requestData.data.alert == "object") {
+  if (requestData.data && requestData.data.alert && typeof requestData.data.alert == 'object') {
     androidPayload.android.data = {
       ...requestData.data,
       alert: JSON.stringify(requestData.data.alert)
     }
   }
-  else androidPayload.android.data = requestData.data;
+  else { 
+    androidPayload.android.data = requestData.data;
+  }
 }
 
 if (requestData['expiration_time']) {
