@@ -54,11 +54,11 @@ const parseServerOptions = {
       },
       expo: {
         // Expo push options
-      },
-    }),
-  },
+      }
+    })
+  }
   // Other Parse Server options
-}
+};
 ```
 
 ### Apple Push Options
@@ -84,7 +84,7 @@ ios: {
   token: {
     key: __dirname + '/apns.p8',
     keyId: '<APNS_KEY_ID>',
-    teamId: '<APNS_TEAM_ID>',
+    teamId: '<APNS_TEAM_ID>'
   },
   topic: '<BUNDLE_IDENTIFIER>',
   production: true
@@ -117,7 +117,7 @@ android: {
     projectId: '<PROJECT_ID>',
     clientEmail: 'example@<PROJECT_ID>.iam.gserviceaccount.com',
     privateKey: '-----BEGIN PRIVATE KEY-----<KEY>-----END PRIVATE KEY-----\n'
-    },
+  }
 }
 ```
 
@@ -142,7 +142,7 @@ Example options:
 
 ```js
 expo: {
-  accessToken: '<EXPO_ACCESS_TOKEN>',
+  accessToken: '<EXPO_ACCESS_TOKEN>'
 }
 ```
 
@@ -159,11 +159,11 @@ const parseServerOptions = {
   push: {
     ios: {
       // Apple push options
-    },
+    }
     // Other push options
-  },
+  }
   // Other Parse Server options
-}
+};
 ```
 
 ## Logging
