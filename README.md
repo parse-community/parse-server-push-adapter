@@ -20,6 +20,9 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
 - [Using a Custom Version on Parse Server](#using-a-custom-version-on-parse-server)
   - [Install Push Adapter](#install-push-adapter)
   - [Configure Parse Server](#configure-parse-server)
+    - [Apple Push Options](#apple-push-options)
+    - [Android Push Options](#android-push-options)
+      - [Migration from FCM legacy API to FCM HTTP v1 API (June 2024)](#migration-from-fcm-legacy-api-to-fcm-http-v1-api-june-2024)
     - [Expo Push Options](#expo-push-options)
 
 # Silent Notifications
@@ -100,11 +103,11 @@ const parseServerOptions = {
       ios: {
         // Deliver push notifications to iOS devices via APNS
         token: {
-          key: __dirname + '/AuthKey_XXXXXXXXXX.p8',
-          keyId: "XXXXXXXXXX",
-          teamId: "AAAAAAAAAA"
+          key: __dirname + '/apns.p8',
+          keyId: '<APNS_KEY_ID>',
+          teamId: '<APNS_TEAM_ID>',
         },
-        topic: 'com.example.yourawesomeapp',
+        topic: '<BUNDLE_IDENTIFIER>',
         production: true
       },
       osx: {
