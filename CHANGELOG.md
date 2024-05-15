@@ -1,3 +1,17 @@
+# [6.2.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.1.1...6.2.0) (2024-05-15)
+
+
+### Features
+
+* Add support for Expo push notifications ([#243](https://github.com/parse-community/parse-server-push-adapter/issues/243)) ([8987b85](https://github.com/parse-community/parse-server-push-adapter/commit/8987b85a357c2a711cfe41cba201d067fb36302a))
+
+## [6.1.1](https://github.com/parse-community/parse-server-push-adapter/compare/6.1.0...6.1.1) (2024-05-15)
+
+
+### Bug Fixes
+
+* FCM push notification payload incompatible with Parse Android SDK ([#238](https://github.com/parse-community/parse-server-push-adapter/issues/238)) ([4274b7f](https://github.com/parse-community/parse-server-push-adapter/commit/4274b7f017c38cbecc16717b38595e28af1928a9))
+
 # [6.1.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.0.0...6.1.0) (2024-05-04)
 
 

@@ -178,20 +178,24 @@ function _APNSToFCMPayload(requestData) {
         apnsPayload['apns']['payload']['aps'] = coreData.aps;
         break;
       case 'alert':
-        if (!apnsPayload['apns']['payload']['aps'].hasOwnProperty('alert')) {
+        if (typeof coreData.alert == 'object') {
+          // When we receive a dictionary, use as is to remain
+          // compatible with how the APNS.js + node-apn work
+          apnsPayload['apns']['payload']['aps']['alert'] = coreData.alert;
+        } else {
+          // When we receive a value, prepare `alert` dictionary
+          // and set its `body` property
           apnsPayload['apns']['payload']['aps']['alert'] = {};
+          apnsPayload['apns']['payload']['aps']['alert']['body'] = coreData.alert;
         }
-        // In APNS.js we set a body with the same value as alert in requestData.
-        // See L200 in APNS.spec.js
-        apnsPayload['apns']['payload']['aps']['alert']['body'] = coreData.alert;
         break;
       case 'title':
         // Ensure the alert object exists before trying to assign the title
+        // title always goes into the nested `alert` dictionary
         if (!apnsPayload['apns']['payload']['aps'].hasOwnProperty('alert')) {
           apnsPayload['apns']['payload']['aps']['alert'] = {};
         }
-        apnsPayload['apns']['payload']['aps']['alert']['title'] =
-          coreData.title;
+        apnsPayload['apns']['payload']['aps']['alert']['title'] = coreData.title;
         break;
       case 'badge':
         apnsPayload['apns']['payload']['aps']['badge'] = coreData.badge;
@@ -237,7 +241,8 @@ function _APNSToFCMPayload(requestData) {
   return apnsPayload;
 }
 
-function _GCMToFCMPayload(requestData, timeStamp) {
+function _GCMToFCMPayload(requestData, pushId, timeStamp) {
+
   const androidPayload = {
     android: {
       priority: 'high',
@@ -311,10 +316,11 @@ return androidPayload;
  * If the key rawPayload is present in the requestData, a raw payload will be used. Otherwise, conversion is done.
  * @param {Object} requestData The request body
  * @param {String} pushType Either apple or android.
- * @param {Number} timeStamp Used during GCM payload conversion for ttl
+ * @param {String} pushId Used during GCM payload conversion, required by Parse Android SDK.
+ * @param {Number} timeStamp Used during GCM payload conversion for ttl, required by Parse Android SDK.
  * @returns {Object} A FCMv1-compatible payload.
  */
-function payloadConverter(requestData, pushType, timeStamp) {
+function payloadConverter(requestData, pushType, pushId, timeStamp) {
   if (requestData.hasOwnProperty('rawPayload')) {
     return requestData.rawPayload;
   }
@@ -322,7 +328,7 @@ function payloadConverter(requestData, pushType, timeStamp) {
   if (pushType === 'apple') {
     return _APNSToFCMPayload(requestData);
   } else if (pushType === 'android') {
-    return _GCMToFCMPayload(requestData, timeStamp);
+    return _GCMToFCMPayload(requestData, pushId, timeStamp);
   } else {
     throw new Parse.Error(
       Parse.Error.PUSH_MISCONFIGURED,
@@ -350,12 +356,10 @@ function generateFCMPayload(
   delete requestData['where'];
 
   const payloadToUse = {
-    data: {},
-    push_id: pushId,
-    time: new Date(timeStamp).toISOString(),
+    data: {}
   };
 
-  const fcmPayload = payloadConverter(requestData, pushType, timeStamp);
+  const fcmPayload = payloadConverter(requestData, pushType, pushId, timeStamp);
   payloadToUse.data = {
     ...fcmPayload,
     tokens: deviceTokens,

@@ -217,6 +217,48 @@ describe('APNS', () => {
     done();
   });
 
+  it('can generate APNS notification with nested alert dictionary', (done) => {
+    //Mock request data
+    let data = {
+      'alert': { body: 'alert', title: 'title' },
+      'badge': 100,
+      'sound': 'test',
+      'content-available': 1,
+      'mutable-content': 1,
+      'targetContentIdentifier': 'window1',
+      'interruptionLevel': 'passive',
+      'category': 'INVITE_CATEGORY',
+      'threadId': 'a-thread-id',
+      'key': 'value',
+      'keyAgain': 'valueAgain'
+    };
+    let expirationTime = 1454571491354;
+    let collapseId = "collapseIdentifier";
+
+    let pushType = "alert";
+    let priority = 5;
+    let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
+
+    expect(notification.aps.alert).toEqual({ body: 'alert', title: 'title' });
+    expect(notification.aps.badge).toEqual(data.badge);
+    expect(notification.aps.sound).toEqual(data.sound);
+    expect(notification.aps['content-available']).toEqual(1);
+    expect(notification.aps['mutable-content']).toEqual(1);
+    expect(notification.aps['target-content-id']).toEqual('window1');
+    expect(notification.aps['interruption-level']).toEqual('passive');
+    expect(notification.aps.category).toEqual(data.category);
+    expect(notification.aps['thread-id']).toEqual(data.threadId);
+    expect(notification.payload).toEqual({
+      'key': 'value',
+      'keyAgain': 'valueAgain'
+    });
+    expect(notification.expiry).toEqual(Math.round(expirationTime / 1000));
+    expect(notification.collapseId).toEqual(collapseId);
+    expect(notification.pushType).toEqual(pushType);
+    expect(notification.priority).toEqual(priority);
+    done();
+  });
+
   it('sets push type to alert if not defined explicitly', (done) => {
     //Mock request data
     let data = {

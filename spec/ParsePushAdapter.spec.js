@@ -6,6 +6,7 @@ var GCM = require('../src/GCM').default;
 var WEB = require('../src/WEB').default;
 var MockAPNProvider = require('./MockAPNProvider');
 var FCM = require('../src/FCM').default
+var EXPO = require('../src/EXPO').default
 const path = require('path');
 
 describe('ParsePushAdapter', () => {
@@ -24,6 +25,7 @@ describe('ParsePushAdapter', () => {
     expect(typeof ParsePushAdapterPackage.APNS).toBe('function');
     expect(typeof ParsePushAdapterPackage.GCM).toBe('function');
     expect(typeof ParsePushAdapterPackage.WEB).toBe('function');
+    expect(typeof ParsePushAdapterPackage.EXPO).toBe('function');
     expect(typeof ParsePushAdapterPackage.utils).toBe('object');
   });
 
@@ -40,6 +42,9 @@ describe('ParsePushAdapter', () => {
       android: {
         senderId: 'senderId',
         apiKey: 'apiKey'
+      },
+      expo: {
+        apiKey: 'key'
       },
       ios: [
         {
@@ -67,6 +72,9 @@ describe('ParsePushAdapter', () => {
     // Check web
     var webSender = parsePushAdapter.senderMap['web'];
     expect(webSender instanceof WEB).toBe(true);
+    // Check expo
+    var expoSender = parsePushAdapter.senderMap['expo'];
+    expect(expoSender instanceof EXPO).toBe(true);
     done();
   });
 
@@ -154,13 +162,13 @@ describe('ParsePushAdapter', () => {
   it('can get valid push types', (done) => {
     var parsePushAdapter = new ParsePushAdapter();
 
-    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'osx', 'tvos', 'android', 'fcm', 'web']);
+    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'osx', 'tvos', 'android', 'fcm', 'web', 'expo']);
     done();
   });
 
   it('can classify installation', (done) => {
     // Mock installations
-    var validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm', 'web'];
+    var validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm', 'web', 'expo'];
     var installations = [
       {
         deviceType: 'android',
@@ -189,6 +197,11 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'android',
         deviceToken: undefined
+      },
+      {
+        deviceType: 'ios',
+        pushType: 'expo',
+        deviceToken: 'expoToken'
       }
     ];
 
@@ -199,6 +212,7 @@ describe('ParsePushAdapter', () => {
     expect(deviceMap['tvos']).toEqual([makeDevice('tvosToken', 'tvos')]);
     expect(deviceMap['web']).toEqual([makeDevice('webToken', 'web')]);
     expect(deviceMap['win']).toBe(undefined);
+    expect(deviceMap['expo']).toEqual([makeDevice('expoToken', 'ios')]);
     done();
   });
 
@@ -218,11 +232,15 @@ describe('ParsePushAdapter', () => {
     var webSender = {
       send: jasmine.createSpy('send')
     }
+    var expoSender = {
+      send: jasmine.createSpy('send')
+    }
     var senderMap = {
       osx: osxSender,
       ios: iosSender,
       android: androidSender,
       web: webSender,
+      expo: expoSender,
     };
     parsePushAdapter.senderMap = senderMap;
     // Mock installations
@@ -250,6 +268,11 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'android',
         deviceToken: undefined
+      },
+      {
+        deviceType: 'ios',
+        pushType: 'expo',
+        deviceToken: 'expoToken'
       }
     ];
     var data = {};
@@ -282,6 +305,13 @@ describe('ParsePushAdapter', () => {
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('webToken', 'web')
+    ]);
+    // Check expo sender
+    expect(expoSender.send).toHaveBeenCalled();
+    args = expoSender.send.calls.first().args;
+    expect(args[0]).toEqual(data);
+    expect(args[1]).toEqual([
+      makeDevice('expoToken', 'ios')
     ]);
     done();
   });
@@ -376,6 +406,9 @@ describe('ParsePushAdapter', () => {
           privateKey: 'privateKey',
         },
       },
+      expo: {
+
+      },
       android: {
         senderId: 'senderId',
         apiKey: 'apiKey'
@@ -433,6 +466,11 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'android',
         deviceToken: undefined
+      },
+      {
+        deviceType: 'android',
+        pushType: 'expo',
+        deviceToken: 'expoToken'
       }
     ];
 
@@ -440,15 +478,18 @@ describe('ParsePushAdapter', () => {
     parsePushAdapter.send({ data: { alert: 'some' } }, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
-      // 2x iOS, 1x android, 1x osx, 1x tvos, 1x web
-      expect(results.length).toBe(6);
-      results.forEach((result) => {
+      // 2x iOS, 1x android, 1x osx, 1x tvos, 1x web, 1x expo
+      expect(results.length).toBe(7);
+      results.forEach((result) => {
         expect(typeof result.device).toBe('object');
         if (!result.device) {
           fail('result should have device');
           return;
         }
         const device = result.device;
+        if (device.pushType) {
+          expect(typeof device.pushType).toBe('string');
+        }
         expect(typeof device.deviceType).toBe('string');
         expect(typeof device.deviceToken).toBe('string');
         if (['ios', 'osx', 'web'].includes(device.deviceType)) {
