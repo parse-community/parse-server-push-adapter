@@ -13,7 +13,8 @@ import ParsePushAdapter from './ParsePushAdapter';
 import GCM from './GCM';
 import APNS from './APNS';
 import WEB from './WEB';
+import EXPO from './EXPO';
 import * as utils from './PushAdapterUtils';
 
 export default ParsePushAdapter;
-export { ParsePushAdapter, APNS, GCM, WEB, utils };
+export { ParsePushAdapter, APNS, GCM, WEB, EXPO, utils };
