@@ -35,7 +35,11 @@ Replace `<VERSION>` with the version you want to install.
 ## Configure Parse Server
 
 ```js
-const PushAdapter = require('@parse/push-adapter').default;
+import { ParsePushAdapter } from '@parse/push-adapter';
+
+// For CommonJS replace the import statemtent above with the following line:
+// const PushAdapter = require('@parse/push-adapter').default;
+
 const parseServerOptions = {
   push: {
     adapter: new PushAdapter({
@@ -50,11 +54,11 @@ const parseServerOptions = {
       },
       expo: {
         // Expo push options
-      },
-    }),
-  },
+      }
+    })
+  }
   // Other Parse Server options
-}
+};
 ```
 
 ### Apple Push Options
@@ -75,27 +79,19 @@ Example options:
 Both services (APNS, FCM) can be used in combination for different Apple ecosystems.
 
 ```js
-const PushAdapter = require('@parse/push-adapter').default;
-const parseServerOptions = {
-  push: {
-    adapter: new PushAdapter({
-      ios: {
-        // Deliver push notifications to iOS devices via APNS
-        token: {
-          key: __dirname + '/apns.p8',
-          keyId: '<APNS_KEY_ID>',
-          teamId: '<APNS_TEAM_ID>',
-        },
-        topic: '<BUNDLE_IDENTIFIER>',
-        production: true
-      },
-      osx: {
-        // Deliver push notifications to macOS devices via FCM
-        firebaseServiceAccount: __dirname + '/firebase.json'
-      },
-    }),
+ios: {
+  // Deliver push notifications to iOS devices via APNS
+  token: {
+    key: __dirname + '/apns.p8',
+    keyId: '<APNS_KEY_ID>',
+    teamId: '<APNS_TEAM_ID>'
   },
-  // Other Parse Server options
+  topic: '<BUNDLE_IDENTIFIER>',
+  production: true
+},
+osx: {
+  // Deliver push notifications to macOS devices via FCM
+  firebaseServiceAccount: __dirname + '/firebase.json'
 }
 ```
 
@@ -108,35 +104,20 @@ Delivering push notifications to Android devices can be done via Firebase Cloud 
 Example options:
 
 ```js
-const PushAdapter = require('@parse/push-adapter').default;
-const parseServerOptions = {
-  push: {
-    adapter: new PushAdapter({
-      android: {
-        firebaseServiceAccount: __dirname + '/firebase.json'
-      },
-    }),
-  },
-  // Other Parse Server options
+android: {
+  firebaseServiceAccount: __dirname + '/firebase.json'
 }
 ```
 
 Alternatively, instead of setting `firebaseServiceAccount` to the path of the JSON file, you can provide an object representing a Google Cloud service account key:
 
 ```js
-const parseServerOptions = {
-  push: {
-    adapter: new PushAdapter({
-      android: {
-        firebaseServiceAccount: {
-          projectId: '<PROJECT_ID>',
-          clientEmail: 'example@<PROJECT_ID>.iam.gserviceaccount.com',
-          privateKey: '-----BEGIN PRIVATE KEY-----<KEY>-----END PRIVATE KEY-----\n'
-          },
-      },
-    }),
-  },
-  // Other Parse Server options
+android: {
+  firebaseServiceAccount: {
+    projectId: '<PROJECT_ID>',
+    clientEmail: 'example@<PROJECT_ID>.iam.gserviceaccount.com',
+    privateKey: '-----BEGIN PRIVATE KEY-----<KEY>-----END PRIVATE KEY-----\n'
+  }
 }
 ```
 
@@ -149,17 +130,9 @@ This can be helpful if you are already managing credentials to Google Cloud APIs
 Example options (deprecated):
 
 ```js
-const PushAdapter = require('@parse/push-adapter').default;
-const parseServerOptions = {
-  push: {
-    adapter: new PushAdapter({
-      android: {
-        // Deliver push notifications via FCM legacy API (deprecated)
-        apiKey: '<API_KEY>'
-      },
-    }),
-  },
-  // Other Parse Server options
+android: {
+  // Deliver push notifications via FCM legacy API (deprecated)
+  apiKey: '<API_KEY>'
 }
 ```
 
@@ -169,8 +142,8 @@ Example options:
 
 ```js
 expo: {
-  accessToken: '<EXPO_ACCESS_TOKEN>',
-},
+  accessToken: '<EXPO_ACCESS_TOKEN>'
+}
 ```
 
 For more information see the [Expo docs](https://docs.expo.dev/push-notifications/overview/).
@@ -186,11 +159,11 @@ const parseServerOptions = {
   push: {
     ios: {
       // Apple push options
-    },
+    }
     // Other push options
-  },
+  }
   // Other Parse Server options
-}
+};
 ```
 
 ## Logging
