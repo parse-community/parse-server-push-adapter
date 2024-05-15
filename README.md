@@ -39,11 +39,11 @@ Replace `<VERSION>` with the version you want to install.
 import { ParsePushAdapter } from '@parse/push-adapter';
 
 // For CommonJS replace the import statemtent above with the following line:
-// const PushAdapter = require('@parse/push-adapter').default;
+// const ParsePushAdapter = require('@parse/push-adapter').default;
 
 const parseServerOptions = {
   push: {
-    adapter: new PushAdapter({
+    adapter: new ParsePushAdapter({
       ios: {
         // Apple push options
       },
