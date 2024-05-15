@@ -19,7 +19,7 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
 - [Configure Parse Server](#configure-parse-server)
   - [Apple Push Options](#apple-push-options)
   - [Android Push Options](#android-push-options)
-    - [Migration from FCM legacy API to FCM HTTP v1 API (June 2024)](#migration-from-fcm-legacy-api-to-fcm-http-v1-api-june-2024)
+    - [Migration to FCM HTTP v1 API (June 2024)](#migration-to-fcm-http-v1-api-june-2024)
   - [Expo Push Options](#expo-push-options)
 - [Bundled with Parse Server](#bundled-with-parse-server)
 - [Logging](#logging)
@@ -121,7 +121,28 @@ const parseServerOptions = {
 }
 ```
 
-#### Migration from FCM legacy API to FCM HTTP v1 API (June 2024)
+Alternatively, instead of setting `firebaseServiceAccount` to the path of the JSON file, you can provide an object representing a Google Cloud service account key:
+
+```js
+const parseServerOptions = {
+  push: {
+    adapter: new PushAdapter({
+      android: {
+        firebaseServiceAccount: {
+          projectId: '<PROJECT_ID>',
+          clientEmail: 'example@<PROJECT_ID>.iam.gserviceaccount.com',
+          privateKey: '-----BEGIN PRIVATE KEY-----<KEY>-----END PRIVATE KEY-----\n'
+          },
+      },
+    }),
+  },
+  // Other Parse Server options
+}
+```
+
+This can be helpful if you are already managing credentials to Google Cloud APIs in other parts of your code and you want to reuse these credentials, or if you want to manage credentials on a more granular level directly via Google Cloud.
+
+#### Migration to FCM HTTP v1 API (June 2024)
 
 Sending push notifications to Android devices via the FCM legacy API was deprecated on June 20 2023 and was announced to be decommissioned in June 2024. See [Google docs](https://firebase.google.com/docs/cloud-messaging/migrate-v1). To send push notifications to the newer FCM HTTP v1 API you need to update your existing push configuration for Android by replacing the key `apiKey` with `firebaseServiceAccount`.
 
