@@ -19,6 +19,7 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
 - [Configure Parse Server](#configure-parse-server)
   - [Apple Push Options](#apple-push-options)
   - [Android Push Options](#android-push-options)
+    - [Google Cloud Service Account Key](#google-cloud-service-account-key)
     - [Migration to FCM HTTP v1 API (June 2024)](#migration-to-fcm-http-v1-api-june-2024)
   - [Expo Push Options](#expo-push-options)
 - [Bundled with Parse Server](#bundled-with-parse-server)
@@ -109,7 +110,9 @@ android: {
 }
 ```
 
-Alternatively, instead of setting `firebaseServiceAccount` to the path of the JSON file, you can provide an object representing a Google Cloud service account key:
+#### Google Cloud Service Account Key
+
+The Firebase console allows to easily create and download a Google Cloud service account key JSON file with the required permissions. Instead of setting `firebaseServiceAccount` to the path of the JSON file, you can provide an object representing a Google Cloud service account key:
 
 ```js
 android: {
@@ -121,7 +124,7 @@ android: {
 }
 ```
 
-This can be helpful if you are already managing credentials to Google Cloud APIs in other parts of your code and you want to reuse these credentials, or if you want to manage credentials on a more granular level directly via Google Cloud.
+This can be helpful if you are already managing credentials to Google Cloud APIs in other parts of your code and you want to reuse these credentials, or if you want to manage credentials on a more granular level directly in Google Cloud. Make sure that the service account has the permission `cloudmessaging.messages.create` which is for example part of role `Firebase Cloud Messaging API Admin`.
 
 #### Migration to FCM HTTP v1 API (June 2024)
 
