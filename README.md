@@ -15,39 +15,18 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
 
 ---
 
-- [Silent Notifications](#silent-notifications)
+- [Installation](#installation)
+- [Configure Parse Server](#configure-parse-server)
+  - [Apple Push Options](#apple-push-options)
+  - [Android Push Options](#android-push-options)
+    - [Migration to FCM HTTP v1 API (June 2024)](#migration-to-fcm-http-v1-api-june-2024)
+  - [Expo Push Options](#expo-push-options)
+- [Bundled with Parse Server](#bundled-with-parse-server)
 - [Logging](#logging)
-- [Using a Custom Version on Parse Server](#using-a-custom-version-on-parse-server)
-  - [Install Push Adapter](#install-push-adapter)
-  - [Configure Parse Server](#configure-parse-server)
-    - [Apple Push Options](#apple-push-options)
-    - [Android Push Options](#android-push-options)
-      - [Migration from FCM legacy API to FCM HTTP v1 API (June 2024)](#migration-from-fcm-legacy-api-to-fcm-http-v1-api-june-2024)
-    - [Expo Push Options](#expo-push-options)
 
-# Silent Notifications
+## Installation
 
-If you have migrated from parse.com and you are seeing situations where silent (newsstand-like presentless) notifications are failing to deliver please ensure that your payload is setting the content-available attribute to Int(1) and not "1" This value will be explicitly checked.
-
-# Logging
-
-You can enable verbose logging with environment variables:
-
-```
-VERBOSE=1
-
-or
-
-VERBOSE_PARSE_SERVER_PUSH_ADAPTER=1
-```
-
-This will produce a more verbose output for all the push sending attempts
-
-# Using a Custom Version on Parse Server
-
-## Install Push Adapter
-
-```bash
+```shell
 npm install --save @parse/push-adapter@<VERSION>
 ```
 
@@ -56,7 +35,11 @@ Replace `<VERSION>` with the version you want to install.
 ## Configure Parse Server
 
 ```js
-const PushAdapter = require('@parse/push-adapter').default;
+import { ParsePushAdapter } from '@parse/push-adapter';
+
+// For CommonJS replace the import statemtent above with the following line:
+// const PushAdapter = require('@parse/push-adapter').default;
+
 const parseServerOptions = {
   push: {
     adapter: new PushAdapter({
@@ -71,11 +54,11 @@ const parseServerOptions = {
       },
       expo: {
         // Expo push options
-      },
-    }),
-  },
+      }
+    })
+  }
   // Other Parse Server options
-}
+};
 ```
 
 ### Apple Push Options
@@ -96,27 +79,19 @@ Example options:
 Both services (APNS, FCM) can be used in combination for different Apple ecosystems.
 
 ```js
-const PushAdapter = require('@parse/push-adapter').default;
-const parseServerOptions = {
-  push: {
-    adapter: new PushAdapter({
-      ios: {
-        // Deliver push notifications to iOS devices via APNS
-        token: {
-          key: __dirname + '/apns.p8',
-          keyId: '<APNS_KEY_ID>',
-          teamId: '<APNS_TEAM_ID>',
-        },
-        topic: '<BUNDLE_IDENTIFIER>',
-        production: true
-      },
-      osx: {
-        // Deliver push notifications to macOS devices via FCM
-        firebaseServiceAccount: __dirname + '/firebase.json'
-      },
-    }),
+ios: {
+  // Deliver push notifications to iOS devices via APNS
+  token: {
+    key: __dirname + '/apns.p8',
+    keyId: '<APNS_KEY_ID>',
+    teamId: '<APNS_TEAM_ID>'
   },
-  // Other Parse Server options
+  topic: '<BUNDLE_IDENTIFIER>',
+  production: true
+},
+osx: {
+  // Deliver push notifications to macOS devices via FCM
+  firebaseServiceAccount: __dirname + '/firebase.json'
 }
 ```
 
@@ -129,37 +104,35 @@ Delivering push notifications to Android devices can be done via Firebase Cloud 
 Example options:
 
 ```js
-const PushAdapter = require('@parse/push-adapter').default;
-const parseServerOptions = {
-  push: {
-    adapter: new PushAdapter({
-      android: {
-        firebaseServiceAccount: __dirname + '/firebase.json'
-      },
-    }),
-  },
-  // Other Parse Server options
+android: {
+  firebaseServiceAccount: __dirname + '/firebase.json'
 }
 ```
 
-#### Migration from FCM legacy API to FCM HTTP v1 API (June 2024)
-
-Sending push notifications to Android devices via the FCM legacy API was deprecated on June 20 2023 and was announced to be decomissioned in June 2024. See [Google docs](https://firebase.google.com/docs/cloud-messaging/migrate-v1). To send push notifications to the newer FCM HTTP v1 API you need to update your existing push configuration for Android by replacing the key `apiKey` with `firebaseServiceAccount`.
-
-Example options:
+Alternatively, instead of setting `firebaseServiceAccount` to the path of the JSON file, you can provide an object representing a Google Cloud service account key:
 
 ```js
-const PushAdapter = require('@parse/push-adapter').default;
-const parseServerOptions = {
-  push: {
-    adapter: new PushAdapter({
-      android: {
-        // Deliver push notifications via FCM legacy API (deprecated)
-        apiKey: '<API_KEY>'
-      },
-    }),
-  },
-  // Other Parse Server options
+android: {
+  firebaseServiceAccount: {
+    projectId: '<PROJECT_ID>',
+    clientEmail: 'example@<PROJECT_ID>.iam.gserviceaccount.com',
+    privateKey: '-----BEGIN PRIVATE KEY-----<KEY>-----END PRIVATE KEY-----\n'
+  }
+}
+```
+
+This can be helpful if you are already managing credentials to Google Cloud APIs in other parts of your code and you want to reuse these credentials, or if you want to manage credentials on a more granular level directly via Google Cloud.
+
+#### Migration to FCM HTTP v1 API (June 2024)
+
+⚠️ Sending push notifications to Android devices via the FCM legacy API was deprecated on June 20 2023 and was announced to be decommissioned in June 2024. See [Google docs](https://firebase.google.com/docs/cloud-messaging/migrate-v1). To send push notifications to the newer FCM HTTP v1 API you need to update your existing push configuration for Android by replacing the key `apiKey` with `firebaseServiceAccount`.
+
+Example options (deprecated):
+
+```js
+android: {
+  // Deliver push notifications via FCM legacy API (deprecated)
+  apiKey: '<API_KEY>'
 }
 ```
 
@@ -169,8 +142,40 @@ Example options:
 
 ```js
 expo: {
-  accessToken: '<EXPO_ACCESS_TOKEN>',
-},
+  accessToken: '<EXPO_ACCESS_TOKEN>'
+}
 ```
 
 For more information see the [Expo docs](https://docs.expo.dev/push-notifications/overview/).
+
+## Bundled with Parse Server
+
+Parse Server already comes bundled with a specific version of the push adapter. This installation is only necessary when customizing the push adapter version that should be used by Parse Server. When using a customized version of the push adapter, ensure that it's compatible with the version of Parse Server you are using.
+
+When using the bundled version, it is not necessary to initialize the push adapter in code and the push options are configured directly in the `push` key, without the nested `adapter` key:
+
+```js
+const parseServerOptions = {
+  push: {
+    ios: {
+      // Apple push options
+    }
+    // Other push options
+  }
+  // Other Parse Server options
+};
+```
+
+## Logging
+
+You can enable verbose logging to produce a more detailed output for all push sending attempts with the following environment variables:
+
+```js
+VERBOSE=1
+```
+
+or
+
+```js
+VERBOSE_PARSE_SERVER_PUSH_ADAPTER=1
+```
