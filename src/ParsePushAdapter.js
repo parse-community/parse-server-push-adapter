@@ -1,12 +1,12 @@
 'use strict';
 import Parse from 'parse';
 import log from 'npmlog';
-import APNS from './APNS';
-import GCM from './GCM';
-import FCM from './FCM';
-import WEB from './WEB';
-import EXPO from './EXPO';
-import { classifyInstallations } from './PushAdapterUtils';
+import APNS from './APNS.js';
+import GCM from './GCM.js';
+import FCM from './FCM.js';
+import WEB from './WEB.js';
+import EXPO from './EXPO.js';
+import { classifyInstallations } from './PushAdapterUtils.js';
 
 const LOG_PREFIX = 'parse-server-push-adapter';
 

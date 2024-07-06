@@ -3,7 +3,7 @@
 import Parse from 'parse';
 import log from 'npmlog';
 import gcm from '@parse/node-gcm';
-import { randomString } from './PushAdapterUtils';
+import { randomString } from './PushAdapterUtils.js';
 
 const LOG_PREFIX = 'parse-server-push-adapter GCM';
 const GCMTimeToLiveMax = 4 * 7 * 24 * 60 * 60; // GCM allows a max of 4 weeks
