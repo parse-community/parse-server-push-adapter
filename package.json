@@ -45,8 +45,5 @@
   },
   "engines": {
     "node": ">=18.0.0 <21"
-  },
-  "esm": {
-    "cache": false
   }
 }
