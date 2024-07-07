@@ -107,7 +107,7 @@ describe('EXPO', () => {
     const response = await expo.send(data, devices);
     expect(Array.isArray(response)).toBe(true);
     expect(response.length).toEqual(devices.length);
-    response.forEach((res, index) => {
+    response.forEach((res, index) => {
       expect(res.transmitted).toEqual(false);
       expect(res.device.deviceToken).toEqual(devices[index].deviceToken);
     });

@@ -27,7 +27,7 @@ async function config() {
   // Get branch
   const branch = ref.split('/').pop();
   console.log(`Running on branch: ${branch}`);
-  
+
   // Set changelog file
   //const changelogFile = `./changelogs/CHANGELOG_${branch}.md`;
   const changelogFile = `./CHANGELOG.md`;
@@ -107,7 +107,7 @@ async function loadTemplates() {
 
 function getReleaseComment() {
   const url = repositoryUrl + '/releases/tag/${nextRelease.gitTag}';
-  let comment = '🎉 This change has been released in version [${nextRelease.version}](' + url + ')';
+  const comment = '🎉 This change has been released in version [${nextRelease.version}](' + url + ')';
   return comment;
 }
 

@@ -12,7 +12,7 @@ const GCMRegistrationTokensMax = 1000;
 export default function GCM(args) {
   if (typeof args !== 'object' || !args.apiKey) {
     throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
-                          'GCM Configuration is invalid');
+      'GCM Configuration is invalid');
   }
   this.sender = new gcm.Sender(args.apiKey, args.requestOptions);
 }
@@ -30,23 +30,23 @@ GCM.prototype.send = function(data, devices) {
     log.warn(LOG_PREFIX, 'invalid push payload');
     return;
   }
-  let pushId = randomString(10);
+  const pushId = randomString(10);
   // Make a new array
-  devices=devices.slice(0);
-  let timestamp = Date.now();
+  devices = devices.slice(0);
+  const timestamp = Date.now();
   // For android, we can only have 1000 recepients per send, so we need to slice devices to
   // chunk if necessary
-  let slices = sliceDevices(devices, GCM.GCMRegistrationTokensMax);
+  const slices = sliceDevices(devices, GCM.GCMRegistrationTokensMax);
   if (slices.length > 1) {
     log.verbose(LOG_PREFIX, `the number of devices exceeds ${GCMRegistrationTokensMax}`);
     // Make 1 send per slice
-    let promises = slices.reduce((memo, slice) => {
-      let promise = this.send(data, slice, timestamp);
+    const promises = slices.reduce((memo, slice) => {
+      const promise = this.send(data, slice, timestamp);
       memo.push(promise);
       return memo;
     }, [])
-    return Promise.all(promises).then((results) => {
-      let allResults = results.reduce((memo, result) => {
+    return Promise.all(promises).then((results) => {
+      const allResults = results.reduce((memo, result) => {
         return memo.concat(result);
       }, []);
       return Promise.resolve(allResults);
@@ -63,23 +63,23 @@ GCM.prototype.send = function(data, devices) {
   }
   // Generate gcm payload
   // PushId is not a formal field of GCM, but Parse Android SDK uses this field to deduplicate push notifications
-  let gcmPayload = generateGCMPayload(data, pushId, timestamp, expirationTime);
+  const gcmPayload = generateGCMPayload(data, pushId, timestamp, expirationTime);
   // Make and send gcm request
-  let message = new gcm.Message(gcmPayload);
+  const message = new gcm.Message(gcmPayload);
 
   // Build a device map
-  let devicesMap = devices.reduce((memo, device) => {
+  const devicesMap = devices.reduce((memo, device) => {
     memo[device.deviceToken] = device;
     return memo;
   }, {});
 
-  let deviceTokens = Object.keys(devicesMap);
+  const deviceTokens = Object.keys(devicesMap);
 
   const resolvers = [];
-  const promises = deviceTokens.map(() => new Promise(resolve => resolvers.push(resolve)));
-  let registrationTokens = deviceTokens;
-  let length = registrationTokens.length;
-  log.verbose(LOG_PREFIX, `sending to ${length} ${length > 1 ? 'devices' : 'device'}`);
+  const promises = deviceTokens.map(() => new Promise(resolve => resolvers.push(resolve)));
+  const registrationTokens = deviceTokens;
+  const length = registrationTokens.length;
+  log.verbose(LOG_PREFIX, `sending to ${length} ${length > 1 ? 'devices' : 'device'}`);
   this.sender.send(message, { registrationTokens: registrationTokens }, 5, (error, response) => {
     // example response:
     /*
@@ -97,13 +97,13 @@ GCM.prototype.send = function(data, devices) {
     } else {
       log.verbose(LOG_PREFIX, `GCM Response: %s`, JSON.stringify(response, null, 4));
     }
-    let { results, multicast_id } = response || {};
+    const { results, multicast_id } = response || {};
     registrationTokens.forEach((token, index) => {
-      let resolve = resolvers[index];
-      let result = results ? results[index] : undefined;
-      let device = devicesMap[token];
+      const resolve = resolvers[index];
+      const result = results ? results[index] : undefined;
+      const device = devicesMap[token];
       device.deviceType = 'android';
-      let resolution = {
+      const resolution = {
         device,
         multicast_id,
         response: error || result,
@@ -128,7 +128,7 @@ GCM.prototype.send = function(data, devices) {
  * @returns {Object} A promise which is resolved after we get results from gcm
  */
 function generateGCMPayload(requestData, pushId, timeStamp, expirationTime) {
-  let payload = {
+  const payload = {
     priority: 'high'
   };
   payload.data = {
@@ -144,7 +144,7 @@ function generateGCMPayload(requestData, pushId, timeStamp, expirationTime) {
   });
 
   if (expirationTime) {
-   // The timeStamp and expiration is in milliseconds but gcm requires second
+    // The timeStamp and expiration is in milliseconds but gcm requires second
     let timeToLive = Math.floor((expirationTime - timeStamp) / 1000);
     if (timeToLive < 0) {
       timeToLive = 0;
@@ -164,7 +164,7 @@ function generateGCMPayload(requestData, pushId, timeStamp, expirationTime) {
  * @returns {Array} An array which contaisn several arries of devices with fixed chunk size
  */
 function sliceDevices(devices, chunkSize) {
-  let chunkDevices = [];
+  const chunkDevices = [];
   while (devices.length > 0) {
     chunkDevices.push(devices.splice(0, chunkSize));
   }
