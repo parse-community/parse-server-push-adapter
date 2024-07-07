@@ -28,6 +28,13 @@ describe('EXPO', () => {
     expect(function() { new EXPO(undefined); }).toThrow();
   });
 
+  it('does log on invalid payload', async () => {
+    const spy = spyOn(log, 'warn');
+    const expo = new EXPO({});
+    expo.send();
+    expect(spy).toHaveBeenCalledWith('parse-server-push-adapter EXPO', 'invalid push payload');
+  });
+
   it('can send successful EXPO request', async () => {
     const spy = spyOn(log, 'verbose');
 

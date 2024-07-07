@@ -55,11 +55,11 @@ describe('WEB', () => {
     expect(function() { new WEB(undefined); }).toThrow();
   });
 
-  it('does log on invalid APNS notification', async () => {
+  it('does log on invalid payload', async () => {
     const spy = spyOn(log, 'warn');
     const web = new WEB({ vapidDetails });
     web.send();
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith('parse-server-push-adapter WEB', 'invalid push payload');
   });
 
   it('can send successful WEB request', async () => {
