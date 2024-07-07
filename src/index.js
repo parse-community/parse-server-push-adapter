@@ -4,10 +4,11 @@
 // WEB for web push.
 import log from 'npmlog';
 
-/* istanbul ignore if */
-if (process.env.VERBOSE || process.env.VERBOSE_PARSE_SERVER_PUSH_ADAPTER) {
+/* c8 ignore start */
+if (process.env.VERBOSE === '1' || process.env.VERBOSE_PARSE_SERVER_PUSH_ADAPTER === '1') {
   log.level = 'verbose';
 }
+/* c8 ignore stop */
 
 import ParsePushAdapter from './ParsePushAdapter.js';
 import GCM from './GCM.js';
