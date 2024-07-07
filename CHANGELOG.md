@@ -1,3 +1,10 @@
+# [6.4.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.3.0...6.4.0) (2024-07-07)
+
+
+### Features
+
+* Add support for Node 22 ([#263](https://github.com/parse-community/parse-server-push-adapter/issues/263)) ([8d90258](https://github.com/parse-community/parse-server-push-adapter/commit/8d90258505a35b385a561584515d67c857bcbf62))
+
 # [6.3.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.2.0...6.3.0) (2024-07-07)
 
 

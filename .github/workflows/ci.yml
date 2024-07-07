@@ -29,6 +29,8 @@ jobs:
             NODE_VERSION: 18
           - name: Node.js 20
             NODE_VERSION: 20
+          - name: Node.js 22
+            NODE_VERSION: 22
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15

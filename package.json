@@ -1,6 +1,6 @@
 {
   "name": "@parse/push-adapter",
-  "version": "6.3.0",
+  "version": "6.4.0",
   "description": "Base parse-server-push-adapter",
   "main": "src/index.js",
   "type": "module",
@@ -48,6 +48,6 @@
     "semantic-release": "24.0.0"
   },
   "engines": {
-    "node": ">=18.0.0 <21"
+    "node": "18 || 20 || 22"
   }
 }
