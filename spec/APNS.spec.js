@@ -5,20 +5,20 @@ import APNS from '../src/APNS.js';
 describe('APNS', () => {
 
   it('can initialize with cert', (done) => {
-    let args = {
+    const args = {
       cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-      key: new Buffer('testKey'),
+      key: Buffer.from('testKey'),
       production: true,
       topic: 'topic'
     };
-    let apns = new APNS(args);
+    const apns = new APNS(args);
 
     expect(apns.providers.length).toBe(1);
-    let apnsProvider = apns.providers[0];
+    const apnsProvider = apns.providers[0];
     expect(apnsProvider.index).toBe(0);
     expect(apnsProvider.topic).toBe(args.topic);
     // TODO: Remove this checking onec we inject APNS
-    let prodApnsOptions = apnsProvider.client.config;
+    const prodApnsOptions = apnsProvider.client.config;
     expect(prodApnsOptions.cert).toBe(args.cert);
     expect(prodApnsOptions.key).toBe(args.key);
     expect(prodApnsOptions.production).toBe(args.production);
@@ -48,15 +48,15 @@ describe('APNS', () => {
   });
 
   it('fails to initialize without a bundleID', (done) => {
-    expect(() => {
+    expect(() => {
       new APNS({
-        key: new Buffer('key'),
+        key: Buffer.from('key'),
         production: true,
         bundle: 'hello'
       });
     }).toThrow();
 
-    expect(() => {
+    expect(() => {
       new APNS({
         cert: 'pfx',
         production: true,
@@ -64,9 +64,9 @@ describe('APNS', () => {
       });
     }).toThrow();
 
-    expect(() => {
+    expect(() => {
       new APNS({
-        pfx: new Buffer(''),
+        pfx: Buffer.from(''),
         production: true,
         bundle: 'hello'
       });
@@ -74,27 +74,28 @@ describe('APNS', () => {
     done();
   });
 
-  it('can initialize with multiple certs', (done) => {
-    var args = [
+  it('can initialize with multiple certs with bundleId', (done) => {
+    spyOn(log, 'warn').and.callFake(() => {});
+    const args = [
       {
         cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-        key: new Buffer('testKey'),
+        key: Buffer.from('testKey'),
         production: false,
         bundleId: 'bundleId'
       },
       {
         cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-        key: new Buffer('testKey'),
+        key: Buffer.from('testKey'),
         production: true,
         bundleId: 'bundleIdAgain'
       }
     ]
 
-    var apns = new APNS(args);
+    const apns = new APNS(args);
     expect(apns.providers.length).toBe(2);
-    var devApnsConnection = apns.providers[1];
+    const devApnsConnection = apns.providers[1];
     expect(devApnsConnection.index).toBe(1);
-    var devApnsOptions = devApnsConnection.client.config;
+    const devApnsOptions = devApnsConnection.client.config;
     expect(devApnsOptions.cert).toBe(args[0].cert);
     expect(devApnsOptions.key).toBe(args[0].key);
     expect(devApnsOptions.production).toBe(args[0].production);
@@ -102,11 +103,11 @@ describe('APNS', () => {
     expect(devApnsOptions.topic).toBe(args[0].bundleId);
     expect(devApnsConnection.topic).toBe(args[0].bundleId);
 
-    var prodApnsConnection = apns.providers[0];
+    const prodApnsConnection = apns.providers[0];
     expect(prodApnsConnection.index).toBe(0);
 
     // TODO: Remove this checking onec we inject APNS
-    var prodApnsOptions = prodApnsConnection.client.config;
+    const prodApnsOptions = prodApnsConnection.client.config;
     expect(prodApnsOptions.cert).toBe(args[1].cert);
     expect(prodApnsOptions.key).toBe(args[1].key);
     expect(prodApnsOptions.production).toBe(args[1].production);
@@ -116,40 +117,40 @@ describe('APNS', () => {
     done();
   });
 
-  it('can initialize with multiple certs', (done) => {
-    let args = [
+  it('can initialize with multiple certs with topic', (done) => {
+    const args = [
       {
         cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-        key: new Buffer('testKey'),
+        key: Buffer.from('testKey'),
         production: false,
         topic: 'topic'
       },
       {
         cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-        key: new Buffer('testKey'),
+        key: Buffer.from('testKey'),
         production: true,
         topic: 'topicAgain'
       }
     ];
 
-    let apns = new APNS(args);
+    const apns = new APNS(args);
 
     expect(apns.providers.length).toBe(2);
-    let devApnsProvider = apns.providers[1];
+    const devApnsProvider = apns.providers[1];
     expect(devApnsProvider.index).toBe(1);
     expect(devApnsProvider.topic).toBe(args[0].topic);
 
-    let devApnsOptions = devApnsProvider.client.config;
+    const devApnsOptions = devApnsProvider.client.config;
     expect(devApnsOptions.cert).toBe(args[0].cert);
     expect(devApnsOptions.key).toBe(args[0].key);
     expect(devApnsOptions.production).toBe(args[0].production);
 
-    let prodApnsProvider = apns.providers[0];
+    const prodApnsProvider = apns.providers[0];
     expect(prodApnsProvider.index).toBe(0);
     expect(prodApnsProvider.topic).toBe(args[1].topic);
 
     // TODO: Remove this checking onec we inject APNS
-    let prodApnsOptions = prodApnsProvider.client.config;
+    const prodApnsOptions = prodApnsProvider.client.config;
     expect(prodApnsOptions.cert).toBe(args[1].cert);
     expect(prodApnsOptions.key).toBe(args[1].key);
     expect(prodApnsOptions.production).toBe(args[1].production);
@@ -157,7 +158,7 @@ describe('APNS', () => {
   });
 
   it('sets priority to 10 if not set explicitly', (done) => {
-    let data = {
+    const data = {
       'alert': 'alert',
       'title': 'title',
       'badge': 100,
@@ -169,14 +170,14 @@ describe('APNS', () => {
       'key': 'value',
       'keyAgain': 'valueAgain'
     };
-    let notification = APNS._generateNotification(data, { });
+    const notification = APNS._generateNotification(data, { });
     expect(notification.priority).toEqual(10);
     done();
   });
 
   it('can generate APNS notification', (done) => {
     //Mock request data
-    let data = {
+    const data = {
       'alert': 'alert',
       'title': 'title',
       'badge': 100,
@@ -190,12 +191,12 @@ describe('APNS', () => {
       'key': 'value',
       'keyAgain': 'valueAgain'
     };
-    let expirationTime = 1454571491354;
-    let collapseId = "collapseIdentifier";
+    const expirationTime = 1454571491354;
+    const collapseId = "collapseIdentifier";
 
-    let pushType = "alert";
-    let priority = 5;
-    let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
+    const pushType = "alert";
+    const priority = 5;
+    const notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
 
     expect(notification.aps.alert).toEqual({ body: 'alert', title: 'title' });
     expect(notification.aps.badge).toEqual(data.badge);
@@ -219,7 +220,7 @@ describe('APNS', () => {
 
   it('can generate APNS notification with nested alert dictionary', (done) => {
     //Mock request data
-    let data = {
+    const data = {
       'alert': { body: 'alert', title: 'title' },
       'badge': 100,
       'sound': 'test',
@@ -232,12 +233,12 @@ describe('APNS', () => {
       'key': 'value',
       'keyAgain': 'valueAgain'
     };
-    let expirationTime = 1454571491354;
-    let collapseId = "collapseIdentifier";
+    const expirationTime = 1454571491354;
+    const collapseId = "collapseIdentifier";
 
-    let pushType = "alert";
-    let priority = 5;
-    let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
+    const pushType = "alert";
+    const priority = 5;
+    const notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
 
     expect(notification.aps.alert).toEqual({ body: 'alert', title: 'title' });
     expect(notification.aps.badge).toEqual(data.badge);
@@ -261,7 +262,7 @@ describe('APNS', () => {
 
   it('sets push type to alert if not defined explicitly', (done) => {
     //Mock request data
-    let data = {
+    const data = {
       'alert': 'alert',
       'title': 'title',
       'badge': 100,
@@ -273,58 +274,58 @@ describe('APNS', () => {
       'key': 'value',
       'keyAgain': 'valueAgain'
     };
-    let expirationTime = 1454571491354;
-    let collapseId = "collapseIdentifier";
+    const expirationTime = 1454571491354;
+    const collapseId = "collapseIdentifier";
 
-    let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId });
+    const notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId });
 
     expect(notification.pushType).toEqual('alert');
     done();
   });
 
   it('can generate APNS notification from raw data', (done) => {
-      //Mock request data
-      let data = {
-        'aps': {
-          'alert': {
-            "loc-key" : "GAME_PLAY_REQUEST_FORMAT",
-            "loc-args" : [ "Jenna", "Frank"]
-          },
-          'badge': 100,
-          'sound': 'test',
-          'thread-id': 'a-thread-id'
+    //Mock request data
+    const data = {
+      'aps': {
+        'alert': {
+          "loc-key" : "GAME_PLAY_REQUEST_FORMAT",
+          "loc-args" : [ "Jenna", "Frank"]
         },
-        'key': 'value',
-        'keyAgain': 'valueAgain'
-      };
-      let expirationTime = 1454571491354;
-      let collapseId = "collapseIdentifier";
-      let pushType = "background";
-      let priority = 5;
+        'badge': 100,
+        'sound': 'test',
+        'thread-id': 'a-thread-id'
+      },
+      'key': 'value',
+      'keyAgain': 'valueAgain'
+    };
+    const expirationTime = 1454571491354;
+    const collapseId = "collapseIdentifier";
+    const pushType = "background";
+    const priority = 5;
 
-      let notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
+    const notification = APNS._generateNotification(data, { expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
 
-      expect(notification.expiry).toEqual(Math.round(expirationTime / 1000));
-      expect(notification.collapseId).toEqual(collapseId);
-      expect(notification.pushType).toEqual(pushType);
-      expect(notification.priority).toEqual(priority);
+    expect(notification.expiry).toEqual(Math.round(expirationTime / 1000));
+    expect(notification.collapseId).toEqual(collapseId);
+    expect(notification.pushType).toEqual(pushType);
+    expect(notification.priority).toEqual(priority);
 
-      let stringifiedJSON = notification.compile();
-      let jsonObject = JSON.parse(stringifiedJSON);
+    const stringifiedJSON = notification.compile();
+    const jsonObject = JSON.parse(stringifiedJSON);
 
-      expect(jsonObject.aps.alert).toEqual({ "loc-key" : "GAME_PLAY_REQUEST_FORMAT", "loc-args" : [ "Jenna", "Frank"] });
-      expect(jsonObject.aps.badge).toEqual(100);
-      expect(jsonObject.aps.sound).toEqual('test');
-      expect(jsonObject.aps['thread-id']).toEqual('a-thread-id');
-      expect(jsonObject.key).toEqual('value');
-      expect(jsonObject.keyAgain).toEqual('valueAgain');
-      done();
-    });
+    expect(jsonObject.aps.alert).toEqual({ "loc-key" : "GAME_PLAY_REQUEST_FORMAT", "loc-args" : [ "Jenna", "Frank"] });
+    expect(jsonObject.aps.badge).toEqual(100);
+    expect(jsonObject.aps.sound).toEqual('test');
+    expect(jsonObject.aps['thread-id']).toEqual('a-thread-id');
+    expect(jsonObject.key).toEqual('value');
+    expect(jsonObject.keyAgain).toEqual('valueAgain');
+    done();
+  });
 
   it('can choose providers for device with valid appIdentifier', (done) => {
-    let appIdentifier = 'topic';
+    const appIdentifier = 'topic';
     // Mock providers
-    let providers = [
+    const providers = [
       {
         topic: appIdentifier
       },
@@ -333,7 +334,7 @@ describe('APNS', () => {
       }
     ];
 
-    let qualifiedProviders = APNS.prototype._chooseProviders.call({providers: providers}, appIdentifier);
+    const qualifiedProviders = APNS.prototype._chooseProviders.call({providers: providers}, appIdentifier);
     expect(qualifiedProviders).toEqual([{
       topic: 'topic'
     }]);
@@ -341,9 +342,9 @@ describe('APNS', () => {
   });
 
   it('can choose providers for device with invalid appIdentifier', (done) => {
-    let appIdentifier = 'invalid';
+    const appIdentifier = 'invalid';
     // Mock providers
-    let providers = [
+    const providers = [
       {
         topic: 'bundleId'
       },
@@ -352,15 +353,15 @@ describe('APNS', () => {
       }
     ];
 
-    let qualifiedProviders = APNS.prototype._chooseProviders.call({providers: providers}, appIdentifier);
+    const qualifiedProviders = APNS.prototype._chooseProviders.call({providers: providers}, appIdentifier);
     expect(qualifiedProviders).toEqual([]);
     done();
   });
 
   it('does log on invalid APNS notification', async () => {
     const args = {
-      cert: new Buffer('testCert'),
-      key: new Buffer('testKey'),
+      cert: Buffer.from('testCert'),
+      key: Buffer.from('testKey'),
       production: true,
       topic: 'topic'
     };
@@ -371,14 +372,14 @@ describe('APNS', () => {
   });
 
   it('can send APNS notification', (done) => {
-    let args = {
-      cert: new Buffer('testCert'),
-      key: new Buffer('testKey'),
+    const args = {
+      cert: Buffer.from('testCert'),
+      key: Buffer.from('testKey'),
       production: true,
       topic: 'topic'
     };
-    let apns = new APNS(args);
-    let provider = apns.providers[0];
+    const apns = new APNS(args);
+    const provider = apns.providers[0];
     spyOn(provider, 'send').and.callFake((notification, devices) => {
       return Promise.resolve({
         sent: devices,
@@ -386,10 +387,10 @@ describe('APNS', () => {
       })
     });
     // Mock data
-    let expirationTime = 1454571491354;
-    let collapseId = "collapseIdentifier";
-    let pushType = "alert"; // or background
-    let data = {
+    const expirationTime = 1454571491354;
+    const collapseId = "collapseIdentifier";
+    const pushType = "alert"; // or background
+    const data = {
       'collapse_id': collapseId,
       'push_type': pushType,
       'expiration_time': expirationTime,
@@ -399,7 +400,7 @@ describe('APNS', () => {
       }
     };
     // Mock devices
-    let mockedDevices = [
+    const mockedDevices = [
       {
         deviceToken: '112233',
         appIdentifier: 'topic'
@@ -417,29 +418,30 @@ describe('APNS', () => {
         appIdentifier: 'topic'
       }
     ];
-    let promise = apns.send(data, mockedDevices);
+    apns.send(data, mockedDevices);
+
     expect(provider.send).toHaveBeenCalled();
-    let calledArgs = provider.send.calls.first().args;
-    let notification = calledArgs[0];
+    const calledArgs = provider.send.calls.first().args;
+    const notification = calledArgs[0];
     expect(notification.aps.alert).toEqual(data.data.alert);
     expect(notification.expiry).toEqual(Math.round(data['expiration_time'] / 1000));
     expect(notification.collapseId).toEqual(collapseId);
     expect(notification.pushType).toEqual(pushType);
     expect(notification.priority).toEqual(data['priority']);
-    let apnDevices = calledArgs[1];
+    const apnDevices = calledArgs[1];
     expect(apnDevices.length).toEqual(4);
     done();
   });
 
   it('can send APNS notification headers in data', (done) => {
-    let args = {
-      cert: new Buffer('testCert'),
-      key: new Buffer('testKey'),
+    const args = {
+      cert: Buffer.from('testCert'),
+      key: Buffer.from('testKey'),
       production: true,
       topic: 'topic'
     };
-    let apns = new APNS(args);
-    let provider = apns.providers[0];
+    const apns = new APNS(args);
+    const provider = apns.providers[0];
     spyOn(provider, 'send').and.callFake((notification, devices) => {
       return Promise.resolve({
         sent: devices,
@@ -447,10 +449,10 @@ describe('APNS', () => {
       })
     });
     // Mock data
-    let expirationTime = 1454571491354;
-    let collapseId = "collapseIdentifier";
-    let pushType = "alert"; // or background
-    let data = {
+    const expirationTime = 1454571491354;
+    const collapseId = "collapseIdentifier";
+    const pushType = "alert"; // or background
+    const data = {
       'expiration_time': expirationTime,
       'data': {
         'alert': 'alert',
@@ -460,7 +462,7 @@ describe('APNS', () => {
       }
     };
     // Mock devices
-    let mockedDevices = [
+    const mockedDevices = [
       {
         deviceToken: '112233',
         appIdentifier: 'topic'
@@ -478,42 +480,42 @@ describe('APNS', () => {
         appIdentifier: 'topic'
       }
     ];
-    let promise = apns.send(data, mockedDevices);
+    apns.send(data, mockedDevices);
     expect(provider.send).toHaveBeenCalled();
-    let calledArgs = provider.send.calls.first().args;
-    let notification = calledArgs[0];
+    const calledArgs = provider.send.calls.first().args;
+    const notification = calledArgs[0];
     expect(notification.aps.alert).toEqual(data.data.alert);
     expect(notification.expiry).toEqual(Math.round(data['expiration_time'] / 1000));
     expect(notification.collapseId).toEqual(collapseId);
     expect(notification.pushType).toEqual(pushType);
     expect(notification.priority).toEqual(6);
-    let apnDevices = calledArgs[1];
+    const apnDevices = calledArgs[1];
     expect(apnDevices.length).toEqual(4);
     done();
   });
 
   it('can send APNS notification to multiple bundles', (done) => {
-    let args = [{
-      cert: new Buffer('testCert'),
-      key: new Buffer('testKey'),
+    const args = [{
+      cert: Buffer.from('testCert'),
+      key: Buffer.from('testKey'),
       production: true,
       topic: 'topic'
     }, {
-      cert: new Buffer('testCert'),
-      key: new Buffer('testKey'),
+      cert: Buffer.from('testCert'),
+      key: Buffer.from('testKey'),
       production: false,
       topic: 'topic.dev'
     }];
 
-    let apns = new APNS(args);
-    let provider = apns.providers[0];
+    const apns = new APNS(args);
+    const provider = apns.providers[0];
     spyOn(provider, 'send').and.callFake((notification, devices) => {
       return Promise.resolve({
         sent: devices,
         failed: []
       })
     });
-    let providerDev = apns.providers[1];
+    const providerDev = apns.providers[1];
     spyOn(providerDev, 'send').and.callFake((notification, devices) => {
       return Promise.resolve({
         sent: devices,
@@ -522,10 +524,10 @@ describe('APNS', () => {
     });
     apns.providers = [provider, providerDev];
     // Mock data
-    let expirationTime = 1454571491354;
-    let pushType = "alert"; // or background
-    let collapseId = "collapseIdentifier";
-    let data = {
+    const expirationTime = 1454571491354;
+    const pushType = "alert"; // or background
+    const collapseId = "collapseIdentifier";
+    const data = {
       'collapse_id': collapseId,
       'push_type': pushType,
       'expiration_time': expirationTime,
@@ -534,7 +536,7 @@ describe('APNS', () => {
       }
     };
     // Mock devices
-    let mockedDevices = [
+    const mockedDevices = [
       {
         deviceToken: '112233',
         appIdentifier: 'topic'
@@ -556,8 +558,7 @@ describe('APNS', () => {
         appIdentifier: 'topic.dev'
       }
     ];
-
-    let promise = apns.send(data, mockedDevices);
+    apns.send(data, mockedDevices);
 
     expect(provider.send).toHaveBeenCalled();
     let calledArgs = provider.send.calls.first().args;
@@ -581,45 +582,47 @@ describe('APNS', () => {
     done();
   });
 
-  it('reports proper error when no conn is available', (done) => {
-    var args = [{
+  it('reports proper error when no conn is available', (done) => {
+    spyOn(log, 'warn').and.callFake(() => {});
+    const args = [{
       cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',
-      key: new Buffer('testKey'),
+      key: Buffer.from('testKey'),
       production: true,
       bundleId: 'bundleId'
     }];
-    var data = {
+    const data = {
       'data': {
         'alert': 'alert'
       }
     }
-    var devices = [
+    const devices = [
       {
         deviceToken: '112233',
         appIdentifier: 'invalidBundleId'
       },
     ]
-    var apns = new APNS(args);
-    apns.send(data, devices).then((results) => {
+    const apns = new APNS(args);
+    apns.send(data, devices).then((results) => {
       expect(results.length).toBe(1);
-      let result = results[0];
+      const result = results[0];
       expect(result.transmitted).toBe(false);
       expect(result.response.error).toBe('No Provider found');
       done();
-    }, (err) => {
+    }, () => {
       fail('should not fail');
       done();
     })
   });
 
-  it('properly parses errors', (done) => {
+  it('properly parses errors', (done) => {
+    spyOn(log, 'error').and.callFake(() => {});
     APNS._handlePushFailure({
       device: 'abcd',
       status: -1,
       response: {
         reason: 'Something wrong happend'
       }
-    }).then((result) => {
+    }).then((result) => {
       expect(result.transmitted).toBe(false);
       expect(result.device.deviceToken).toBe('abcd');
       expect(result.device.deviceType).toBe('ios');
@@ -628,10 +631,11 @@ describe('APNS', () => {
     })
   });
 
-  it('properly parses errors again', (done) => {
+  it('properly parses errors again', (done) => {
+    spyOn(log, 'error').and.callFake(() => {});
     APNS._handlePushFailure({
       device: 'abcd',
-    }).then((result) => {
+    }).then((result) => {
       expect(result.transmitted).toBe(false);
       expect(result.device.deviceToken).toBe('abcd');
       expect(result.device.deviceType).toBe('ios');

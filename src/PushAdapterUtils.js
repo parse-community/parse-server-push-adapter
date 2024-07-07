@@ -8,16 +8,16 @@ import { randomBytes } from 'crypto';
    */
 export function classifyInstallations(installations, validPushTypes) {
   // Init deviceTokenMap, create a empty array for each valid pushType
-  let deviceMap = {};
-  for (let validPushType of validPushTypes) {
+  const deviceMap = {};
+  for (const validPushType of validPushTypes) {
     deviceMap[validPushType] = [];
   }
-  for (let installation of installations) {
+  for (const installation of installations) {
     // No deviceToken, ignore
     if (!installation.deviceToken) {
       continue;
     }
-    let devices = deviceMap[installation.pushType] || deviceMap[installation.deviceType] || null;
+    const devices = deviceMap[installation.pushType] || deviceMap[installation.deviceType] || null;
     if (Array.isArray(devices)) {
       devices.push({
         deviceToken: installation.deviceToken,
@@ -33,11 +33,11 @@ export function randomString(size) {
   if (size === 0) {
     throw new Error('Zero-length randomString is useless.');
   }
-  let chars = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+  const chars = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
                'abcdefghijklmnopqrstuvwxyz' +
                '0123456789');
   let objectId = '';
-  let bytes = randomBytes(size);
+  const bytes = randomBytes(size);
   for (let i = 0; i < bytes.length; ++i) {
     objectId += chars[bytes.readUInt8(i) % chars.length];
   }

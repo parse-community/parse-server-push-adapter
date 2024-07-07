@@ -1,7 +1,8 @@
 import { join } from 'path';
+import log from 'npmlog';
 import apn from '@parse/node-apn';
 import ParsePushAdapterPackage, { ParsePushAdapter as _ParsePushAdapter, APNS as _APNS, GCM as _GCM, WEB as _WEB, EXPO as _EXPO, utils } from '../src/index.js';
-var ParsePushAdapter = _ParsePushAdapter;
+const ParsePushAdapter = _ParsePushAdapter;
 import { randomString } from '../src/PushAdapterUtils.js';
 import MockAPNProvider from './MockAPNProvider.js';
 import APNS from '../src/APNS.js';
@@ -12,7 +13,7 @@ import EXPO from '../src/EXPO.js';
 
 describe('ParsePushAdapter', () => {
 
-  beforeEach(() => {
+  beforeEach(() => {
     spyOn(apn, 'Provider').and.callFake(MockAPNProvider);
   });
 
@@ -28,7 +29,7 @@ describe('ParsePushAdapter', () => {
 
   it('can be initialized', (done) => {
     // Make mock config
-    var pushConfig = {
+    const pushConfig = {
       web: {
         vapidDetails: {
           subject: 'test@example.com',
@@ -59,24 +60,24 @@ describe('ParsePushAdapter', () => {
       ]
     };
 
-    var parsePushAdapter = new ParsePushAdapter(pushConfig);
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
     // Check ios
-    var iosSender = parsePushAdapter.senderMap['ios'];
+    const iosSender = parsePushAdapter.senderMap['ios'];
     expect(iosSender instanceof APNS).toBe(true);
     // Check android
-    var androidSender = parsePushAdapter.senderMap['android'];
+    const androidSender = parsePushAdapter.senderMap['android'];
     expect(androidSender instanceof GCM).toBe(true);
     // Check web
-    var webSender = parsePushAdapter.senderMap['web'];
+    const webSender = parsePushAdapter.senderMap['web'];
     expect(webSender instanceof WEB).toBe(true);
     // Check expo
-    var expoSender = parsePushAdapter.senderMap['expo'];
+    const expoSender = parsePushAdapter.senderMap['expo'];
     expect(expoSender instanceof EXPO).toBe(true);
     done();
   });
 
   it("can be initialized with FCM for android and ios", (done) => {
-    var pushConfig = {
+    const pushConfig = {
       android: {
         firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
       },
@@ -85,16 +86,16 @@ describe('ParsePushAdapter', () => {
       },
     };
 
-    var parsePushAdapter = new ParsePushAdapter(pushConfig);
-    var iosSender = parsePushAdapter.senderMap["ios"];
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
+    const iosSender = parsePushAdapter.senderMap["ios"];
     expect(iosSender instanceof FCM).toBe(true);
-    var androidSender = parsePushAdapter.senderMap["android"];
+    const androidSender = parsePushAdapter.senderMap["android"];
     expect(androidSender instanceof FCM).toBe(true);
     done();
   });
 
   it("can be initialized with FCM for android and APNS for apple", (done) => {
-    var pushConfig = {
+    const pushConfig = {
       android: {
         firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
       },
@@ -114,16 +115,16 @@ describe('ParsePushAdapter', () => {
       ],
     };
 
-    var parsePushAdapter = new ParsePushAdapter(pushConfig);
-    var iosSender = parsePushAdapter.senderMap["ios"];
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
+    const iosSender = parsePushAdapter.senderMap["ios"];
     expect(iosSender instanceof APNS).toBe(true);
-    var androidSender = parsePushAdapter.senderMap["android"];
+    const androidSender = parsePushAdapter.senderMap["android"];
     expect(androidSender instanceof FCM).toBe(true);
     done();
   });
 
   it("can be initialized with FCM for apple and GCM for android", (done) => {
-    var pushConfig = {
+    const pushConfig = {
       android: {
         senderId: "senderId",
         apiKey: "apiKey",
@@ -133,17 +134,17 @@ describe('ParsePushAdapter', () => {
       },
     };
 
-    var parsePushAdapter = new ParsePushAdapter(pushConfig);
-    var iosSender = parsePushAdapter.senderMap["ios"];
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
+    const iosSender = parsePushAdapter.senderMap["ios"];
     expect(iosSender instanceof FCM).toBe(true);
-    var androidSender = parsePushAdapter.senderMap["android"];
+    const androidSender = parsePushAdapter.senderMap["android"];
     expect(androidSender instanceof GCM).toBe(true);
     done();
   });
 
   it('can throw on initializing with unsupported push type', (done) => {
     // Make mock config
-    var pushConfig = {
+    const pushConfig = {
       win: {
         senderId: 'senderId',
         apiKey: 'apiKey'
@@ -157,7 +158,7 @@ describe('ParsePushAdapter', () => {
   });
 
   it('can get valid push types', (done) => {
-    var parsePushAdapter = new ParsePushAdapter();
+    const parsePushAdapter = new ParsePushAdapter();
 
     expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'osx', 'tvos', 'android', 'fcm', 'web', 'expo']);
     done();
@@ -165,8 +166,8 @@ describe('ParsePushAdapter', () => {
 
   it('can classify installation', (done) => {
     // Mock installations
-    var validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm', 'web', 'expo'];
-    var installations = [
+    const validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm', 'web', 'expo'];
+    const installations = [
       {
         deviceType: 'android',
         deviceToken: 'androidToken'
@@ -202,7 +203,7 @@ describe('ParsePushAdapter', () => {
       }
     ];
 
-    var deviceMap = ParsePushAdapter.classifyInstallations(installations, validPushTypes);
+    const deviceMap = ParsePushAdapter.classifyInstallations(installations, validPushTypes);
     expect(deviceMap['android']).toEqual([makeDevice('androidToken', 'android')]);
     expect(deviceMap['ios']).toEqual([makeDevice('iosToken', 'ios')]);
     expect(deviceMap['osx']).toEqual([makeDevice('osxToken', 'osx')]);
@@ -215,24 +216,24 @@ describe('ParsePushAdapter', () => {
 
 
   it('can send push notifications', (done) => {
-    var parsePushAdapter = new ParsePushAdapter();
+    const parsePushAdapter = new ParsePushAdapter();
     // Mock senders
-    var androidSender = {
+    const androidSender = {
       send: jasmine.createSpy('send')
     };
-    var iosSender = {
+    const iosSender = {
       send: jasmine.createSpy('send')
     };
-    var osxSender = {
+    const osxSender = {
       send: jasmine.createSpy('send')
     }
-    var webSender = {
+    const webSender = {
       send: jasmine.createSpy('send')
     }
-    var expoSender = {
+    const expoSender = {
       send: jasmine.createSpy('send')
     }
-    var senderMap = {
+    const senderMap = {
       osx: osxSender,
       ios: iosSender,
       android: androidSender,
@@ -241,7 +242,7 @@ describe('ParsePushAdapter', () => {
     };
     parsePushAdapter.senderMap = senderMap;
     // Mock installations
-    var installations = [
+    const installations = [
       {
         deviceType: 'android',
         deviceToken: 'androidToken'
@@ -272,12 +273,12 @@ describe('ParsePushAdapter', () => {
         deviceToken: 'expoToken'
       }
     ];
-    var data = {};
+    const data = {};
 
     parsePushAdapter.send(data, installations);
     // Check android sender
     expect(androidSender.send).toHaveBeenCalled();
-    var args = androidSender.send.calls.first().args;
+    let args = androidSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('androidToken', 'android')
@@ -314,21 +315,21 @@ describe('ParsePushAdapter', () => {
   });
 
   it('can send push notifications by pushType and failback by deviceType', (done) => {
-    var parsePushAdapter = new ParsePushAdapter();
+    const parsePushAdapter = new ParsePushAdapter();
     // Mock senders
-    var androidSender = {
+    const androidSender = {
       send: jasmine.createSpy('send')
     };
-    var iosSender = {
+    const iosSender = {
       send: jasmine.createSpy('send')
     };
-    var senderMap = {
+    const senderMap = {
       ios: iosSender,
       android: androidSender
     };
     parsePushAdapter.senderMap = senderMap;
     // Mock installations
-    var installations = [
+    const installations = [
       {
         deviceType: 'android',
         deviceToken: 'androidToken'
@@ -370,12 +371,12 @@ describe('ParsePushAdapter', () => {
         deviceToken: undefined
       }
     ];
-    var data = {};
+    const data = {};
 
     parsePushAdapter.send(data, installations);
     // Check android sender
     expect(androidSender.send).toHaveBeenCalled();
-    var args = androidSender.send.calls.first().args;
+    let args = androidSender.send.calls.first().args;
     expect(args[0]).toEqual(data);
     expect(args[1]).toEqual([
       makeDevice('androidToken', 'android'),
@@ -395,7 +396,8 @@ describe('ParsePushAdapter', () => {
   });
 
   it('reports properly results', (done) => {
-    var pushConfig = {
+    spyOn(log, 'error').and.callFake(() => {});
+    const pushConfig = {
       web: {
         vapidDetails: {
           subject: 'test@example.com',
@@ -427,7 +429,7 @@ describe('ParsePushAdapter', () => {
         }
       ]
     };
-    var installations = [
+    const installations = [
       {
         deviceType: 'android',
         deviceToken: 'androidToken'
@@ -471,7 +473,7 @@ describe('ParsePushAdapter', () => {
       }
     ];
 
-    var parsePushAdapter = new ParsePushAdapter(pushConfig);
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
     parsePushAdapter.send({ data: { alert: 'some' } }, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
@@ -496,14 +498,16 @@ describe('ParsePushAdapter', () => {
         }
       })
       done();
-    }).catch((err) => {
+    }).catch(() => {
       fail('Should not fail');
       done();
     })
   });
 
-  it('reports properly failures when all transmissions have failed', (done) => {
-    var pushConfig = {
+  it('reports properly failures when all transmissions have failed', (done) => {
+    spyOn(log, 'error').and.callFake(() => {});
+    spyOn(log, 'warn').and.callFake(() => {});
+    const pushConfig = {
       ios: [
         {
           cert: 'cert.cer',
@@ -514,7 +518,7 @@ describe('ParsePushAdapter', () => {
         }
       ]
     };
-    var installations = [
+    const installations = [
       {
         deviceType: 'ios',
         deviceToken: '0d72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
@@ -522,8 +526,8 @@ describe('ParsePushAdapter', () => {
       }
     ];
 
-    var parsePushAdapter = new ParsePushAdapter(pushConfig);
-    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
+    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
       // 2x iOS, 1x android, 1x osx, 1x tvos
@@ -540,7 +544,7 @@ describe('ParsePushAdapter', () => {
       expect(result.transmitted).toBe(false);
       expect(typeof result.response.error).toBe('string');
       done();
-    }).catch((err) => {
+    }).catch(() => {
       fail('Should not fail');
       done();
     })
@@ -548,7 +552,8 @@ describe('ParsePushAdapter', () => {
 
   // Xited till we can retry on other connections
   it('reports properly select connection', (done) => {
-    var pushConfig = {
+    spyOn(log, 'warn').and.callFake(() => {});
+    const pushConfig = {
       ios: [
         {
           cert: 'cert.cer',
@@ -565,7 +570,7 @@ describe('ParsePushAdapter', () => {
         }
       ]
     };
-    var installations = [
+    const installations = [
       {
         deviceType: 'ios',
         deviceToken: '0d72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
@@ -573,8 +578,8 @@ describe('ParsePushAdapter', () => {
       }
     ];
 
-    var parsePushAdapter = new ParsePushAdapter(pushConfig);
-    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
+    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
       // 1x iOS
@@ -590,33 +595,33 @@ describe('ParsePushAdapter', () => {
       expect(typeof device.deviceToken).toBe('string');
       expect(result.transmitted).toBe(true);
       done();
-    }).catch((err) => {
+    }).catch(() => {
       fail('Should not fail');
       done();
     })
   });
 
   it('properly marks not transmitter when sender is missing', (done) => {
-    var pushConfig = {
+    const pushConfig = {
       android: {
         senderId: 'senderId',
         apiKey: 'apiKey'
       }
     };
-    var installations = [{
-        deviceType: 'ios',
-        deviceToken: '0d72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
-        appIdentifier: 'invalidiosbundleId'
-      },
-      {
-        deviceType: 'ios',
-        deviceToken: 'ff3943ed0b2090c47e5d6f07d8f202a10427941d7897fda5a6b18c6d9fd07d48',
-        appIdentifier: 'invalidiosbundleId'
-      }]
-    var parsePushAdapter = new ParsePushAdapter(pushConfig);
-    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
+    const installations = [{
+      deviceType: 'ios',
+      deviceToken: '0d72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
+      appIdentifier: 'invalidiosbundleId'
+    },
+    {
+      deviceType: 'ios',
+      deviceToken: 'ff3943ed0b2090c47e5d6f07d8f202a10427941d7897fda5a6b18c6d9fd07d48',
+      appIdentifier: 'invalidiosbundleId'
+    }]
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
+    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
       expect(results.length).toBe(2);
-      results.forEach((result) => {
+      results.forEach((result) => {
         expect(result.transmitted).toBe(false);
         expect(typeof result.device).toBe('object');
         expect(typeof result.device.deviceType).toBe('string');
