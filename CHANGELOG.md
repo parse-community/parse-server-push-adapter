@@ -1,3 +1,10 @@
+# [6.3.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.2.0...6.3.0) (2024-07-07)
+
+
+### Features
+
+* Add ECMAScript 6 (ES6) support ([#255](https://github.com/parse-community/parse-server-push-adapter/issues/255)) ([bee437a](https://github.com/parse-community/parse-server-push-adapter/commit/bee437af08575ae332ae81daf18a1130e2d68ca8))
+
 # [6.2.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.1.1...6.2.0) (2024-05-15)
 
 
