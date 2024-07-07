@@ -2,8 +2,8 @@
  * Semantic Release Config
  */
 
-const fs = require('fs').promises;
-const path = require('path');
+import fs from 'fs/promises';
+import path from 'path';
 
 // Get env vars
 const ref = process.env.GITHUB_REF;
@@ -47,7 +47,7 @@ async function config() {
       // { name: 'release-3', range: '3.x.x', channel: '3.x' },
       // { name: 'release-4', range: '4.x.x', channel: '4.x' },
     ],
-    dryRun: false,
+    dryRun: true,
     debug: true,
     ci: true,
     tagFormat: '${version}',
