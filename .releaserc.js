@@ -2,11 +2,12 @@
  * Semantic Release Config
  */
 
-import fs from 'fs/promises';
-import path from 'path';
+import { readFile } from 'fs/promises';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 // Get env vars
-const ref = process.env.GITHUB_REF;
+const ref = process.env.GITHUB_REF || '(local)';
 const serverUrl = process.env.GITHUB_SERVER_URL;
 const repository = process.env.GITHUB_REPOSITORY;
 const repositoryUrl = serverUrl + '/' + repository;
@@ -47,7 +48,7 @@ async function config() {
       // { name: 'release-3', range: '3.x.x', channel: '3.x' },
       // { name: 'release-4', range: '4.x.x', channel: '4.x' },
     ],
-    dryRun: true,
+    dryRun: false,
     debug: true,
     ci: true,
     tagFormat: '${version}',
@@ -97,13 +98,11 @@ async function config() {
 
 async function loadTemplates() {
   for (const template of Object.keys(templates)) {
-    const text = await readFile(path.resolve(__dirname, resourcePath, templates[template].file));
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const filePath = resolve(__dirname, resourcePath, templates[template].file);
+    const text = await readFile(filePath, 'utf-8');
     templates[template].text = text;
   }
-}
-
-async function readFile(filePath) {
-  return await fs.readFile(filePath, 'utf-8');
 }
 
 function getReleaseComment() {
