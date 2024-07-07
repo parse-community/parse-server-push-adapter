@@ -1,32 +1,29 @@
-var ParsePushAdapterPackage = require('../src/index');
-var ParsePushAdapter = ParsePushAdapterPackage.ParsePushAdapter;
-var randomString = require('../src/PushAdapterUtils').randomString;
-var APNS = require('../src/APNS').default;
-var GCM = require('../src/GCM').default;
-var WEB = require('../src/WEB').default;
-var MockAPNProvider = require('./MockAPNProvider');
-var FCM = require('../src/FCM').default
-var EXPO = require('../src/EXPO').default
-const path = require('path');
+import { join } from 'path';
+import apn from '@parse/node-apn';
+import ParsePushAdapterPackage, { ParsePushAdapter as _ParsePushAdapter, APNS as _APNS, GCM as _GCM, WEB as _WEB, EXPO as _EXPO, utils } from '../src/index.js';
+var ParsePushAdapter = _ParsePushAdapter;
+import { randomString } from '../src/PushAdapterUtils.js';
+import MockAPNProvider from './MockAPNProvider.js';
+import APNS from '../src/APNS.js';
+import GCM from '../src/GCM.js';
+import WEB from '../src/WEB.js';
+import FCM from '../src/FCM.js';
+import EXPO from '../src/EXPO.js';
 
 describe('ParsePushAdapter', () => {
 
   beforeEach(() => {
-    jasmine.mockLibrary('@parse/node-apn', 'Provider', MockAPNProvider);
-  });
-
-  afterEach(() => {
-    jasmine.restoreLibrary('@parse/node-apn', 'Provider');
+    spyOn(apn, 'Provider').and.callFake(MockAPNProvider);
   });
 
   it('properly export the module', () => {
-    expect(typeof ParsePushAdapterPackage.default).toBe('function');
-    expect(typeof ParsePushAdapterPackage.ParsePushAdapter).toBe('function');
-    expect(typeof ParsePushAdapterPackage.APNS).toBe('function');
-    expect(typeof ParsePushAdapterPackage.GCM).toBe('function');
-    expect(typeof ParsePushAdapterPackage.WEB).toBe('function');
-    expect(typeof ParsePushAdapterPackage.EXPO).toBe('function');
-    expect(typeof ParsePushAdapterPackage.utils).toBe('object');
+    expect(typeof ParsePushAdapterPackage).toBe('function');
+    expect(typeof _ParsePushAdapter).toBe('function');
+    expect(typeof _APNS).toBe('function');
+    expect(typeof _GCM).toBe('function');
+    expect(typeof _WEB).toBe('function');
+    expect(typeof _EXPO).toBe('function');
+    expect(typeof utils).toBe('object');
   });
 
   it('can be initialized', (done) => {
@@ -81,10 +78,10 @@ describe('ParsePushAdapter', () => {
   it("can be initialized with FCM for android and ios", (done) => {
     var pushConfig = {
       android: {
-        firebaseServiceAccount: path.join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+        firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
       },
       ios: {
-        firebaseServiceAccount: path.join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+        firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
       },
     };
 
@@ -99,7 +96,7 @@ describe('ParsePushAdapter', () => {
   it("can be initialized with FCM for android and APNS for apple", (done) => {
     var pushConfig = {
       android: {
-        firebaseServiceAccount: path.join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+        firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
       },
       ios: [
         {
@@ -132,7 +129,7 @@ describe('ParsePushAdapter', () => {
         apiKey: "apiKey",
       },
       ios: {
-        firebaseServiceAccount: path.join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+        firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
       },
     };
 

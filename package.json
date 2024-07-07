@@ -2,14 +2,13 @@
   "name": "@parse/push-adapter",
   "version": "6.2.0",
   "description": "Base parse-server-push-adapter",
-  "main": "lib/index.js",
+  "main": "src/index.js",
+  "type": "module",
   "files": [
-    "lib/"
+    "src/"
   ],
   "scripts": {
-    "build": "./node_modules/.bin/babel src/ -d lib/",
-    "test": "TESTING=1 nyc ./node_modules/.bin/jasmine",
-    "prepare": "npm run build"
+    "test": "TESTING=1 c8 ./node_modules/.bin/jasmine"
   },
   "keywords": [
     "parse-server",
@@ -38,14 +37,10 @@
     "@semantic-release/github": "7.2.3",
     "@semantic-release/npm": "7.1.3",
     "@semantic-release/release-notes-generator": "9.0.3",
-    "babel-cli": "6.26.0",
-    "babel-core": "6.26.3",
-    "babel-preset-es2015": "6.24.1",
-    "babel-preset-stage-0": "6.24.1",
-    "codecov": "3.7.1",
-    "jasmine": "2.8.0",
-    "jasmine-spec-reporter": "4.0.0",
-    "nyc": "14.1.1",
+    "c8": "10.1.2",
+    "codecov": "3.8.0",
+    "jasmine": "5.1.0",
+    "jasmine-spec-reporter": "7.0.0",
     "semantic-release": "17.4.6"
   },
   "engines": {

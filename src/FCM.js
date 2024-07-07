@@ -4,7 +4,7 @@ import Parse from 'parse';
 import log from 'npmlog';
 import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
-import { randomString } from './PushAdapterUtils';
+import { randomString } from './PushAdapterUtils.js';
 
 const LOG_PREFIX = 'parse-server-push-adapter FCM';
 const FCMRegistrationTokensMax = 500;

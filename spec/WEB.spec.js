@@ -1,5 +1,6 @@
-const WEB = require('../src/WEB').default;
-const webpush = require('web-push');
+import webpush from 'web-push';
+import log from 'npmlog';
+import WEB from '../src/WEB.js';
 
 const pushSubscription = {
   endpoint: '',
@@ -55,7 +56,6 @@ describe('WEB', () => {
   });
 
   it('does log on invalid APNS notification', async () => {
-    const log = require('npmlog');
     const spy = spyOn(log, 'warn');
     const web = new WEB({ vapidDetails });
     web.send();
@@ -63,7 +63,6 @@ describe('WEB', () => {
   });
 
   it('can send successful WEB request', async () => {
-    const log = require('npmlog');
     const spy = spyOn(log, 'verbose');
 
     const web = new WEB({ vapidDetails: 'apiKey' });
@@ -92,7 +91,6 @@ describe('WEB', () => {
   });
 
   it('can send failed WEB request', async () => {
-    const log = require('npmlog');
     const spy = spyOn(log, 'error');
 
     const web = new WEB({ vapidDetails: 'apiKey' });
@@ -141,7 +139,6 @@ describe('WEB', () => {
   });
 
   it('can send multiple failed WEB request', async () => {
-    const log = require('npmlog');
     const spy = spyOn(log, 'error');
 
     const web = new WEB({ vapidDetails: 'apiKey', success: false });

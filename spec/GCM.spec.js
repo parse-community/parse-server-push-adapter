@@ -1,4 +1,5 @@
-var GCM = require('../src/GCM').default;
+import log from 'npmlog';
+import GCM from '../src/GCM.js';
 
 function mockSender(gcm) {
   return spyOn(gcm.sender, 'send').and.callFake(function(message, options, timeout, cb) {
@@ -59,7 +60,6 @@ describe('GCM', () => {
   });
 
   it('does log on invalid APNS notification', async () => {
-    const log = require('npmlog');
     const spy = spyOn(log, 'warn');
     const gcm = new GCM({apiKey: 'apiKey'});
     gcm.send();

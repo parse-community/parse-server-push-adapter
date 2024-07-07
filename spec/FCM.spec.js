@@ -1,5 +1,5 @@
-const FCM = require('../src/FCM').default;
-const path = require('path');
+import path from 'path';
+import FCM from '../src/FCM.js';
 
 describe('FCM', () => {
   it('can initialize', () => {

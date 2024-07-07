@@ -1,6 +1,6 @@
-const Parse = require('parse/node');
-const APNS = require('../src/APNS').default;
-const MockAPNProvider = require('./MockAPNProvider');
+import log from 'npmlog';
+import Parse from 'parse/node.js';
+import APNS from '../src/APNS.js';
 
 describe('APNS', () => {
 
@@ -364,7 +364,6 @@ describe('APNS', () => {
       production: true,
       topic: 'topic'
     };
-    const log = require('npmlog');
     const spy = spyOn(log, 'warn');
     const apns = new APNS(args);
     apns.send();

@@ -1,5 +1,6 @@
-const EXPO = require('../src/EXPO').default;
-const Expo  = require('expo-server-sdk').Expo;
+import { Expo } from 'expo-server-sdk';
+import log from 'npmlog';
+import EXPO from '../src/EXPO.js';
 
 function mockSender(success) {
   return spyOn(EXPO.prototype, 'sendNotifications').and.callFake((payload, tokens) => {
@@ -28,7 +29,6 @@ describe('EXPO', () => {
   });
 
   it('can send successful EXPO request', async () => {
-    const log = require('npmlog');
     const spy = spyOn(log, 'verbose');
 
     const expo = new EXPO({ vapidDetails: 'apiKey' });
@@ -52,7 +52,6 @@ describe('EXPO', () => {
   });
 
   it('can send failed EXPO request', async () => {
-    const log = require('npmlog');
     const expo = new EXPO({ vapidDetails: 'apiKey' });
     spyOn(EXPO.prototype, 'sendNotifications').and.callFake(() => {
       return Promise.resolve([{ status: 'error', message: 'DeviceNotRegistered' }])});

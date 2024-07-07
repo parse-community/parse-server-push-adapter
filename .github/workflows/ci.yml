@@ -20,22 +20,14 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.NODE_VERSION }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.NODE_VERSION }}
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-              ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-
+          cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Build package
-        run: npm run build
       - name: Run tests
         run: npm run test
       - name: Code coverage
