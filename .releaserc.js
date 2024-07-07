@@ -7,7 +7,7 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 // Get env vars
-const ref = process.env.GITHUB_REF || '';
+const ref = process.env.GITHUB_REF || '(local)';
 const serverUrl = process.env.GITHUB_SERVER_URL;
 const repository = process.env.GITHUB_REPOSITORY;
 const repositoryUrl = serverUrl + '/' + repository;
