@@ -2,11 +2,12 @@
  * Semantic Release Config
  */
 
-import fs from 'fs/promises';
-import path from 'path';
+import { readFile } from 'fs/promises';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 // Get env vars
-const ref = process.env.GITHUB_REF;
+const ref = process.env.GITHUB_REF || '';
 const serverUrl = process.env.GITHUB_SERVER_URL;
 const repository = process.env.GITHUB_REPOSITORY;
 const repositoryUrl = serverUrl + '/' + repository;
@@ -38,6 +39,7 @@ async function config() {
   const config = {
     branches: [
       'master',
+      'ci/fix-auto-release',
       // { name: 'alpha', prerelease: true },
       // { name: 'beta', prerelease: true },
       // 'next-major',
@@ -49,7 +51,7 @@ async function config() {
     ],
     dryRun: true,
     debug: true,
-    ci: true,
+    ci: false,
     tagFormat: '${version}',
     plugins: [
       ['@semantic-release/commit-analyzer', {
@@ -97,13 +99,11 @@ async function config() {
 
 async function loadTemplates() {
   for (const template of Object.keys(templates)) {
-    const text = await readFile(path.resolve(__dirname, resourcePath, templates[template].file));
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const filePath = resolve(__dirname, resourcePath, templates[template].file);
+    const text = await readFile(filePath, 'utf-8');
     templates[template].text = text;
   }
-}
-
-async function readFile(filePath) {
-  return await fs.readFile(filePath, 'utf-8');
 }
 
 function getReleaseComment() {
@@ -112,4 +112,4 @@ function getReleaseComment() {
   return comment;
 }
 
-module.exports = config();
+export default config();
