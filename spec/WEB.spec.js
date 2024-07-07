@@ -34,7 +34,7 @@ function mockSender() {
 }
 
 function mockWebPush(success) {
-  return spyOn(webpush, 'sendNotification').and.callFake((deviceToken, payload, options) => {
+  return spyOn(webpush, 'sendNotification').and.callFake(() => {
     if (success) {
       return Promise.resolve({ statusCode: 201 });
     }
@@ -70,7 +70,7 @@ describe('WEB', () => {
       return Promise.resolve({
         sent: 1,
         failed: 0,
-        results: [{ result: 201 }], 
+        results: [{ result: 201 }],
       });
     });
     const data = { data: { alert: 'alert' } };
@@ -98,7 +98,7 @@ describe('WEB', () => {
       return Promise.resolve({
         sent: 0,
         failed: 1,
-        results: [{ error: 'push subscription has unsubscribed or expired.' }], 
+        results: [{ error: 'push subscription has unsubscribed or expired.' }],
       });
     });
     const data = { data: { alert: 'alert' } };
@@ -132,7 +132,7 @@ describe('WEB', () => {
     const response = await web.send(data, devices);
     expect(Array.isArray(response)).toBe(true);
     expect(response.length).toEqual(devices.length);
-    response.forEach((res, index) => {
+    response.forEach((res, index) => {
       expect(res.transmitted).toEqual(true);
       expect(res.device).toEqual(devices[index]);
     });
@@ -154,7 +154,7 @@ describe('WEB', () => {
     const response = await web.send(data, devices);
     expect(Array.isArray(response)).toBe(true);
     expect(response.length).toEqual(devices.length);
-    response.forEach((res, index) => {
+    response.forEach((res, index) => {
       expect(res.transmitted).toEqual(false);
       expect(res.device).toEqual(devices[index]);
     });

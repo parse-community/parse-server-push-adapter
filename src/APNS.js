@@ -39,7 +39,7 @@ export class APNS {
     }
 
     // Create Provider from each arg-object
-    for (let apnsArgs of apnsArgsList) {
+    for (const apnsArgs of apnsArgsList) {
 
       // rewrite bundleId to topic for backward-compatibility
       if (apnsArgs.bundleId) {
@@ -47,7 +47,7 @@ export class APNS {
         apnsArgs.topic = apnsArgs.bundleId
       }
 
-      let provider = APNS._createProvider(apnsArgs);
+      const provider = APNS._createProvider(apnsArgs);
       this.providers.push(provider);
     }
 
@@ -70,42 +70,42 @@ export class APNS {
    * @returns {Object} A promise which is resolved immediately
    */
   send(data, allDevices) {
-    let coreData = data && data.data;
+    const coreData = data && data.data;
     if (!coreData || !allDevices || !Array.isArray(allDevices)) {
       log.warn(LOG_PREFIX, 'invalid push payload');
       return;
     }
-    let expirationTime = data['expiration_time'] || coreData['expiration_time'];
-    let collapseId = data['collapse_id'] || coreData['collapse_id'];
-    let pushType = data['push_type'] || coreData['push_type'];
-    let priority = data['priority'] || coreData['priority'];
+    const expirationTime = data['expiration_time'] || coreData['expiration_time'];
+    const collapseId = data['collapse_id'] || coreData['collapse_id'];
+    const pushType = data['push_type'] || coreData['push_type'];
+    const priority = data['priority'] || coreData['priority'];
     let allPromises = [];
 
-    let devicesPerAppIdentifier = {};
+    const devicesPerAppIdentifier = {};
 
     // Start by clustering the devices per appIdentifier
     allDevices.forEach(device => {
-      let appIdentifier = device.appIdentifier;
+      const appIdentifier = device.appIdentifier;
       devicesPerAppIdentifier[appIdentifier] = devicesPerAppIdentifier[appIdentifier] || [];
       devicesPerAppIdentifier[appIdentifier].push(device);
     });
 
-    for (let key in devicesPerAppIdentifier) {
-      let devices = devicesPerAppIdentifier[key];
-      let appIdentifier = devices[0].appIdentifier;
-      let providers = this._chooseProviders(appIdentifier);
+    for (const key in devicesPerAppIdentifier) {
+      const devices = devicesPerAppIdentifier[key];
+      const appIdentifier = devices[0].appIdentifier;
+      const providers = this._chooseProviders(appIdentifier);
 
       // No Providers found
       if (!providers || providers.length === 0) {
-        let errorPromises = devices.map(device => APNS._createErrorPromise(device.deviceToken, 'No Provider found'));
+        const errorPromises = devices.map(device => APNS._createErrorPromise(device.deviceToken, 'No Provider found'));
         allPromises = allPromises.concat(errorPromises);
         continue;
       }
 
-      let headers = { expirationTime: expirationTime, topic: appIdentifier, collapseId: collapseId, pushType: pushType, priority: priority }
-      let notification = APNS._generateNotification(coreData, headers);
+      const headers = { expirationTime: expirationTime, topic: appIdentifier, collapseId: collapseId, pushType: pushType, priority: priority }
+      const notification = APNS._generateNotification(coreData, headers);
       const deviceIds = devices.map(device => device.deviceToken);
-      let promise = this.sendThroughProvider(notification, deviceIds, providers);
+      const promise = this.sendThroughProvider(notification, deviceIds, providers);
       allPromises.push(promise.then(this._handlePromise.bind(this)));
     }
 
@@ -117,25 +117,25 @@ export class APNS {
 
   sendThroughProvider(notification, devices, providers) {
     return providers[0]
-        .send(notification, devices)
-        .then((response) => {
-          if (response.failed
+      .send(notification, devices)
+      .then((response) => {
+        if (response.failed
               && response.failed.length > 0
               && providers && providers.length > 1) {
-            let devices = response.failed.map((failure) => { return failure.device; });
-            // Reset the failures as we'll try next connection
-            response.failed = [];
-            return this.sendThroughProvider(notification,
-                            devices,
-                            providers.slice(1, providers.length)).then((retryResponse) => {
-                              response.failed = response.failed.concat(retryResponse.failed);
-                              response.sent = response.sent.concat(retryResponse.sent);
-                              return response;
-                            });
-          } else {
+          const devices = response.failed.map((failure) => { return failure.device; });
+          // Reset the failures as we'll try next connection
+          response.failed = [];
+          return this.sendThroughProvider(notification,
+            devices,
+            providers.slice(1, providers.length)).then((retryResponse) => {
+            response.failed = response.failed.concat(retryResponse.failed);
+            response.sent = response.sent.concat(retryResponse.sent);
             return response;
-          }
-        });
+          });
+        } else {
+          return response;
+        }
+      });
   }
 
   static _validateAPNArgs(apnsArgs) {
@@ -154,7 +154,7 @@ export class APNS {
       throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED, 'topic is mssing for %j', apnsArgs);
     }
 
-    let provider = new apn.Provider(apnsArgs);
+    const provider = new apn.Provider(apnsArgs);
 
     // Sets the topic on this provider
     provider.topic = apnsArgs.topic;
@@ -176,48 +176,46 @@ export class APNS {
    * @returns {Object} A apns Notification
    */
   static _generateNotification(coreData, headers) {
-    let notification = new apn.Notification();
-    let payload = {};
-    for (let key in coreData) {
+    const notification = new apn.Notification();
+    const payload = {};
+    for (const key in coreData) {
       switch (key) {
-        case 'aps':
-          notification.aps = coreData.aps;
-          break;
-        case 'alert':
-          notification.setAlert(coreData.alert);
-          break;
-        case 'title':
-          notification.setTitle(coreData.title);
+      case 'aps':
+        notification.aps = coreData.aps;
         break;
-        case 'badge':
-          notification.setBadge(coreData.badge);
-          break;
-        case 'sound':
-          notification.setSound(coreData.sound);
-          break;
-        case 'content-available':
-          let isAvailable = coreData['content-available'] === 1;
-          notification.setContentAvailable(isAvailable);
-          break;
-        case 'mutable-content':
-          let isMutable = coreData['mutable-content'] === 1;
-          notification.setMutableContent(isMutable);
-          break;
-        case 'targetContentIdentifier':
-          notification.setTargetContentIdentifier(coreData.targetContentIdentifier);
-          break;
-        case 'interruptionLevel':
-          notification.setInterruptionLevel(coreData.interruptionLevel);
-          break;
-        case 'category':
-          notification.setCategory(coreData.category);
-          break;
-        case 'threadId':
-          notification.setThreadId(coreData.threadId);
-          break;
-        default:
-          payload[key] = coreData[key];
-          break;
+      case 'alert':
+        notification.setAlert(coreData.alert);
+        break;
+      case 'title':
+        notification.setTitle(coreData.title);
+        break;
+      case 'badge':
+        notification.setBadge(coreData.badge);
+        break;
+      case 'sound':
+        notification.setSound(coreData.sound);
+        break;
+      case 'content-available':
+        notification.setContentAvailable(coreData['content-available'] === 1);
+        break;
+      case 'mutable-content':
+        notification.setMutableContent(coreData['mutable-content'] === 1);
+        break;
+      case 'targetContentIdentifier':
+        notification.setTargetContentIdentifier(coreData.targetContentIdentifier);
+        break;
+      case 'interruptionLevel':
+        notification.setInterruptionLevel(coreData.interruptionLevel);
+        break;
+      case 'category':
+        notification.setCategory(coreData.category);
+        break;
+      case 'threadId':
+        notification.setThreadId(coreData.threadId);
+        break;
+      default:
+        payload[key] = coreData[key];
+        break;
       }
     }
 
@@ -251,7 +249,7 @@ export class APNS {
     }*/
 
     // Otherwise we try to match the appIdentifier with topic on provider
-    let qualifiedProviders = this.providers.filter((provider) => appIdentifier === provider.topic);
+    const qualifiedProviders = this.providers.filter((provider) => appIdentifier === provider.topic);
 
     if (qualifiedProviders.length > 0) {
       return qualifiedProviders;
@@ -263,7 +261,7 @@ export class APNS {
   }
 
   _handlePromise(response) {
-    let promises = [];
+    const promises = [];
     response.sent.forEach((token) => {
       log.verbose(LOG_PREFIX, 'APNS transmitted to %s', token.device);
       promises.push(APNS._createSuccesfullPromise(token.device));
@@ -282,8 +280,8 @@ export class APNS {
       log.error(LOG_PREFIX, 'APNS error transmitting to device %s with status %s and reason %s', failure.device, failure.status, failure.response.reason);
       return APNS._createErrorPromise(failure.device, failure.response.reason);
     } else {
-       log.error(LOG_PREFIX, 'APNS error transmitting to device with unkown error');
-       return APNS._createErrorPromise(failure.device, 'Unkown status');
+      log.error(LOG_PREFIX, 'APNS error transmitting to device with unkown error');
+      return APNS._createErrorPromise(failure.device, 'Unkown status');
     }
   }
 

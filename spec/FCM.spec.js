@@ -48,8 +48,6 @@ describe('FCM', () => {
 
     const pushId = 'pushId';
     const timeStamp = 1454538822113;
-    const timeStampISOStr = new Date(timeStamp).toISOString();
-
     const payload = FCM.generateFCMPayload(
       requestData,
       pushId,
@@ -69,9 +67,9 @@ describe('FCM', () => {
 
   it('can slice devices', () => {
     // Mock devices
-    var devices = [makeDevice(1), makeDevice(2), makeDevice(3), makeDevice(4)];
+    const devices = [makeDevice(1), makeDevice(2), makeDevice(3), makeDevice(4)];
 
-    var chunkDevices = FCM.sliceDevices(devices, 3);
+    const chunkDevices = FCM.sliceDevices(devices, 3);
     expect(chunkDevices).toEqual([
       [makeDevice(1), makeDevice(2), makeDevice(3)],
       [makeDevice(4)],
@@ -260,12 +258,12 @@ describe('FCM', () => {
       // To maintain backwards compatibility with APNS payload format
       // See corresponding test with same test label in APNS.spec.js
 
-      let expirationTime = 1454571491354;
-      let collapseId = 'collapseIdentifier';
-      let pushType = 'alert';
-      let priority = 5;
+      const expirationTime = 1454571491354;
+      const collapseId = 'collapseIdentifier';
+      const pushType = 'alert';
+      const priority = 5;
 
-      let data = {
+      const data = {
         expiration_time: expirationTime,
         collapse_id: collapseId,
         push_type: pushType,
@@ -286,8 +284,6 @@ describe('FCM', () => {
 
       const pushId = 'pushId';
       const timeStamp = 1454538822113;
-      const timeStampISOStr = new Date(timeStamp).toISOString();
-
       const payload = FCM.generateFCMPayload(
         data,
         pushId,
@@ -330,7 +326,7 @@ describe('FCM', () => {
     });
 
     it('sets push type to alert if not defined explicitly', () => {
-      let data = {
+      const data = {
         alert: 'alert',
         title: 'title',
         badge: 100,
@@ -360,11 +356,11 @@ describe('FCM', () => {
     });
 
     it('can generate APNS notification from raw data', () => {
-      let expirationTime = 1454571491354;
-      let collapseId = 'collapseIdentifier';
-      let pushType = 'background';
-      let priority = 5;
-      let data = {
+      const expirationTime = 1454571491354;
+      const collapseId = 'collapseIdentifier';
+      const pushType = 'background';
+      const priority = 5;
+      const data = {
         expiration_time: expirationTime,
         collapse_id: collapseId,
         push_type: pushType,
@@ -416,11 +412,11 @@ describe('FCM', () => {
       // See 'can send APNS notification headers in data' in APNS.spec.js
       // Not mocking sends currently, only payload generation
 
-      let expirationTime = 1454571491354;
-      let collapseId = 'collapseIdentifier';
-      let pushType = 'alert'; // or background
+      const expirationTime = 1454571491354;
+      const collapseId = 'collapseIdentifier';
+      const pushType = 'alert'; // or background
 
-      let data = {
+      const data = {
         expiration_time: expirationTime,
         data: {
           alert: { body: 'alert', title: 'title' },
