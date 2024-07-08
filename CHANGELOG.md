@@ -1,3 +1,10 @@
+## [6.4.1](https://github.com/parse-community/parse-server-push-adapter/compare/6.4.0...6.4.1) (2024-07-08)
+
+
+### Bug Fixes
+
+* Verbose mode is enabled if environment variables `VERBOSE` or `VERBOSE_PARSE_SERVER_PUSH_ADAPTER` are set to any value ([#264](https://github.com/parse-community/parse-server-push-adapter/issues/264)) ([0f31300](https://github.com/parse-community/parse-server-push-adapter/commit/0f3130057fac576c6aa3f04399129a95709c4a34))
+
 # [6.4.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.3.0...6.4.0) (2024-07-07)
 
 
