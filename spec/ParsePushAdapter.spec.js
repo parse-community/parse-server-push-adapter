@@ -1,15 +1,15 @@
-import { join } from 'path';
-import log from 'npmlog';
-import apn from '@parse/node-apn';
-import ParsePushAdapterPackage, { ParsePushAdapter as _ParsePushAdapter, APNS as _APNS, GCM as _GCM, WEB as _WEB, EXPO as _EXPO, utils } from '../src/index.js';
-const ParsePushAdapter = _ParsePushAdapter;
-import { randomString } from '../src/PushAdapterUtils.js';
-import MockAPNProvider from './MockAPNProvider.js';
-import APNS from '../src/APNS.js';
-import GCM from '../src/GCM.js';
-import WEB from '../src/WEB.js';
-import FCM from '../src/FCM.js';
-import EXPO from '../src/EXPO.js';
+const ParsePushAdapterPackage = require('../lib/index');
+const ParsePushAdapter = ParsePushAdapterPackage.ParsePushAdapter;
+const { randomString } = require('../lib/PushAdapterUtils');
+const APNS = require('../lib/APNS').default;
+const GCM = require('../lib/GCM').default;
+const WEB = require('../lib/WEB').default;
+const FCM = require('../lib/FCM').default;
+const EXPO = require('../lib/EXPO').default;
+const MockAPNProvider = require('./MockAPNProvider');
+const { join } = require('path');
+const apn = require('@parse/node-apn');
+const log = require('npmlog');
 
 describe('ParsePushAdapter', () => {
 
@@ -18,13 +18,13 @@ describe('ParsePushAdapter', () => {
   });
 
   it('properly export the module', () => {
-    expect(typeof ParsePushAdapterPackage).toBe('function');
-    expect(typeof _ParsePushAdapter).toBe('function');
-    expect(typeof _APNS).toBe('function');
-    expect(typeof _GCM).toBe('function');
-    expect(typeof _WEB).toBe('function');
-    expect(typeof _EXPO).toBe('function');
-    expect(typeof utils).toBe('object');
+    expect(typeof ParsePushAdapterPackage.default).toBe('function');
+    expect(typeof ParsePushAdapterPackage.ParsePushAdapter).toBe('function');
+    expect(typeof ParsePushAdapterPackage.APNS).toBe('function');
+    expect(typeof ParsePushAdapterPackage.GCM).toBe('function');
+    expect(typeof ParsePushAdapterPackage.WEB).toBe('function');
+    expect(typeof ParsePushAdapterPackage.EXPO).toBe('function');
+    expect(typeof ParsePushAdapterPackage.utils).toBe('object');
   });
 
   it('can be initialized', (done) => {
@@ -46,14 +46,14 @@ describe('ParsePushAdapter', () => {
       },
       ios: [
         {
-          cert: new Buffer('testCert'),
-          key: new Buffer('testKey'),
+          cert: Buffer.from('testCert'),
+          key: Buffer.from('testKey'),
           production: true,
           topic: 'topic'
         },
         {
-          cert: new Buffer('testCert'),
-          key: new Buffer('testKey'),
+          cert: Buffer.from('testCert'),
+          key: Buffer.from('testKey'),
           production: false,
           topic: 'topicAgain'
         }
@@ -101,14 +101,14 @@ describe('ParsePushAdapter', () => {
       },
       ios: [
         {
-          cert: new Buffer("testCert"),
-          key: new Buffer("testKey"),
+          cert: Buffer.from("testCert"),
+          key: Buffer.from("testKey"),
           production: true,
           topic: "topic",
         },
         {
-          cert: new Buffer("testCert"),
-          key: new Buffer("testKey"),
+          cert: Buffer.from("testCert"),
+          key: Buffer.from("testKey"),
           production: false,
           topic: "topicAgain",
         },
@@ -414,8 +414,8 @@ describe('ParsePushAdapter', () => {
       },
       ios: [
         {
-          cert: new Buffer('testCert'),
-          key: new Buffer('testKey'),
+          cert: Buffer.from('testCert'),
+          key: Buffer.from('testKey'),
           production: false,
           topic: 'iosbundleId'
         }

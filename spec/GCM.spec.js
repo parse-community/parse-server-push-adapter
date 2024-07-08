@@ -1,5 +1,5 @@
-import log from 'npmlog';
-import GCM from '../src/GCM.js';
+const log = require('npmlog');
+const GCM = require('../lib/GCM').default;
 
 function mockSender(gcm) {
   return spyOn(gcm.sender, 'send').and.callFake(function(message, options, timeout, cb) {

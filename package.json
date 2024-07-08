@@ -2,15 +2,17 @@
   "name": "@parse/push-adapter",
   "version": "6.4.0",
   "description": "Base parse-server-push-adapter",
-  "main": "src/index.js",
-  "type": "module",
+  "main": "lib/index.js",
   "files": [
-    "src/"
+    "lib/"
   ],
   "scripts": {
+    "build": "babel src/ -d lib/",
+    "watch": "babel --watch src/ -d lib/",
+    "prepare": "npm run build",
     "lint": "eslint --cache ./",
     "lint:fix": "eslint --fix --cache ./",
-    "test": "TESTING=1 c8 ./node_modules/.bin/jasmine"
+    "test": "TESTING=1 nyc jasmine"
   },
   "keywords": [
     "parse-server",
@@ -33,6 +35,10 @@
     "web-push": "3.6.7"
   },
   "devDependencies": {
+    "@babel/cli": "7.24.7",
+    "@babel/core": "7.24.7",
+    "@babel/preset-env": "7.24.7",
+    "@babel/register": "7.24.6",
     "@eslint/js": "9.6.0",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/commit-analyzer": "13.0.0",
@@ -40,11 +46,11 @@
     "@semantic-release/github": "10.0.7",
     "@semantic-release/npm": "12.0.1",
     "@semantic-release/release-notes-generator": "14.0.1",
-    "c8": "10.1.2",
     "codecov": "3.8.0",
     "eslint": "9.6.0",
     "jasmine": "5.1.0",
     "jasmine-spec-reporter": "7.0.0",
+    "nyc": "17.0.0",
     "semantic-release": "24.0.0"
   },
   "engines": {

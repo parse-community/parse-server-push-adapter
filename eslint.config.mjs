@@ -2,6 +2,7 @@ import js from "@eslint/js";
 
 export default [
   js.configs.recommended,
+  { ignores: ['lib/**/*'] },
   {
     languageOptions: {
       globals: {
@@ -15,7 +16,9 @@ export default [
         global: true,
         it: true,
         jasmine: true,
+        module: true,
         process: true,
+        require: true,
         spyOn: true,
       },
     },

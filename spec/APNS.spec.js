@@ -1,9 +1,8 @@
-import log from 'npmlog';
-import Parse from 'parse/node.js';
-import APNS from '../src/APNS.js';
+const log = require('npmlog');
+const Parse = require('parse/node');
+const APNS = require('../lib/APNS').default;
 
 describe('APNS', () => {
-
   it('can initialize with cert', (done) => {
     const args = {
       cert: '-----BEGIN CERTIFICATE-----fPEYJtQrEMXLC9JtFUJ6emXAWv2QdKu93QE+6o5htM+Eu/2oNFIEj2A71WUBu7kA-----END CERTIFICATE-----',

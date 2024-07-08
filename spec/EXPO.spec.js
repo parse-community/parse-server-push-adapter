@@ -1,6 +1,6 @@
-import { Expo } from 'expo-server-sdk';
-import log from 'npmlog';
-import EXPO from '../src/EXPO.js';
+const { Expo } = require('expo-server-sdk');
+const log = require('npmlog');
+const EXPO = require('../lib/EXPO').default;
 
 function mockSender(success) {
   return spyOn(EXPO.prototype, 'sendNotifications').and.callFake((payload, tokens) => {

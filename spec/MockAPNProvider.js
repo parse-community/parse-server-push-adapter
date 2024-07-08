@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+const EventEmitter = require('events');
 
 const MockAPNProvider = function (args) {
   const emitter = new EventEmitter();
@@ -45,4 +45,4 @@ MockAPNProvider.restore = function() {
   MockAPNProvider.makeError = makeError;
 }
 
-export default MockAPNProvider;
+module.exports = MockAPNProvider;

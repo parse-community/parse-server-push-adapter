@@ -1,6 +1,6 @@
-import webpush from 'web-push';
-import log from 'npmlog';
-import WEB from '../src/WEB.js';
+const webpush = require('web-push');
+const log = require('npmlog');
+const WEB = require('../lib/WEB').default;
 
 const pushSubscription = {
   endpoint: '',
