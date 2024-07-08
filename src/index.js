@@ -3,9 +3,10 @@
 // PushAdapter, it uses GCM for android push, APNS for ios push.
 // WEB for web push.
 import log from 'npmlog';
+import { booleanParser } from './utils.js';
 
 /* c8 ignore start */
-if (process.env.VERBOSE === '1' || process.env.VERBOSE_PARSE_SERVER_PUSH_ADAPTER === '1') {
+if (booleanParser(process.env.VERBOSE || process.env.VERBOSE_PARSE_SERVER_PUSH_ADAPTER)) {
   log.level = 'verbose';
 }
 /* c8 ignore stop */
