@@ -36,7 +36,7 @@ Replace `<VERSION>` with the version you want to install.
 ## Configure Parse Server
 
 ```js
-import { ParsePushAdapter } from '@parse/push-adapter';
+import { ParsePushAdapter } from "@parse/push-adapter";
 
 // For CommonJS replace the import statemtent above with the following line:
 // const ParsePushAdapter = require('@parse/push-adapter').default;
@@ -55,9 +55,9 @@ const parseServerOptions = {
       },
       expo: {
         // Expo push options
-      }
-    })
-  }
+      },
+    }),
+  },
   // Other Parse Server options
 };
 ```
@@ -72,8 +72,8 @@ Parse Server Push Adapter currently supports these types of Apple ecosystems:
 
 Delivering push notifications to Apple devices can be done either via Apple Push Notification Service (APNS), or via Firebase Cloud Messaging (FMC). Note that each category of Apple devices require their own configuration section:
 
-- APNS requires a private key that can be downloaded from the Apple Developer Center at https://developer.apple.com/account under _Certificates > Identifiers & Profiles._ The adapter options also require the app ID and team ID which can be found there.
-- FCM requires a private key that can be downloaded from the Firebase Console at https://console.firebase.google.com in your project under _Settings > Cloud Messaging._
+- APNS requires a private key that can be downloaded from the Apple Developer Center at <https://developer.apple.com/account> under _Certificates > Identifiers & Profiles._ The adapter options also require the app ID and team ID which can be found there.
+- FCM requires a private key that can be downloaded from the Firebase Console at <https://console.firebase.google.com> in your project under _Settings > Cloud Messaging._
 
 Example options:
 
@@ -100,13 +100,13 @@ osx: {
 
 Delivering push notifications to Android devices can be done via Firebase Cloud Messaging (FCM):
 
-- FCM requires a private key that can be downloaded from the Firebase Console at https://console.firebase.google.com in your project under _Settings > Cloud Messaging._
+- FCM requires a private key that can be downloaded from the Firebase Console at <https://console.firebase.google.com> in your project under _Settings > Cloud Messaging._
 
 Example options:
 
 ```js
 android: {
-  firebaseServiceAccount: __dirname + '/firebase.json'
+  firebaseServiceAccount: __dirname + "/firebase.json";
 }
 ```
 
@@ -130,12 +130,15 @@ This can be helpful if you are already managing credentials to Google Cloud APIs
 
 ⚠️ Sending push notifications to Android devices via the FCM legacy API was deprecated on June 20 2023 and was announced to be decommissioned in June 2024. See [Google docs](https://firebase.google.com/docs/cloud-messaging/migrate-v1). To send push notifications to the newer FCM HTTP v1 API you need to update your existing push configuration for Android by replacing the key `apiKey` with `firebaseServiceAccount`.
 
+With the update to FCMv1, HTTP/2 support was added which provides much faster throughput for push notifications.
+To use the legacy transport (HTTP/1.1) set the key `fcmEnableLegacyHttpTransport` to `true` under your push options.
+
 Example options (deprecated):
 
 ```js
 android: {
   // Deliver push notifications via FCM legacy API (deprecated)
-  apiKey: '<API_KEY>'
+  apiKey: "<API_KEY>";
 }
 ```
 
@@ -145,7 +148,7 @@ Example options:
 
 ```js
 expo: {
-  accessToken: '<EXPO_ACCESS_TOKEN>'
+  accessToken: "<EXPO_ACCESS_TOKEN>";
 }
 ```
 
@@ -162,9 +165,9 @@ const parseServerOptions = {
   push: {
     ios: {
       // Apple push options
-    }
+    },
     // Other push options
-  }
+  },
   // Other Parse Server options
 };
 ```
@@ -174,11 +177,11 @@ const parseServerOptions = {
 You can enable verbose logging to produce a more detailed output for all push sending attempts with the following environment variables:
 
 ```js
-VERBOSE=1
+VERBOSE = 1;
 ```
 
 or
 
 ```js
-VERBOSE_PARSE_SERVER_PUSH_ADAPTER=1
+VERBOSE_PARSE_SERVER_PUSH_ADAPTER = 1;
 ```
