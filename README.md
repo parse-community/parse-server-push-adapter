@@ -131,7 +131,7 @@ This can be helpful if you are already managing credentials to Google Cloud APIs
 ⚠️ Sending push notifications to Android devices via the FCM legacy API was deprecated on June 20 2023 and was announced to be decommissioned in June 2024. See [Google docs](https://firebase.google.com/docs/cloud-messaging/migrate-v1). To send push notifications to the newer FCM HTTP v1 API you need to update your existing push configuration for Android by replacing the key `apiKey` with `firebaseServiceAccount`.
 
 With the update to FCMv1, HTTP/2 support was added which provides much faster throughput for push notifications.
-To use the legacy transport (HTTP/1.1) set the key `fcmEnableLegacyHttpTransport` to `true` under your push options.
+To use the older deprecated transport method (HTTP/1.1) set the key `fcmEnableLegacyHttpTransport` to `true` under your push options.
 
 Example options (deprecated):
 
