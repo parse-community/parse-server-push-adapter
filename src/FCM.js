@@ -43,7 +43,6 @@ export default function FCM(args, pushType) {
     this.sender = getMessaging(app);
   }
 
-  this.sender = getMessaging(app);
   this.pushType = pushType; // Push type is only used to remain backwards compatible with APNS and GCM
 }
 
