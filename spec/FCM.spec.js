@@ -35,7 +35,7 @@ describe('FCM', () => {
     const fcm = new FCM(testArgs);
     expect(fcm).toBeDefined();
     expect(fcm.sender).toBeDefined();
-    expect(fcm.sender.useLegacyTransport).toEqual(false)
+    expect(fcm.sender.useLegacyTransport).toEqual(false);
   });
 
   it('can initialize with fcmEnableLegacyHttpTransport set to false', () => {
@@ -47,7 +47,7 @@ describe('FCM', () => {
     const fcm = new FCM(legacyHttpTransportArgs);
     expect(fcm).toBeDefined();
     expect(fcm.sender).toBeDefined();
-    expect(fcm.sender.useLegacyTransport).toEqual(false)
+    expect(fcm.sender.useLegacyTransport).toEqual(false);
   });
 
   it('can initialize with fcmEnableLegacyHttpTransport set to true', () => {
@@ -59,7 +59,7 @@ describe('FCM', () => {
     const fcm = new FCM(legacyHttpTransportArgs);
     expect(fcm).toBeDefined();
     expect(fcm.sender).toBeDefined();
-    expect(fcm.sender.useLegacyTransport).toEqual(true)
+    expect(fcm.sender.useLegacyTransport).toEqual(true);
   });
 
   it('can send successful FCM android request', async () => {
