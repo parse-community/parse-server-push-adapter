@@ -31,6 +31,37 @@ describe('FCM', () => {
     expect(spy).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'invalid push payload');
   });
 
+  it('initializes with fcmEnableLegacyHttpTransport set to false by default', () => {
+    const fcm = new FCM(testArgs);
+    expect(fcm).toBeDefined();
+    expect(fcm.sender).toBeDefined();
+    expect(fcm.sender.useLegacyTransport).toEqual(false)
+  });
+
+  it('can initialize with fcmEnableLegacyHttpTransport set to false', () => {
+    const legacyHttpTransportArgs = {
+      ...testArgs,
+      fcmEnableLegacyHttpTransport: false
+    };
+
+    const fcm = new FCM(legacyHttpTransportArgs);
+    expect(fcm).toBeDefined();
+    expect(fcm.sender).toBeDefined();
+    expect(fcm.sender.useLegacyTransport).toEqual(false)
+  });
+
+  it('can initialize with fcmEnableLegacyHttpTransport set to true', () => {
+    const legacyHttpTransportArgs = {
+      ...testArgs,
+      fcmEnableLegacyHttpTransport: true
+    };
+
+    const fcm = new FCM(legacyHttpTransportArgs);
+    expect(fcm).toBeDefined();
+    expect(fcm.sender).toBeDefined();
+    expect(fcm.sender.useLegacyTransport).toEqual(true)
+  });
+
   it('can send successful FCM android request', async () => {
     const spyVerbose = spyOn(log, 'verbose').and.callFake(() => {});
     const spyInfo = spyOn(log, 'info').and.callFake(() => {});

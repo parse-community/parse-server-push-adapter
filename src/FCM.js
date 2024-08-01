@@ -36,11 +36,14 @@ export default function FCM(args, pushType) {
     app = getApp();
   }
 
+
+  this.sender = getMessaging(app)
+
   if (fcmEnableLegacyHttpTransport) {
-    this.sender = getMessaging(app).enableLegacyHttpTransport();
+    this.sender.enableLegacyHttpTransport()
     log.warn(LOG_PREFIX, 'Legacy HTTP/1.1 transport is enabled. This is a deprecated feature and support for this flag will be removed in the future.')
   } else {
-    this.sender = getMessaging(app);
+    this.sender.useLegacyTransport = false // Flaky tests unless we explicitly set this to false
   }
 
   this.pushType = pushType; // Push type is only used to remain backwards compatible with APNS and GCM
