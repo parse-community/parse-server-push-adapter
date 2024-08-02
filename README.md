@@ -19,8 +19,10 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
 - [Configure Parse Server](#configure-parse-server)
   - [Apple Push Options](#apple-push-options)
   - [Android Push Options](#android-push-options)
+  - [Firebase Cloud Messaging (FCM)](#firebase-cloud-messaging-fcm)
     - [Google Cloud Service Account Key](#google-cloud-service-account-key)
     - [Migration to FCM HTTP v1 API (June 2024)](#migration-to-fcm-http-v1-api-june-2024)
+    - [HTTP/1.1 Legacy Option](#http11-legacy-option)
   - [Expo Push Options](#expo-push-options)
 - [Bundled with Parse Server](#bundled-with-parse-server)
 - [Logging](#logging)
@@ -110,6 +112,10 @@ android: {
 }
 ```
 
+### Firebase Cloud Messaging (FCM)
+
+This section contains some considerations when using FCM, regardless of the destination ecosystems the push notification is sent to.
+
 #### Google Cloud Service Account Key
 
 The Firebase console allows to easily create and download a Google Cloud service account key JSON file with the required permissions. Instead of setting `firebaseServiceAccount` to the path of the JSON file, you can provide an object representing a Google Cloud service account key:
@@ -136,6 +142,19 @@ Example options (deprecated):
 android: {
   // Deliver push notifications via FCM legacy API (deprecated)
   apiKey: '<API_KEY>'
+}
+```
+
+#### HTTP/1.1 Legacy Option
+
+With the introduction of the FCM HTTP v1 API, support for HTTP/2 was added which provides faster throughput for push notifications. To use the older version HTTP/1.1 set `fcmEnableLegacyHttpTransport: true` in your push options.
+
+Example options:
+
+```js
+android: {
+  firebaseServiceAccount: __dirname + '/firebase.json',
+  fcmEnableLegacyHttpTransport: true
 }
 ```
 

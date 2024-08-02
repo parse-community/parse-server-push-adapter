@@ -25,14 +25,26 @@ export default function FCM(args, pushType) {
     );
   }
 
+  const fcmEnableLegacyHttpTransport = typeof args.fcmEnableLegacyHttpTransport === 'boolean'
+    ? args.fcmEnableLegacyHttpTransport
+    : false;
+
   let app;
   if (getApps().length === 0) {
     app = initializeApp({ credential: cert(args.firebaseServiceAccount) });
   } else {
     app = getApp();
   }
+
   this.sender = getMessaging(app);
-  this.pushType = pushType; // Push type is only used to remain backwards compatible with APNS and GCM
+
+  if (fcmEnableLegacyHttpTransport) {
+    this.sender.enableLegacyHttpTransport();
+    log.warn(LOG_PREFIX, 'Legacy HTTP/1.1 transport is enabled. This is a deprecated feature and support for this flag will be removed in the future.');
+  }
+
+  // Push type is only used to remain backwards compatible with APNS and GCM
+  this.pushType = pushType;
 }
 
 FCM.FCMRegistrationTokensMax = FCMRegistrationTokensMax;
