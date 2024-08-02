@@ -1,6 +1,7 @@
 import path from 'path';
 import log from 'npmlog';
 import FCM from '../src/FCM.js';
+import { getApps, deleteApp } from 'firebase-admin/app';
 
 const testArgs = {
   firebaseServiceAccount: path.join(
@@ -13,6 +14,10 @@ const testArgs = {
 };
 
 describe('FCM', () => {
+  beforeEach(async () => {
+    getApps().forEach(app => deleteApp(app));
+  });
+
   it('can initialize', () => {
     const fcm = new FCM(testArgs);
     expect(fcm).toBeDefined();
