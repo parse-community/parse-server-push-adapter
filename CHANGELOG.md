@@ -1,3 +1,10 @@
+# [6.5.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.4.1...6.5.0) (2024-08-02)
+
+
+### Features
+
+* Add Firebase Cloud Messaging (FCM) HTTP/2 support and option `fcmEnableLegacyHttpTransport` to use legacy HTTP/1.1 ([#274](https://github.com/parse-community/parse-server-push-adapter/issues/274)) ([70e6b6f](https://github.com/parse-community/parse-server-push-adapter/commit/70e6b6f4db6d410872b7bd24ea83b5d0639f9276))
+
 ## [6.4.1](https://github.com/parse-community/parse-server-push-adapter/compare/6.4.0...6.4.1) (2024-07-08)
 
 
