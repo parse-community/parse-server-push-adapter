@@ -42,7 +42,7 @@
     "@semantic-release/release-notes-generator": "14.0.1",
     "c8": "10.1.2",
     "codecov": "3.8.0",
-    "eslint": "9.6.0",
+    "eslint": "9.8.0",
     "jasmine": "5.1.0",
     "jasmine-spec-reporter": "7.0.0",
     "semantic-release": "24.0.0"
