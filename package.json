@@ -33,7 +33,7 @@
     "web-push": "3.6.7"
   },
   "devDependencies": {
-    "@eslint/js": "9.9.1",
+    "@eslint/js": "9.11.1",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/commit-analyzer": "13.0.0",
     "@semantic-release/git": "10.0.1",
