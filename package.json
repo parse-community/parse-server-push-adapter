@@ -27,7 +27,7 @@
     "@parse/node-apn": "6.2.0",
     "@parse/node-gcm": "1.0.2",
     "expo-server-sdk": "3.11.0",
-    "firebase-admin": "12.6.0",
+    "firebase-admin": "12.7.0",
     "npmlog": "7.0.1",
     "parse": "5.3.0",
     "web-push": "3.6.7"
