@@ -1,3 +1,10 @@
+## [6.7.1](https://github.com/parse-community/parse-server-push-adapter/compare/6.7.0...6.7.1) (2024-11-19)
+
+
+### Bug Fixes
+
+* Security upgrade @parse/node-apn from 6.2.0 to 6.2.1 ([#329](https://github.com/parse-community/parse-server-push-adapter/issues/329)) ([5cd5170](https://github.com/parse-community/parse-server-push-adapter/commit/5cd517056f5114b23a8175e7de6a0212c1124352))
+
 # [6.7.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.6.0...6.7.0) (2024-09-27)
 
 
