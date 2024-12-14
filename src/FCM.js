@@ -1,9 +1,9 @@
 'use strict';
 
-import Parse from 'parse';
-import log from 'npmlog';
-import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
+import { cert, getApp, getApps, initializeApp } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
+import log from 'npmlog';
+import Parse from 'parse';
 import { randomString } from './PushAdapterUtils.js';
 
 const LOG_PREFIX = 'parse-server-push-adapter FCM';
@@ -28,8 +28,8 @@ export default function FCM(args, pushType) {
   const fcmEnableLegacyHttpTransport = typeof args.fcmEnableLegacyHttpTransport === 'boolean'
     ? args.fcmEnableLegacyHttpTransport
     : false;
-  this.fcmResolveUnhandledClientError = typeof args.fcmResolveUnhandledClientError === 'boolean'
-    ? args.fcmResolveUnhandledClientError
+  this.resolveUnhandledClientError = typeof args.resolveUnhandledClientError === 'boolean'
+    ? args.resolveUnhandledClientError
     : false;
 
   let app;
@@ -155,7 +155,7 @@ FCM.prototype.send = function (data, devices) {
     slices.map((slice) => sendToDeviceSlice(slice, this.pushType)),
   ).catch(e => {
     log.error(LOG_PREFIX, `error sending push: ${e}`);
-    if (!this.fcmResolveUnhandledClientError && e instanceof Parse.Error && e.code === Parse.Error.OTHER_CAUSE) {
+    if (!this.resolveUnhandledClientError && e instanceof Parse.Error && e.code === Parse.Error.OTHER_CAUSE) {
       return Promise.reject(e);
     }
   });

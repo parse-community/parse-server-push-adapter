@@ -1,8 +1,8 @@
-import path from 'path';
+import { deleteApp, getApps } from 'firebase-admin/app';
 import log from 'npmlog';
-import FCM from '../src/FCM.js';
-import { getApps, deleteApp } from 'firebase-admin/app';
 import Parse from 'parse/node.js';
+import path from 'path';
+import FCM from '../src/FCM.js';
 
 let testArgs;
 
@@ -227,7 +227,7 @@ describe('FCM', () => {
   it('rejects exceptions that are unhandled by FCM client', async () => {
     const spyInfo = spyOn(log, 'info').and.callFake(() => {});
     const spyError = spyOn(log, 'error').and.callFake(() => {});
-    testArgs.fcmResolveUnhandledClientError = false;
+    testArgs.resolveUnhandledClientError = false;
     const fcm = new FCM(testArgs);
     spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
       throw new Error('test error');
@@ -246,7 +246,7 @@ describe('FCM', () => {
   it('resolves exceptions that are unhandled by FCM client', async () => {
     const spyInfo = spyOn(log, 'info').and.callFake(() => {});
     const spyError = spyOn(log, 'error').and.callFake(() => {});
-    testArgs.fcmResolveUnhandledClientError = true;
+    testArgs.resolveUnhandledClientError = true;
     const fcm = new FCM(testArgs);
     spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
       throw new Error('test error');
