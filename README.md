@@ -23,6 +23,7 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
     - [Google Cloud Service Account Key](#google-cloud-service-account-key)
     - [Migration to FCM HTTP v1 API (June 2024)](#migration-to-fcm-http-v1-api-june-2024)
     - [HTTP/1.1 Legacy Option](#http11-legacy-option)
+    - [Firebase Client Error](#firebase-client-error)
   - [Expo Push Options](#expo-push-options)
 - [Bundled with Parse Server](#bundled-with-parse-server)
 - [Logging](#logging)
@@ -157,6 +158,15 @@ android: {
   fcmEnableLegacyHttpTransport: true
 }
 ```
+
+#### Firebase Client Error
+
+Occasionally, errors within the Firebase Cloud Messaging (FCM) client may not be managed internally and are instead passed to the Parse Server Push Adapter. These errors can occur, for instance, due to unhandled FCM server connection issues.
+
+- `fcmResolveUnhandledClientError: true`: Logs the error and gracefully resolves it, ensuring that push sending does not result in a failure.
+- `fcmResolveUnhandledClientError: false`: Causes push sending to fail, returning a `Parse.Error.OTHER_CAUSE` with error details that can be parsed to take action.
+
+In both cases, detailed error logs are recorded in the Parse Server logs for debugging purposes.
 
 ### Expo Push Options
 
