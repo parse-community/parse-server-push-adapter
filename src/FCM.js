@@ -154,26 +154,6 @@ FCM.prototype.send = function (data, devices) {
     log.error(LOG_PREFIX, `error sending push: ${err}`);
   });
 
-  // const allPromises = Promise.all(
-  //   slices.map(slice =>
-  //     new Promise((resolve, reject) => {
-  //       try {
-  //         sendToDeviceSlice(slice, this.pushType)
-  //           .then(resolve)
-  //           .catch((err) => {
-  //             log.error(LOG_PREFIX, `error sending push (rejected by client): ${err}`);
-  //             reject(err);
-  //           });
-  //       } catch (err) {
-  //         log.error(LOG_PREFIX, `error sending push (unhandled by client): ${err}`);
-  //         reject(err);
-  //       }
-  //     })
-  //   )
-  // ).catch(err => {
-  //   log.error(LOG_PREFIX, `error sending push: ${err}`);
-  // });
-
   return allPromises;
 };
 
