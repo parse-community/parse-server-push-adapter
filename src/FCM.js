@@ -28,6 +28,9 @@ export default function FCM(args, pushType) {
   const fcmEnableLegacyHttpTransport = typeof args.fcmEnableLegacyHttpTransport === 'boolean'
     ? args.fcmEnableLegacyHttpTransport
     : false;
+  this.fcmResolveUnhandledClientError = typeof args.fcmResolveUnhandledClientError === 'boolean'
+    ? args.fcmResolveUnhandledClientError
+    : false;
 
   let app;
   if (getApps().length === 0) {
@@ -94,8 +97,8 @@ FCM.prototype.send = function (data, devices) {
       try {
         return this.sender.sendEachForMulticast(fcmPayloadData);
       } catch (err) {
-        log.error(LOG_PREFIX, `error sending push: firebase client did not handle exception: ${err}`);
-        return Promise.reject(err);
+        log.error(LOG_PREFIX, `error sending push: firebase client exception: ${err}`);
+        return Promise.reject(new Parse.Error(Parse.Error.OTHER_CAUSE, err));
       }
     };
 
@@ -150,8 +153,11 @@ FCM.prototype.send = function (data, devices) {
 
   const allPromises = Promise.all(
     slices.map((slice) => sendToDeviceSlice(slice, this.pushType)),
-  ).catch((err) => {
-    log.error(LOG_PREFIX, `error sending push: ${err}`);
+  ).catch(e => {
+    log.error(LOG_PREFIX, `error sending push: ${e}`);
+    if (!this.fcmResolveUnhandledClientError && e instanceof Parse.Error && e.code === Parse.Error.OTHER_CAUSE) {
+      return Promise.reject(e);
+    }
   });
 
   return allPromises;
