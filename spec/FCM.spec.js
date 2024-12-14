@@ -1,21 +1,24 @@
-import path from 'path';
+import { deleteApp, getApps } from 'firebase-admin/app';
 import log from 'npmlog';
+import Parse from 'parse/node.js';
+import path from 'path';
 import FCM from '../src/FCM.js';
-import { getApps, deleteApp } from 'firebase-admin/app';
 
-const testArgs = {
-  firebaseServiceAccount: path.join(
-    __dirname,
-    '..',
-    'spec',
-    'support',
-    'fakeServiceAccount.json',
-  ),
-};
+let testArgs;
 
 describe('FCM', () => {
   beforeEach(async () => {
     getApps().forEach(app => deleteApp(app));
+
+    testArgs = {
+      firebaseServiceAccount: path.join(
+        __dirname,
+        '..',
+        'spec',
+        'support',
+        'fakeServiceAccount.json',
+      ),
+    };
   });
 
   it('can initialize', () => {
@@ -219,6 +222,44 @@ describe('FCM', () => {
     expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
     expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
     expect(spyError).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'error sending push: testing error abort');
+  });
+
+  it('rejects exceptions that are unhandled by FCM client', async () => {
+    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const spyError = spyOn(log, 'error').and.callFake(() => {});
+    testArgs.resolveUnhandledClientError = false;
+    const fcm = new FCM(testArgs);
+    spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
+      throw new Error('test error');
+    });
+    fcm.pushType = 'android';
+    const data = { data: { alert: 'alert' } };
+    const devices = [{ deviceToken: 'token' }];
+    await expectAsync(fcm.send(data, devices)).toBeRejectedWith(new Parse.Error(Parse.Error.OTHER_CAUSE, 'Error: test error'));
+    expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
+    expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
+    expect(spyError).toHaveBeenCalledTimes(2);
+    expect(spyError.calls.all()[0].args).toEqual(['parse-server-push-adapter FCM', 'error sending push: firebase client exception: Error: test error']);
+    expect(spyError.calls.all()[1].args).toEqual(['parse-server-push-adapter FCM', 'error sending push: ParseError: -1 Error: test error']);
+  });
+
+  it('resolves exceptions that are unhandled by FCM client', async () => {
+    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const spyError = spyOn(log, 'error').and.callFake(() => {});
+    testArgs.resolveUnhandledClientError = true;
+    const fcm = new FCM(testArgs);
+    spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
+      throw new Error('test error');
+    });
+    fcm.pushType = 'android';
+    const data = { data: { alert: 'alert' } };
+    const devices = [{ deviceToken: 'token' }];
+    await expectAsync(fcm.send(data, devices)).toBeResolved();
+    expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
+    expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
+    expect(spyError).toHaveBeenCalledTimes(2);
+    expect(spyError.calls.all()[0].args).toEqual(['parse-server-push-adapter FCM', 'error sending push: firebase client exception: Error: test error']);
+    expect(spyError.calls.all()[1].args).toEqual(['parse-server-push-adapter FCM', 'error sending push: ParseError: -1 Error: test error']);
   });
 
   it('FCM request invalid push type', async () => {
