@@ -3,7 +3,8 @@
         "jasmine": true
     },
     "globals": {
-      "Parse": true
+      "Parse": true,
+      "expectAsync": true
     },
     "rules": {
       "no-console": [0],
