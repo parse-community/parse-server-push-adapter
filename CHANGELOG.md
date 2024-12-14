@@ -1,3 +1,10 @@
+# [6.8.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.7.1...6.8.0) (2024-12-14)
+
+
+### Features
+
+* Add FCM option `resolveUnhandledClientError` to resolve or reject push promise on FCM server response GOAWAY ([#341](https://github.com/parse-community/parse-server-push-adapter/issues/341)) ([6d72f8a](https://github.com/parse-community/parse-server-push-adapter/commit/6d72f8abe7b4ff47f8884fc01b77365c26002327))
+
 ## [6.7.1](https://github.com/parse-community/parse-server-push-adapter/compare/6.7.0...6.7.1) (2024-11-19)
 
 
