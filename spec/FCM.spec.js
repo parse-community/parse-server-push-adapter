@@ -221,6 +221,24 @@ describe('FCM', () => {
     expect(spyError).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'error sending push: testing error abort');
   });
 
+  it('can handle exceptions that are unhandled by the FCM client', async () => {
+    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const spyError = spyOn(log, 'error').and.callFake(() => {});
+    const fcm = new FCM(testArgs);
+    spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
+      throw new Error('test error');
+    });
+    fcm.pushType = 'android';
+    const data = { data: { alert: 'alert' } };
+    const devices = [{ deviceToken: 'token' }];
+    await expectAsync(fcm.send(data, devices)).toBeResolved();
+    expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
+    expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
+    expect(spyError).toHaveBeenCalledTimes(2);
+    expect(spyError.calls.all()[0].args).toEqual(['parse-server-push-adapter FCM', 'error sending push: firebase-admin client did not handle exception: Error: test error']);
+    expect(spyError.calls.all()[1].args).toEqual(['parse-server-push-adapter FCM', 'error sending push: Error: test error']);
+  });
+
   it('FCM request invalid push type', async () => {
     const fcm = new FCM(testArgs);
     fcm.pushType = 'invalid';

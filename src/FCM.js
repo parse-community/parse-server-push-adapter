@@ -88,8 +88,18 @@ FCM.prototype.send = function (data, devices) {
     const length = deviceTokens.length;
     log.info(LOG_PREFIX, `sending push to ${length} devices`);
 
-    return this.sender
-      .sendEachForMulticast(fcmPayload.data)
+    // This is a safe wrapper for sendEachForMulticast, due to bug in the firebase-admin
+    // library, where it throws an exception instead of returning a rejected promise
+    const sendEachForMulticastSafe = fcmPayloadData => {
+      try {
+        return this.sender.sendEachForMulticast(fcmPayloadData);
+      } catch (err) {
+        log.error(LOG_PREFIX, `error sending push: firebase-admin client did not handle exception: ${err}`);
+        return Promise.reject(err);
+      }
+    };
+
+    return sendEachForMulticastSafe(fcmPayload.data)
       .then((response) => {
         const promises = [];
         const failedTokens = [];
