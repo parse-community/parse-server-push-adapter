@@ -235,7 +235,7 @@ describe('FCM', () => {
     expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
     expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
     expect(spyError).toHaveBeenCalledTimes(2);
-    expect(spyError.calls.all()[0].args).toEqual(['parse-server-push-adapter FCM', 'error sending push: firebase-admin client did not handle exception: Error: test error']);
+    expect(spyError.calls.all()[0].args).toEqual(['parse-server-push-adapter FCM', 'error sending push: firebase client did not handle exception: Error: test error']);
     expect(spyError.calls.all()[1].args).toEqual(['parse-server-push-adapter FCM', 'error sending push: Error: test error']);
   });
 

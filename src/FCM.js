@@ -94,7 +94,7 @@ FCM.prototype.send = function (data, devices) {
       try {
         return this.sender.sendEachForMulticast(fcmPayloadData);
       } catch (err) {
-        log.error(LOG_PREFIX, `error sending push: firebase-admin client did not handle exception: ${err}`);
+        log.error(LOG_PREFIX, `error sending push: firebase client did not handle exception: ${err}`);
         return Promise.reject(err);
       }
     };
