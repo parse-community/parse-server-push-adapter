@@ -322,6 +322,112 @@ describe('APNS', () => {
     done();
   });
 
+  it('generating notification prioritizes header information from notification data', async () => {
+    const data = {
+      'alert': 'alert',
+      'title': 'title',
+      'badge': 100,
+      'sound': 'test',
+      'content-available': 1,
+      'mutable-content': 1,
+      'category': 'INVITE_CATEGORY',
+      'threadId': 'a-thread-id',
+      'key': 'value',
+      'keyAgain': 'valueAgain',
+      'topic': 'bundle',
+      'expiry': 20,
+      'collapseId': 'collapse',
+      'pushType': 'alert',
+      'priority': 7,
+    };
+    const topic = 'bundleId';
+    const expirationTime = 1454571491354;
+    const collapseId = "collapseIdentifier";
+    const pushType = "background";
+    const priority = 5;
+
+    const notification = APNS._generateNotification(data, { topic: topic, expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
+    expect(notification.topic).toEqual(data.topic);
+    expect(notification.expiry).toEqual(data.expiry);
+    expect(notification.collapseId).toEqual(data.collapseId);
+    expect(notification.pushType).toEqual(data.pushType);
+    expect(notification.priority).toEqual(data.priority);
+  });
+
+  it('generating notification does not override default notification info when header info is missing', async () => {
+    const data = {
+      'alert': 'alert',
+      'title': 'title',
+      'badge': 100,
+      'sound': 'test',
+      'content-available': 1,
+      'mutable-content': 1,
+      'category': 'INVITE_CATEGORY',
+      'threadId': 'a-thread-id',
+      'key': 'value',
+      'keyAgain': 'valueAgain',
+    };
+    const topic = 'bundleId';
+    const collapseId = "collapseIdentifier";
+    const pushType = "background";
+
+    const notification = APNS._generateNotification(data, { topic: topic, collapseId: collapseId, pushType: pushType });
+    expect(notification.topic).toEqual(topic);
+    expect(notification.expiry).toEqual(-1);
+    expect(notification.collapseId).toEqual(collapseId);
+    expect(notification.pushType).toEqual(pushType);
+    expect(notification.priority).toEqual(10);
+  });
+
+  it('defaults to original topic', async () => {
+    const topic = 'bundleId';
+    const pushType = 'alert';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic);
+  });
+
+  it('updates topic based on location pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'location';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic+'.location-query');
+  });
+
+  it('updates topic based on voip pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'voip';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic+'.voip');
+  });
+
+  it('updates topic based on complication pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'complication';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic+'.complication');
+  });
+
+  it('updates topic based on complication pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'fileprovider';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic+'.pushkit.fileprovider');
+  });
+
+  it('updates topic based on liveactivity pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'liveactivity';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic+'.push-type.liveactivity');
+  });
+
+  it('updates topic based on pushtotalk pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'pushtotalk';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic+'.voip-ptt');
+  });
+
   it('can choose providers for device with valid appIdentifier', (done) => {
     const appIdentifier = 'topic';
     // Mock providers
