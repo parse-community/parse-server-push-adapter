@@ -214,12 +214,12 @@ export class APNS {
         notification.setThreadId(coreData.threadId);
         break;
       case 'id':
-      case 'collapseId': 
-      case 'channelId': 
-      case 'requestId': 
+      case 'collapseId':
+      case 'channelId':
+      case 'requestId':
       case 'pushType':
-      case 'topic': 
-      case 'expiry': 
+      case 'topic':
+      case 'expiry':
       case 'priority':
         // Header information is skipped and added later.
         break;
@@ -261,20 +261,20 @@ export class APNS {
    */
   static _determineTopic(topic, pushType) {
     switch(pushType) {
-      case 'location':
-        return topic+'.location-query';
-      case 'voip':
-          return topic+'.voip';
-      case 'complication':
-          return topic+'.complication';
-      case 'fileprovider':
-          return topic+'.pushkit.fileprovider';
-      case 'liveactivity':
-          return topic+'.push-type.liveactivity';
-      case 'pushtotalk':
-          return topic+'.voip-ptt';
-      default:
-        return topic
+    case 'location':
+      return topic + '.location-query';
+    case 'voip':
+      return topic + '.voip';
+    case 'complication':
+      return topic + '.complication';
+    case 'fileprovider':
+      return topic + '.pushkit.fileprovider';
+    case 'liveactivity':
+      return topic + '.push-type.liveactivity';
+    case 'pushtotalk':
+      return topic + '.voip-ptt';
+    default:
+      return topic;
     }
   }
 

@@ -379,42 +379,42 @@ describe('APNS', () => {
     const topic = 'bundleId';
     const pushType = 'location';
     const updatedTopic = APNS._determineTopic(topic, pushType);
-    expect(updatedTopic).toEqual(topic+'.location-query');
+    expect(updatedTopic).toEqual(topic + '.location-query');
   });
 
   it('updates topic based on voip pushType', async () => {
     const topic = 'bundleId';
     const pushType = 'voip';
     const updatedTopic = APNS._determineTopic(topic, pushType);
-    expect(updatedTopic).toEqual(topic+'.voip');
+    expect(updatedTopic).toEqual(topic + '.voip');
   });
 
   it('updates topic based on complication pushType', async () => {
     const topic = 'bundleId';
     const pushType = 'complication';
     const updatedTopic = APNS._determineTopic(topic, pushType);
-    expect(updatedTopic).toEqual(topic+'.complication');
+    expect(updatedTopic).toEqual(topic + '.complication');
   });
 
   it('updates topic based on complication pushType', async () => {
     const topic = 'bundleId';
     const pushType = 'fileprovider';
     const updatedTopic = APNS._determineTopic(topic, pushType);
-    expect(updatedTopic).toEqual(topic+'.pushkit.fileprovider');
+    expect(updatedTopic).toEqual(topic + '.pushkit.fileprovider');
   });
 
   it('updates topic based on liveactivity pushType', async () => {
     const topic = 'bundleId';
     const pushType = 'liveactivity';
     const updatedTopic = APNS._determineTopic(topic, pushType);
-    expect(updatedTopic).toEqual(topic+'.push-type.liveactivity');
+    expect(updatedTopic).toEqual(topic + '.push-type.liveactivity');
   });
 
   it('updates topic based on pushtotalk pushType', async () => {
     const topic = 'bundleId';
     const pushType = 'pushtotalk';
     const updatedTopic = APNS._determineTopic(topic, pushType);
-    expect(updatedTopic).toEqual(topic+'.voip-ptt');
+    expect(updatedTopic).toEqual(topic + '.voip-ptt');
   });
 
   it('can choose providers for device with valid appIdentifier', (done) => {
