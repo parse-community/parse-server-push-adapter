@@ -324,16 +324,6 @@ describe('APNS', () => {
 
   it('generating notification prioritizes header information from notification data', async () => {
     const data = {
-      'alert': 'alert',
-      'title': 'title',
-      'badge': 100,
-      'sound': 'test',
-      'content-available': 1,
-      'mutable-content': 1,
-      'category': 'INVITE_CATEGORY',
-      'threadId': 'a-thread-id',
-      'key': 'value',
-      'keyAgain': 'valueAgain',
       'topic': 'bundle',
       'expiry': 20,
       'collapseId': 'collapse',
@@ -355,18 +345,7 @@ describe('APNS', () => {
   });
 
   it('generating notification does not override default notification info when header info is missing', async () => {
-    const data = {
-      'alert': 'alert',
-      'title': 'title',
-      'badge': 100,
-      'sound': 'test',
-      'content-available': 1,
-      'mutable-content': 1,
-      'category': 'INVITE_CATEGORY',
-      'threadId': 'a-thread-id',
-      'key': 'value',
-      'keyAgain': 'valueAgain',
-    };
+    const data = {};
     const topic = 'bundleId';
     const collapseId = "collapseIdentifier";
     const pushType = "background";
