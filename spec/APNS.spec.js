@@ -324,24 +324,34 @@ describe('APNS', () => {
 
   it('generating notification prioritizes header information from notification data', async () => {
     const data = {
+      'id': 'hello',
+      'requestId': 'world',
+      'channelId': 'foo',
       'topic': 'bundle',
       'expiry': 20,
       'collapseId': 'collapse',
       'pushType': 'alert',
       'priority': 7,
     };
+    const id = 'foo';
+    const requestId = 'hello';
+    const channelId = 'world';
     const topic = 'bundleId';
     const expirationTime = 1454571491354;
     const collapseId = "collapseIdentifier";
     const pushType = "background";
     const priority = 5;
 
-    const notification = APNS._generateNotification(data, { topic: topic, expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
+    const notification = APNS._generateNotification(data, { id: id, requestId: requestId, channelId: channelId, topic: topic, expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
+    expect(notification.id).toEqual(data.id);
+    expect(notification.requestId).toEqual(data.requestId);
+    expect(notification.channelId).toEqual(data.channelId);
     expect(notification.topic).toEqual(data.topic);
     expect(notification.expiry).toEqual(data.expiry);
     expect(notification.collapseId).toEqual(data.collapseId);
     expect(notification.pushType).toEqual(data.pushType);
     expect(notification.priority).toEqual(data.priority);
+    expect(Object.keys(notification.payload).length).toBe(0);
   });
 
   it('generating notification does not override default notification info when header info is missing', async () => {

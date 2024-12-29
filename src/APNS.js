@@ -213,6 +213,16 @@ export class APNS {
       case 'threadId':
         notification.setThreadId(coreData.threadId);
         break;
+      case 'id':
+      case 'collapseId': 
+      case 'channelId': 
+      case 'requestId': 
+      case 'pushType':
+      case 'topic': 
+      case 'expiry': 
+      case 'priority':
+        // Header information is skipped and added later.
+        break;
       default:
         payload[key] = coreData[key];
         break;
@@ -221,19 +231,23 @@ export class APNS {
 
     notification.payload = payload;
 
+    // Update header information if necessary.
+    notification.id = coreData.id ?? headers.id;
+    notification.collapseId = coreData.collapseId ?? headers.collapseId;
+    notification.requestId = coreData.requestId ?? headers.requestId;
+    notification.channelId = coreData.channelId ?? headers.channelId;
     // set alert as default push type. If push type is not set notifications are not delivered to devices running iOS 13, watchOS 6 and later.
-    const pushType = payload.pushType ?? headers.pushType ?? 'alert';
+    const pushType = coreData.pushType ?? headers.pushType ?? 'alert';
     notification.pushType = pushType;
-    const topic = payload.topic ?? APNS._determineTopic(headers.topic, pushType);
+    const topic = coreData.topic ?? APNS._determineTopic(headers.topic, pushType);
     notification.topic = topic;
-    let defaultExpiry = notification.expiry;
+    let expiry = notification.expiry;
     if (headers.expirationTime) {
-      defaultExpiry = Math.round(headers.expirationTime / 1000);
+      expiry = Math.round(headers.expirationTime / 1000);
     }
-    notification.expiry = payload.expiry ?? defaultExpiry;
-    notification.collapseId = payload.collapseId ?? headers.collapseId;
+    notification.expiry = coreData.expiry ?? expiry;
     // if headers priority is not set 'node-apn' defaults it to notification's default value. Required value for background pushes to launch the app in background.
-    notification.priority = payload.priority ?? headers.priority ?? notification.priority;
+    notification.priority = coreData.priority ?? headers.priority ?? notification.priority;
 
     return notification;
   }
