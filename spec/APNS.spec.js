@@ -368,6 +368,16 @@ describe('APNS', () => {
     expect(notification.priority).toEqual(10);
   });
 
+  it('generating notification updates topic properly', async () => {
+    const data = {};
+    const topic = 'bundleId';
+    const pushType = "liveactivity";
+
+    const notification = APNS._generateNotification(data, { topic: topic, pushType: pushType });
+    expect(notification.topic).toEqual(topic + '.push-type.liveactivity');
+    expect(notification.pushType).toEqual(pushType);
+  });
+
   it('defaults to original topic', async () => {
     const topic = 'bundleId';
     const pushType = 'alert';
