@@ -1,3 +1,10 @@
+# [6.9.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.8.0...6.9.0) (2024-12-30)
+
+
+### Features
+
+* Update node-apn from 6.2.1 to 6.3.0 ([#349](https://github.com/parse-community/parse-server-push-adapter/issues/349)) ([9697842](https://github.com/parse-community/parse-server-push-adapter/commit/9697842ecf58e7993be6fda6cb2760446c4d30a3))
+
 # [6.8.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.7.1...6.8.0) (2024-12-14)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@parse/push-adapter",
-  "version": "6.8.0",
+  "version": "6.9.0",
   "description": "Base parse-server-push-adapter",
   "main": "src/index.js",
   "type": "module",
@@ -24,7 +24,7 @@
   "author": "Parse",
   "license": "MIT",
   "dependencies": {
-    "@parse/node-apn": "6.2.1",
+    "@parse/node-apn": "6.3.0",
     "@parse/node-gcm": "1.0.2",
     "expo-server-sdk": "3.13.0",
     "firebase-admin": "13.0.2",
