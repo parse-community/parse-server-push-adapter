@@ -1,3 +1,10 @@
+## [6.9.1](https://github.com/parse-community/parse-server-push-adapter/compare/6.9.0...6.9.1) (2025-01-01)
+
+
+### Bug Fixes
+
+* APN notification topic not composed based on push type ([#347](https://github.com/parse-community/parse-server-push-adapter/issues/347)) ([9905c34](https://github.com/parse-community/parse-server-push-adapter/commit/9905c340554cbed67f594dc37d6704169d40d8e1))
+
 # [6.9.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.8.0...6.9.0) (2024-12-30)
 
 
