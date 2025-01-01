@@ -322,6 +322,111 @@ describe('APNS', () => {
     done();
   });
 
+  it('generating notification prioritizes header information from notification data', async () => {
+    const data = {
+      'id': 'hello',
+      'requestId': 'world',
+      'channelId': 'foo',
+      'topic': 'bundle',
+      'expiry': 20,
+      'collapseId': 'collapse',
+      'pushType': 'alert',
+      'priority': 7,
+    };
+    const id = 'foo';
+    const requestId = 'hello';
+    const channelId = 'world';
+    const topic = 'bundleId';
+    const expirationTime = 1454571491354;
+    const collapseId = "collapseIdentifier";
+    const pushType = "background";
+    const priority = 5;
+
+    const notification = APNS._generateNotification(data, { id: id, requestId: requestId, channelId: channelId, topic: topic, expirationTime: expirationTime, collapseId: collapseId, pushType: pushType, priority: priority });
+    expect(notification.id).toEqual(data.id);
+    expect(notification.requestId).toEqual(data.requestId);
+    expect(notification.channelId).toEqual(data.channelId);
+    expect(notification.topic).toEqual(data.topic);
+    expect(notification.expiry).toEqual(data.expiry);
+    expect(notification.collapseId).toEqual(data.collapseId);
+    expect(notification.pushType).toEqual(data.pushType);
+    expect(notification.priority).toEqual(data.priority);
+    expect(Object.keys(notification.payload).length).toBe(0);
+  });
+
+  it('generating notification does not override default notification info when header info is missing', async () => {
+    const data = {};
+    const topic = 'bundleId';
+    const collapseId = "collapseIdentifier";
+    const pushType = "background";
+
+    const notification = APNS._generateNotification(data, { topic: topic, collapseId: collapseId, pushType: pushType });
+    expect(notification.topic).toEqual(topic);
+    expect(notification.expiry).toEqual(-1);
+    expect(notification.collapseId).toEqual(collapseId);
+    expect(notification.pushType).toEqual(pushType);
+    expect(notification.priority).toEqual(10);
+  });
+
+  it('generating notification updates topic properly', async () => {
+    const data = {};
+    const topic = 'bundleId';
+    const pushType = "liveactivity";
+
+    const notification = APNS._generateNotification(data, { topic: topic, pushType: pushType });
+    expect(notification.topic).toEqual(topic + '.push-type.liveactivity');
+    expect(notification.pushType).toEqual(pushType);
+  });
+
+  it('defaults to original topic', async () => {
+    const topic = 'bundleId';
+    const pushType = 'alert';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic);
+  });
+
+  it('updates topic based on location pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'location';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic + '.location-query');
+  });
+
+  it('updates topic based on voip pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'voip';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic + '.voip');
+  });
+
+  it('updates topic based on complication pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'complication';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic + '.complication');
+  });
+
+  it('updates topic based on complication pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'fileprovider';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic + '.pushkit.fileprovider');
+  });
+
+  it('updates topic based on liveactivity pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'liveactivity';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic + '.push-type.liveactivity');
+  });
+
+  it('updates topic based on pushtotalk pushType', async () => {
+    const topic = 'bundleId';
+    const pushType = 'pushtotalk';
+    const updatedTopic = APNS._determineTopic(topic, pushType);
+    expect(updatedTopic).toEqual(topic + '.voip-ptt');
+  });
+
   it('can choose providers for device with valid appIdentifier', (done) => {
     const appIdentifier = 'topic';
     // Mock providers
