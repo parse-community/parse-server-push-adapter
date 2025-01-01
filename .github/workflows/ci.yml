@@ -46,5 +46,11 @@ jobs:
         run: npm ci
       - name: Run tests
         run: npm run test
-      - name: Code coverage
-        run: bash <(curl -s https://codecov.io/bash)
+      - name: Upload code coverage
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
