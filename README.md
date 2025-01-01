@@ -1,6 +1,6 @@
 # Parse Server Push Adapter <!-- omit in toc -->
 
-[![Build Status](https://github.com/parse-community/parse-server-push-adapter/workflows/ci/badge.svg?branch=master)](https://github.com/parse-community/parse-server-push-adapter/actions?query=workflow%3Aci+branch%3Amaster)
+[![Build Status](https://github.com/parse-community/parse-server-push-adapter/actions/workflows/ci.yml/badge.svg)](https://github.com/parse-community/parse-server-push-adapter/actions/workflows/ci.yml)
 [![Snyk Badge](https://snyk.io/test/github/parse-community/parse-server-push-adapter/badge.svg)](https://snyk.io/test/github/parse-community/parse-server-push-adapter)
 [![Coverage](https://img.shields.io/codecov/c/github/parse-community/parse-server-push-adapter/master.svg)](https://codecov.io/github/parse-community/parse-server-push-adapter?branch=master)
 [![auto-release](https://img.shields.io/badge/%F0%9F%9A%80-auto--release-9e34eb.svg)](https://github.com/parse-community/parse-server-push-adapter/releases)
