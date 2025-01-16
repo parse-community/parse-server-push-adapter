@@ -406,7 +406,7 @@ describe('APNS', () => {
     expect(updatedTopic).toEqual(topic + '.complication');
   });
 
-  it('updates topic based on complication pushType', async () => {
+  it('updates topic based on fileprovider pushType', async () => {
     const topic = 'bundleId';
     const pushType = 'fileprovider';
     const updatedTopic = APNS._determineTopic(topic, pushType);
