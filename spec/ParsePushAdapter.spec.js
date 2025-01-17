@@ -455,13 +455,13 @@ describe('ParsePushAdapter', () => {
         appIdentifier: 'osxbundleId'
       },
       {
-        deviceType: 'watchos',
-        deviceToken: '8f72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
+        deviceType: 'tvos',
+        deviceToken: '3e72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
         appIdentifier: 'iosbundleId' // ios and tvos share the same bundleid
       },
       {
         deviceType: 'watchos',
-        deviceToken: '3e72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
+        deviceToken: '8f72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
         appIdentifier: 'iosbundleId' // ios and watchos share the same bundleid
       },
       {
