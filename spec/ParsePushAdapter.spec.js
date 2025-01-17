@@ -160,13 +160,13 @@ describe('ParsePushAdapter', () => {
   it('can get valid push types', (done) => {
     const parsePushAdapter = new ParsePushAdapter();
 
-    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'osx', 'tvos', 'android', 'fcm', 'web', 'expo']);
+    expect(parsePushAdapter.getValidPushTypes()).toEqual(['ios', 'osx', 'tvos', 'watchos', 'android', 'fcm', 'web', 'expo']);
     done();
   });
 
   it('can classify installation', (done) => {
     // Mock installations
-    const validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm', 'web', 'expo'];
+    const validPushTypes = ['ios', 'osx', 'tvos', 'watchos', 'android', 'fcm', 'web', 'expo'];
     const installations = [
       {
         deviceType: 'android',
@@ -179,6 +179,10 @@ describe('ParsePushAdapter', () => {
       {
         deviceType: 'tvos',
         deviceToken: 'tvosToken'
+      },
+      {
+        deviceType: 'watchos',
+        deviceToken: 'watchosToken'
       },
       {
         deviceType: 'osx',
@@ -208,6 +212,7 @@ describe('ParsePushAdapter', () => {
     expect(deviceMap['ios']).toEqual([makeDevice('iosToken', 'ios')]);
     expect(deviceMap['osx']).toEqual([makeDevice('osxToken', 'osx')]);
     expect(deviceMap['tvos']).toEqual([makeDevice('tvosToken', 'tvos')]);
+    expect(deviceMap['watchos']).toEqual([makeDevice('watchosToken', 'watchos')]);
     expect(deviceMap['web']).toEqual([makeDevice('webToken', 'web')]);
     expect(deviceMap['win']).toBe(undefined);
     expect(deviceMap['expo']).toEqual([makeDevice('expoToken', 'ios')]);
@@ -395,7 +400,7 @@ describe('ParsePushAdapter', () => {
     done();
   });
 
-  it('reports properly results', (done) => {
+  it('reports proper results', (done) => {
     spyOn(log, 'error').and.callFake(() => {});
     const pushConfig = {
       web: {
@@ -450,9 +455,14 @@ describe('ParsePushAdapter', () => {
         appIdentifier: 'osxbundleId'
       },
       {
-        deviceType: 'tvos',
-        deviceToken: '3e72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
+        deviceType: 'watchos',
+        deviceToken: '8f72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
         appIdentifier: 'iosbundleId' // ios and tvos share the same bundleid
+      },
+      {
+        deviceType: 'watchos',
+        deviceToken: '3e72a1baa92a2febd9a254cbd6584f750c70b2350af5fc9052d1d12584b738e6',
+        appIdentifier: 'iosbundleId' // ios and watchos share the same bundleid
       },
       {
         deviceType: 'web',
@@ -477,8 +487,8 @@ describe('ParsePushAdapter', () => {
     parsePushAdapter.send({ data: { alert: 'some' } }, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
-      // 2x iOS, 1x android, 1x osx, 1x tvos, 1x web, 1x expo
-      expect(results.length).toBe(7);
+      // 2x iOS, 1x android, 1x osx, 1x tvos, 1xwatchos, 1x web, 1x expo
+      expect(results.length).toBe(8);
       results.forEach((result) => {
         expect(typeof result.device).toBe('object');
         if (!result.device) {
@@ -530,7 +540,7 @@ describe('ParsePushAdapter', () => {
     parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
-      // 2x iOS, 1x android, 1x osx, 1x tvos
+      // 2x iOS, 1x android, 1x osx, 1x tvos, 1x watchos
       expect(results.length).toBe(1);
       const result = results[0];
       expect(typeof result.device).toBe('object');

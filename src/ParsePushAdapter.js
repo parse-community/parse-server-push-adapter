@@ -15,7 +15,7 @@ export default class ParsePushAdapter {
   supportsPushTracking = true;
 
   constructor(pushConfig = {}) {
-    this.validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm', 'web', 'expo'];
+    this.validPushTypes = ['ios', 'osx', 'tvos', 'watchos', 'android', 'fcm', 'web', 'expo'];
     this.senderMap = {};
     // used in PushController for Dashboard Features
     this.feature = {
@@ -32,6 +32,7 @@ export default class ParsePushAdapter {
       switch (pushType) {
       case 'ios':
       case 'tvos':
+      case 'watchos':
       case 'osx':
         if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
           this.senderMap[pushType] = new FCM(pushConfig[pushType], 'apple');
