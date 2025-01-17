@@ -487,7 +487,7 @@ describe('ParsePushAdapter', () => {
     parsePushAdapter.send({ data: { alert: 'some' } }, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
-      // 2x iOS, 1x android, 1x osx, 1x tvos, 1xwatchos, 1x web, 1x expo
+      // 2x iOS, 1x android, 1x osx, 1x tvos, 1x watchos, 1x web, 1x expo
       expect(results.length).toBe(8);
       results.forEach((result) => {
         expect(typeof result.device).toBe('object');
