@@ -72,10 +72,11 @@ Parse Server Push Adapter currently supports these types of Apple ecosystems:
 - `ios`: iPhone, iPad, and iPod touch apps
 - `osx`: macOS, and macCatalyst apps
 - `tvos`: tvOS apps
+- `watchos`: watchOS apps
 
-Delivering push notifications to Apple devices can be done either via Apple Push Notification Service (APNS), or via Firebase Cloud Messaging (FMC). Note that each category of Apple devices require their own configuration section:
+Push notifications can be delivered to Apple devices either via Apple Push Notification Service (APNS) or Firebase Cloud Messaging (FMC). Note that each category of Apple devices requires their own configuration section:
 
-- APNS requires a private key that can be downloaded from the Apple Developer Center at https://developer.apple.com/account under _Certificates > Identifiers & Profiles._ The adapter options also require the app ID and team ID which can be found there.
+- APNS requires a private key that can be downloaded from the Apple Developer Center at https://developer.apple.com/account under _Certificates > Identifiers & Profiles._ The adapter options also require the app ID and team ID, which can be found there.
 - FCM requires a private key that can be downloaded from the Firebase Console at https://console.firebase.google.com in your project under _Settings > Cloud Messaging._
 
 Example options:
