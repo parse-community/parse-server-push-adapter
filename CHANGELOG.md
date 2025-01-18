@@ -1,3 +1,10 @@
+# [6.10.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.9.1...6.10.0) (2025-01-18)
+
+
+### Features
+
+* Add support for watchOS push notifications ([#360](https://github.com/parse-community/parse-server-push-adapter/issues/360)) ([97f14ca](https://github.com/parse-community/parse-server-push-adapter/commit/97f14cab1474657660464e5450e8dfdbe0650809))
+
 ## [6.9.1](https://github.com/parse-community/parse-server-push-adapter/compare/6.9.0...6.9.1) (2025-01-01)
 
 
