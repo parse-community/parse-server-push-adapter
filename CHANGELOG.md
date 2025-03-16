@@ -1,3 +1,10 @@
+# [6.11.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.10.0...6.11.0) (2025-03-16)
+
+
+### Features
+
+* Bump @parse/node-apn from 6.4.3 to 6.5.0 ([#382](https://github.com/parse-community/parse-server-push-adapter/issues/382)) ([3995754](https://github.com/parse-community/parse-server-push-adapter/commit/3995754705614e00d8bfdea47333986b0b88b7cc))
+
 # [6.10.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.9.1...6.10.0) (2025-01-18)
 
 
