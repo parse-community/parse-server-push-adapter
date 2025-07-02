@@ -1,5 +1,6 @@
 import { SpecReporter } from 'jasmine-spec-reporter';
 import { dirname } from 'path';
+import { setTimeout } from 'timers';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,5 +15,5 @@ jasmine.getEnv().addReporter(new SpecReporter());
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 export {
-  wait,
+  wait
 };
