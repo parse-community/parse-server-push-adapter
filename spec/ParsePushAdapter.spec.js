@@ -10,6 +10,8 @@ import GCM from '../src/GCM.js';
 import WEB from '../src/WEB.js';
 import FCM from '../src/FCM.js';
 import EXPO from '../src/EXPO.js';
+import { wait } from './helper.js';
+import PQueue from 'p-queue';
 
 describe('ParsePushAdapter', () => {
 
@@ -641,6 +643,87 @@ describe('ParsePushAdapter', () => {
       done();
     });
   });
+
+
+  it('throttles push sends per provider', async () => {
+    const pushConfig = {
+      android: {
+        senderId: 'id',
+        apiKey: 'key',
+        throttle: { maxPerSecond: 1 }
+      }
+    };
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
+    const times = [];
+    parsePushAdapter.senderMap['android'].send = jasmine.createSpy('send').and.callFake(() => {
+      times.push(Date.now());
+      return Promise.resolve([]);
+    });
+    const installs = [{ deviceType: 'android', deviceToken: 'token' }];
+    await Promise.all([
+      parsePushAdapter.send({}, installs),
+      parsePushAdapter.send({}, installs),
+    ]);
+    expect(times.length).toBe(2);
+    expect(times[1] - times[0]).toBeGreaterThanOrEqual(900);
+    expect(times[1] - times[0]).toBeLessThanOrEqual(1100);
+  });
+
+  it('skips queued pushes after ttl expires', async () => {
+    const pushConfig = {
+      android: {
+        senderId: 'id',
+        apiKey: 'key',
+        throttle: { maxPerSecond: 1 }
+      }
+    };
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
+    parsePushAdapter.senderMap['android'].send = jasmine.createSpy('send').and.callFake(async () => {
+      await wait(1_200);
+      return [];
+    });
+    const installs = [{ deviceType: 'android', deviceToken: 'token' }];
+    await Promise.all([
+      parsePushAdapter.send({}, installs),
+      parsePushAdapter.send({ queueTtl: 1 }, installs)
+    ]);
+    expect(parsePushAdapter.senderMap['android'].send.calls.count()).toBe(1);
+  });
+
+  it('sends higher priority pushes before lower priority ones', async () => {
+    const pushConfig = {
+      android: {
+        senderId: 'id',
+        apiKey: 'key',
+        throttle: { maxPerSecond: 1 }
+      }
+    };
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
+    const callOrder = [];
+    parsePushAdapter.senderMap['android'].send = jasmine.createSpy('send').and.callFake(async (data) => {
+      callOrder.push(data.queuePriority);
+      await wait(100);
+      return [];
+    });
+    const installs = [{ deviceType: 'android', deviceToken: 'token' }];
+
+    // Block queue with task so that the queue scheduler doesn't start processing enqueued items
+    // immediately; afterwards the scheduler picks the next enqueued item according to priority;
+    const pBlock = parsePushAdapter.queues.android.enqueue({ task: () => wait(500) });
+    // Wait to ensure block item in queue has started
+    await wait(100);
+
+    await Promise.all([
+      pBlock,
+      parsePushAdapter.send({ queuePriority: 3 }, installs),
+      parsePushAdapter.send({ queuePriority: 4 }, installs),
+      parsePushAdapter.send({ queuePriority: 2 }, installs),
+      parsePushAdapter.send({ queuePriority: 0 }, installs),
+      parsePushAdapter.send({ queuePriority: 1 }, installs),
+    ]);
+    expect(callOrder).toEqual([4, 3, 2, 1, 0]);
+  });
+
 
   it('random string throws with size <=0', () => {
     expect(() => randomString(0)).toThrow();
