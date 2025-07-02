@@ -25,7 +25,9 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
     - [HTTP/1.1 Legacy Option](#http11-legacy-option)
     - [Firebase Client Error](#firebase-client-error)
   - [Expo Push Options](#expo-push-options)
-- [Push Throttling \& Prioritization](#push-throttling--prioritization)
+- [Push Queue](#push-queue)
+  - [Throttling](#throttling)
+  - [Push Options](#push-options)
 - [Bundled with Parse Server](#bundled-with-parse-server)
 - [Logging](#logging)
 
@@ -182,7 +184,9 @@ expo: {
 
 For more information see the [Expo docs](https://docs.expo.dev/push-notifications/overview/).
 
-## Push Throttling & Prioritization
+## Push Queue
+
+### Throttling
 
 Push providers usually throttle their APIs, so that sending too many pushes notifications within a short time may cause the API not accept any more requests. To address this, push sending can be throttled per provider by adding a `throttle` option to the respective push configuration. The option `maxPerSecond` defines the maximum number of pushes sent per second. If not throttle is configured, pushes are sent as quickly as possible.
 
@@ -194,26 +198,34 @@ const parseServerOptions = {
     adapter: new ParsePushAdapter({
       ios: {
         // ...
-        throttle: { maxPerSecond: 100 }
+        queue: {
+          throttle: { maxPerSecond: 100 }
+        }
       }
     })
   }
 };
 ```
 
-Each push request may additionally specify the following parameters.
+### Push Options
 
-| Parameter       | Description                                                                                                                                                                                                                   |
-|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `queueTtl`      | The TTL in seconds. If a queued push expires before it is sent, it is discarded.                                                                                                                                              |
-| `queuePriority` | The priority of the push in the queue. When processing items in the queue, pushes with higher priority values are sent first. The priority value 1 means a higher priority than the value 0. The default priority value is 0. |
+Each push request may specify the following options for handling in the queue.
+
+| Parameter        | Default    | Optional | Description                                                                                                                                                                                  |
+|------------------|------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `queue.ttl`      | `Infinity` | Yes      | The time-to-live of the push in the queue in seconds. If a queued push expires before it is sent to the push provider, it is discarded. Default is `Infinity`, meaning pushes never expire.  |
+| `queue.priority` | `0`        | Yes      | The priority of the push in the queue. When processing the queue, pushes are sent in order of their priority. For example, a push with priority `1` is sent before a push with priority `0`. |
 
 Example push payload:
 
 ```js
 pushData = {
-  queueTtl: 10, // discard after 10 seconds if not yet sent
-  queuePriority: 1, // send with higher priority than default pushes
+  queue: {
+    // Discard after 10 seconds from queue if push has not been sent to push provider yet
+    ttl: 10,
+    // Send with higher priority than default pushes
+    priority: 1,
+  },
   data: { alert: 'Hello' }
 };
 ```

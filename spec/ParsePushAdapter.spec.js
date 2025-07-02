@@ -1,17 +1,16 @@
-import { join } from 'path';
-import log from 'npmlog';
 import apn from '@parse/node-apn';
-import ParsePushAdapterPackage, { ParsePushAdapter as _ParsePushAdapter, APNS as _APNS, GCM as _GCM, WEB as _WEB, EXPO as _EXPO, utils } from '../src/index.js';
-const ParsePushAdapter = _ParsePushAdapter;
-import { randomString } from '../src/PushAdapterUtils.js';
-import MockAPNProvider from './MockAPNProvider.js';
+import log from 'npmlog';
+import { join } from 'path';
 import APNS from '../src/APNS.js';
-import GCM from '../src/GCM.js';
-import WEB from '../src/WEB.js';
-import FCM from '../src/FCM.js';
 import EXPO from '../src/EXPO.js';
+import FCM from '../src/FCM.js';
+import GCM from '../src/GCM.js';
+import ParsePushAdapterPackage, { APNS as _APNS, EXPO as _EXPO, GCM as _GCM, ParsePushAdapter as _ParsePushAdapter, WEB as _WEB, utils } from '../src/index.js';
+import { randomString } from '../src/PushAdapterUtils.js';
+import WEB from '../src/WEB.js';
 import { wait } from './helper.js';
-import PQueue from 'p-queue';
+import MockAPNProvider from './MockAPNProvider.js';
+const ParsePushAdapter = _ParsePushAdapter;
 
 describe('ParsePushAdapter', () => {
 
@@ -650,8 +649,10 @@ describe('ParsePushAdapter', () => {
       android: {
         senderId: 'id',
         apiKey: 'key',
-        throttle: { maxPerSecond: 1 }
-      }
+        queue: {
+          throttle: { maxPerSecond: 1 }
+        },
+      },
     };
     const parsePushAdapter = new ParsePushAdapter(pushConfig);
     const times = [];
@@ -674,8 +675,10 @@ describe('ParsePushAdapter', () => {
       android: {
         senderId: 'id',
         apiKey: 'key',
-        throttle: { maxPerSecond: 1 }
-      }
+        queue: {
+          throttle: { maxPerSecond: 1 }
+        },
+      },
     };
     const parsePushAdapter = new ParsePushAdapter(pushConfig);
     parsePushAdapter.senderMap['android'].send = jasmine.createSpy('send').and.callFake(async () => {
@@ -685,7 +688,7 @@ describe('ParsePushAdapter', () => {
     const installs = [{ deviceType: 'android', deviceToken: 'token' }];
     await Promise.all([
       parsePushAdapter.send({}, installs),
-      parsePushAdapter.send({ queueTtl: 1 }, installs)
+      parsePushAdapter.send({ queue: { ttl: 1 } }, installs)
     ]);
     expect(parsePushAdapter.senderMap['android'].send.calls.count()).toBe(1);
   });
@@ -695,13 +698,15 @@ describe('ParsePushAdapter', () => {
       android: {
         senderId: 'id',
         apiKey: 'key',
-        throttle: { maxPerSecond: 1 }
-      }
+        queue: {
+          throttle: { maxPerSecond: 1 }
+        },
+      },
     };
     const parsePushAdapter = new ParsePushAdapter(pushConfig);
     const callOrder = [];
     parsePushAdapter.senderMap['android'].send = jasmine.createSpy('send').and.callFake(async (data) => {
-      callOrder.push(data.queuePriority);
+      callOrder.push(data.id);
       await wait(100);
       return [];
     });
@@ -715,11 +720,11 @@ describe('ParsePushAdapter', () => {
 
     await Promise.all([
       pBlock,
-      parsePushAdapter.send({ queuePriority: 3 }, installs),
-      parsePushAdapter.send({ queuePriority: 4 }, installs),
-      parsePushAdapter.send({ queuePriority: 2 }, installs),
-      parsePushAdapter.send({ queuePriority: 0 }, installs),
-      parsePushAdapter.send({ queuePriority: 1 }, installs),
+      parsePushAdapter.send({ id: 3, queue: { priority: 3 }}, installs),
+      parsePushAdapter.send({ id: 4, queue: { priority: 4 }}, installs),
+      parsePushAdapter.send({ id: 2, queue: { priority: 2 }}, installs),
+      parsePushAdapter.send({ id: 0, queue: { priority: 0 }}, installs),
+      parsePushAdapter.send({ id: 1, queue: { priority: 1 }}, installs),
     ]);
     expect(callOrder).toEqual([4, 3, 2, 1, 0]);
   });

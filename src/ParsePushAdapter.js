@@ -91,7 +91,9 @@ export default class ParsePushAdapter {
           });
           sendPromises.push(Promise.all(results));
         } else if (this.queues[pushType]) {
-          sendPromises.push(this.queues[pushType].enqueue({ task: () => sender.send(data, devices), ttl: data.queueTtl, priority: data.queuePriority }));
+          const { ttl, priority } = data?.queue || {};
+          delete data?.queue;
+          sendPromises.push(this.queues[pushType].enqueue({ task: () => sender.send(data, devices), ttl, priority }));
         } else {
           sendPromises.push(sender.send(data, devices));
         }
