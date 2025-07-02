@@ -3,7 +3,7 @@ import { wait } from './helper.js';
 
 describe('ThrottleQueue', () => {
   it('processes items respecting rate limit', async () => {
-    const q = new ThrottleQueue(1);
+    const q = new ThrottleQueue({ concurrency: 1, intervalCap: 1, interval: 1_000 });
     const times = [];
     const p1 = q.enqueue({ task: () => { times.push(Date.now()) } });
     const p2 = q.enqueue({ task: () => { times.push(Date.now()) } });
@@ -14,7 +14,7 @@ describe('ThrottleQueue', () => {
   });
 
   it('drops expired items', async () => {
-    const q = new ThrottleQueue(1);
+    const q = new ThrottleQueue({ concurrency: 1, intervalCap: 1, interval: 1_000 });
     const results = [];
     const p1 = q.enqueue({ task: () => wait(1_200) });
     const p2 = q.enqueue({ task: () => { throw new Error('should not run'); }, ttl: 1 });
@@ -24,7 +24,7 @@ describe('ThrottleQueue', () => {
   });
 
   it('processes higher priority tasks first', async () => {
-    const q = new ThrottleQueue(1);
+    const q = new ThrottleQueue({ concurrency: 1, intervalCap: 1, interval: 1_000 });
     const results = [];
 
     // Block queue with task so that the queue scheduler doesn't start processing enqueued items

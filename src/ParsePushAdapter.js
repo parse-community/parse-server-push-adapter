@@ -57,9 +57,10 @@ export default class ParsePushAdapter {
         }
         break;
       }
-      if (pushConfig[pushType].throttle) {
-        const rate = pushConfig[pushType].throttle.maxPerSecond;
-        this.queues[pushType] = new ThrottleQueue(rate);
+      const queue = pushConfig[pushType].queue;
+      if (queue) {
+        const { concurrency, intervalCapacity, interval } = queue || {};
+        this.queues[pushType] = new ThrottleQueue({ concurrency, intervalCap: intervalCapacity, interval });
       }
     }
   }

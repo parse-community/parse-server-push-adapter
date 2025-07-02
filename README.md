@@ -188,9 +188,15 @@ For more information see the [Expo docs](https://docs.expo.dev/push-notification
 
 ### Throttling
 
-Push providers usually throttle their APIs, so that sending too many pushes notifications within a short time may cause the API not accept any more requests. To address this, push sending can be throttled per provider by adding a `throttle` option to the respective push configuration. The option `maxPerSecond` defines the maximum number of pushes sent per second. If not throttle is configured, pushes are sent as quickly as possible.
+By default, pushes are sent as fast as possible. However, push providers usually throttle their APIs, so that sending too many pushes notifications within a short time may cause the API to reject requests. To address this, push sending can be throttled per provider by adding the `queue` option to the respective push configuration.
 
-Example throttle configuration:
+| Parameter                | Default    | Optional | Description                                                                                |
+|--------------------------|------------|----------|--------------------------------------------------------------------------------------------|
+| `queue.concurrency`      | `Infinity` | Yes      | The maximum number of pushes to process concurrently.                                      |
+| `queue.intervalCapacity` | `Infinity` | Yes      | The interval capacity, meaning the maximum number of tasks to process in a given interval. |
+| `queue.interval`         | `0`        | Yes      | The interval in milliseconds for the interval capacity.                                    |
+
+Example configuration to throttle the queue to max. 1 push every 100ms, equivalent to max. 10 pushes per second:
 
 ```js
 const parseServerOptions = {
@@ -199,13 +205,38 @@ const parseServerOptions = {
       ios: {
         // ...
         queue: {
-          throttle: { maxPerSecond: 100 }
-        }
+          concurrency: 1,
+          intervalCapacity: 1,
+          interval: 100,
+        },
       }
     })
   }
 };
 ```
+
+Keep in mind that `concurrency: 1` means that pushes are sent in serial. For example, if sending a request to the push provider takes up to 500ms to complete, then the configuration above may be limited to only 2 pushes per second if every request takes 500ms. To address this, you can send pushes in parallel by setting the concurrency to a value greater than `1`, and increasing `intervalCapacity` and `interval` to fully utilize parallelism.
+
+Example configuration sending pushes in parallel:
+
+```js
+const parseServerOptions = {
+  push: {
+    adapter: new ParsePushAdapter({
+      ios: {
+        // ...
+        queue: {
+          concurrency: 5,
+          intervalCapacity: 5,
+          interval: 500,
+        },
+      }
+    })
+  }
+};
+```
+
+In the example above, pushes will be sent in bursts of 5 at once, with max. 10 pushes within 1s. On a timeline that means at `t=0ms`, 5 pushes will be sent in parallel. If sending the pushes take less than 500ms, then `intervalCapacity` will still limit to 5 pushes within the first 500ms. At `t=500ms` the second interval begins and another max. 5 pushes are sent in parallel. That effectively means a throughput of up to 10 pushes per second.
 
 ### Push Options
 

@@ -3,18 +3,19 @@ import PQueue from 'p-queue';
 export default class ThrottleQueue {
 
   /**
-   * Creates an instance of ThrottleQueue.
+   * Creates an instance of ThrottleQueue. If no parameters are provided, then the queue will have no
+   * throttling and will process tasks as fast as possible.
    *
-   * @param {number} [maxPerSecond=Infinity] The maximum number of tasks to process per second.
-   * Optional, defaults to Infinity (no limit).
+   * @param {Object} [options] The options.
+   * @param {number} [options.concurrency=Infinity] The maximum number of tasks to process concurrently.
+   * Optional, defaults to `Infinity`, meaning no limit on concurrency.
+   * @param {number} [options.intervalCap=Infinity] The interval capacity, meaning the maximum number of
+   * tasks to process in a given interval. Optional, defaults to `Infinity`, meaning no interval limit.
+   * @param {number} [options.interval=0] The interval in milliseconds for the interval capacity.
+   * Optional, defaults to `0`, meaning no interval limit.
    */
-  constructor(maxPerSecond = Infinity) {
-    if (maxPerSecond === Infinity) {
-      this.queue = new PQueue({ concurrency: Infinity });
-    } else {
-      const interval = Math.ceil(1000 / maxPerSecond);
-      this.queue = new PQueue({ concurrency: 1, intervalCap: 1, interval });
-    }
+  constructor({ concurrency = Infinity, intervalCap = Infinity, interval = 0 } = {}) {
+    this.queue = new PQueue({ concurrency, intervalCap, interval });
   }
 
   /**

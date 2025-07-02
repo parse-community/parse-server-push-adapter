@@ -650,7 +650,9 @@ describe('ParsePushAdapter', () => {
         senderId: 'id',
         apiKey: 'key',
         queue: {
-          throttle: { maxPerSecond: 1 }
+          concurrency: 1,
+          intervalCapacity: 1,
+          interval: 1_000,
         },
       },
     };
@@ -676,7 +678,9 @@ describe('ParsePushAdapter', () => {
         senderId: 'id',
         apiKey: 'key',
         queue: {
-          throttle: { maxPerSecond: 1 }
+          concurrency: 1,
+          intervalCapacity: 1,
+          interval: 1_000,
         },
       },
     };
@@ -699,7 +703,9 @@ describe('ParsePushAdapter', () => {
         senderId: 'id',
         apiKey: 'key',
         queue: {
-          throttle: { maxPerSecond: 1 }
+          concurrency: 1,
+          intervalCapacity: 1,
+          interval: 1_000,
         },
       },
     };
