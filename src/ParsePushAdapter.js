@@ -57,7 +57,8 @@ export default class ParsePushAdapter {
         }
         break;
       }
-      const queue = pushConfig[pushType].queue;
+      const config = pushConfig[pushType];
+      const queue = Array.isArray(config) ? config.find(c => c && c.queue)?.queue : config.queue;
       if (queue) {
         const { concurrency, intervalCapacity, interval } = queue || {};
         this.queues[pushType] = new ThrottleQueue({ concurrency, intervalCap: intervalCapacity, interval });
