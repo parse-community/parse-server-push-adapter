@@ -25,6 +25,9 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
     - [HTTP/1.1 Legacy Option](#http11-legacy-option)
     - [Firebase Client Error](#firebase-client-error)
   - [Expo Push Options](#expo-push-options)
+- [Push Queue](#push-queue)
+  - [Throttling](#throttling)
+  - [Push Options](#push-options)
 - [Bundled with Parse Server](#bundled-with-parse-server)
 - [Logging](#logging)
 
@@ -180,6 +183,83 @@ expo: {
 ```
 
 For more information see the [Expo docs](https://docs.expo.dev/push-notifications/overview/).
+
+## Push Queue
+
+### Throttling
+
+By default, pushes are sent as fast as possible. However, push providers usually throttle their APIs, so that sending too many pushes notifications within a short time may cause the API to reject requests. To address this, push sending can be throttled per provider by adding the `queue` option to the respective push configuration.
+
+| Parameter                | Default    | Optional | Description                                                                                |
+|--------------------------|------------|----------|--------------------------------------------------------------------------------------------|
+| `queue.concurrency`      | `Infinity` | Yes      | The maximum number of pushes to process concurrently.                                      |
+| `queue.intervalCapacity` | `Infinity` | Yes      | The interval capacity, meaning the maximum number of tasks to process in a given interval. |
+| `queue.interval`         | `0`        | Yes      | The interval in milliseconds for the interval capacity.                                    |
+
+Example configuration to throttle the queue to max. 1 push every 100ms, equivalent to max. 10 pushes per second:
+
+```js
+const parseServerOptions = {
+  push: {
+    adapter: new ParsePushAdapter({
+      ios: {
+        // ...
+        queue: {
+          concurrency: 1,
+          intervalCapacity: 1,
+          interval: 100,
+        },
+      }
+    })
+  }
+};
+```
+
+Keep in mind that `concurrency: 1` means that pushes are sent in serial. For example, if sending a request to the push provider takes up to 500ms to complete, then the configuration above may be limited to only 2 pushes per second if every request takes 500ms. To address this, you can send pushes in parallel by setting the concurrency to a value greater than `1`, and increasing `intervalCapacity` and `interval` to fully utilize parallelism.
+
+Example configuration sending pushes in parallel:
+
+```js
+const parseServerOptions = {
+  push: {
+    adapter: new ParsePushAdapter({
+      ios: {
+        // ...
+        queue: {
+          concurrency: 5,
+          intervalCapacity: 5,
+          interval: 500,
+        },
+      }
+    })
+  }
+};
+```
+
+In the example above, pushes will be sent in bursts of 5 at once, with max. 10 pushes within 1s. On a timeline that means at `t=0ms`, 5 pushes will be sent in parallel. If sending the pushes take less than 500ms, then `intervalCapacity` will still limit to 5 pushes within the first 500ms. At `t=500ms` the second interval begins and another max. 5 pushes are sent in parallel. That effectively means a throughput of up to 10 pushes per second.
+
+### Push Options
+
+Each push request may specify the following options for handling in the queue.
+
+| Parameter        | Default    | Optional | Description                                                                                                                                                                                  |
+|------------------|------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `queue.ttl`      | `Infinity` | Yes      | The time-to-live of the push in the queue in seconds. If a queued push expires before it is sent to the push provider, it is discarded. Default is `Infinity`, meaning pushes never expire.  |
+| `queue.priority` | `0`        | Yes      | The priority of the push in the queue. When processing the queue, pushes are sent in order of their priority. For example, a push with priority `1` is sent before a push with priority `0`. |
+
+Example push payload:
+
+```js
+pushData = {
+  queue: {
+    // Discard after 10 seconds from queue if push has not been sent to push provider yet
+    ttl: 10,
+    // Send with higher priority than default pushes
+    priority: 1,
+  },
+  data: { alert: 'Hello' }
+};
+```
 
 ## Bundled with Parse Server
 
