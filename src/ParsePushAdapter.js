@@ -7,6 +7,7 @@ import FCM from './FCM.js';
 import WEB from './WEB.js';
 import EXPO from './EXPO.js';
 import { classifyInstallations } from './PushAdapterUtils.js';
+import ThrottleQueue from './ThrottleQueue.js';
 
 const LOG_PREFIX = 'parse-server-push-adapter';
 
@@ -17,6 +18,7 @@ export default class ParsePushAdapter {
   constructor(pushConfig = {}) {
     this.validPushTypes = ['ios', 'osx', 'tvos', 'watchos', 'android', 'fcm', 'web', 'expo'];
     this.senderMap = {};
+    this.queues = {};
     // used in PushController for Dashboard Features
     this.feature = {
       immediatePush: true
@@ -55,6 +57,12 @@ export default class ParsePushAdapter {
         }
         break;
       }
+      const config = pushConfig[pushType];
+      const queue = Array.isArray(config) ? config.find(c => c && c.queue)?.queue : config.queue;
+      if (queue) {
+        const { concurrency, intervalCapacity, interval } = queue || {};
+        this.queues[pushType] = new ThrottleQueue({ concurrency, intervalCap: intervalCapacity, interval });
+      }
     }
   }
 
@@ -84,6 +92,9 @@ export default class ParsePushAdapter {
             })
           });
           sendPromises.push(Promise.all(results));
+        } else if (this.queues[pushType]) {
+          const { ttl, priority } = data?.queue || {};
+          sendPromises.push(this.queues[pushType].enqueue({ task: () => sender.send(data, devices), ttl, priority }));
         } else {
           sendPromises.push(sender.send(data, devices));
         }
