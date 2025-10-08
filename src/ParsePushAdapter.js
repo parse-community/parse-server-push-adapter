@@ -50,8 +50,8 @@ export default class ParsePushAdapter {
         if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
           this.senderMap[pushType] = new FCM(pushConfig[pushType], 'android');
         } else {
-           throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
-              'GCM Configuration is invalid');
+          throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
+            'GCM Configuration is invalid');
         }
         break;
       }
