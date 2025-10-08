@@ -4,7 +4,7 @@ import Parse from 'parse';
 import log from 'npmlog';
 import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
-import { randomString } from './PushAdapterUtils';
+import { randomString } from './PushAdapterUtils.js';
 
 const LOG_PREFIX = 'parse-server-push-adapter FCM';
 const FCMRegistrationTokensMax = 500;
@@ -25,14 +25,26 @@ export default function FCM(args, pushType) {
     );
   }
 
+  const fcmEnableLegacyHttpTransport = typeof args.fcmEnableLegacyHttpTransport === 'boolean'
+    ? args.fcmEnableLegacyHttpTransport
+    : false;
+
   let app;
   if (getApps().length === 0) {
     app = initializeApp({ credential: cert(args.firebaseServiceAccount) });
   } else {
     app = getApp();
   }
+
   this.sender = getMessaging(app);
-  this.pushType = pushType; // Push type is only used to remain backwards compatible with APNS and GCM
+
+  if (fcmEnableLegacyHttpTransport) {
+    this.sender.enableLegacyHttpTransport();
+    log.warn(LOG_PREFIX, 'Legacy HTTP/1.1 transport is enabled. This is a deprecated feature and support for this flag will be removed in the future.');
+  }
+
+  // Push type is only used to remain backwards compatible with APNS and GCM
+  this.pushType = pushType;
 }
 
 FCM.FCMRegistrationTokensMax = FCMRegistrationTokensMax;
@@ -142,14 +154,14 @@ function _APNSToFCMPayload(requestData) {
     coreData = requestData.data;
   }
 
-  let expirationTime =
+  const expirationTime =
     requestData['expiration_time'] || coreData['expiration_time'];
-  let collapseId = requestData['collapse_id'] || coreData['collapse_id'];
-  let pushType = requestData['push_type'] || coreData['push_type'];
-  let priority = requestData['priority'] || coreData['priority'];
+  const collapseId = requestData['collapse_id'] || coreData['collapse_id'];
+  const pushType = requestData['push_type'] || coreData['push_type'];
+  const priority = requestData['priority'] || coreData['priority'];
 
-  let apnsPayload = { apns: { payload: { aps: {} } } };
-  let headers = {};
+  const apnsPayload = { apns: { payload: { aps: {} } } };
+  const headers = {};
 
   // Set to alert by default if not set explicitly
   headers['apns-push-type'] = 'alert';
@@ -172,70 +184,70 @@ function _APNSToFCMPayload(requestData) {
     apnsPayload.apns.headers = headers;
   }
 
-  for (let key in coreData) {
+  for (const key in coreData) {
     switch (key) {
-      case 'aps':
-        apnsPayload['apns']['payload']['aps'] = coreData.aps;
-        break;
-      case 'alert':
-        if (typeof coreData.alert == 'object') {
-          // When we receive a dictionary, use as is to remain
-          // compatible with how the APNS.js + node-apn work
-          apnsPayload['apns']['payload']['aps']['alert'] = coreData.alert;
-        } else {
-          // When we receive a value, prepare `alert` dictionary
-          // and set its `body` property
-          apnsPayload['apns']['payload']['aps']['alert'] = {};
-          apnsPayload['apns']['payload']['aps']['alert']['body'] = coreData.alert;
-        }
-        break;
-      case 'title':
-        // Ensure the alert object exists before trying to assign the title
-        // title always goes into the nested `alert` dictionary
-        if (!apnsPayload['apns']['payload']['aps'].hasOwnProperty('alert')) {
-          apnsPayload['apns']['payload']['aps']['alert'] = {};
-        }
-        apnsPayload['apns']['payload']['aps']['alert']['title'] = coreData.title;
-        break;
-      case 'badge':
-        apnsPayload['apns']['payload']['aps']['badge'] = coreData.badge;
-        break;
-      case 'sound':
-        apnsPayload['apns']['payload']['aps']['sound'] = coreData.sound;
-        break;
-      case 'content-available':
-        apnsPayload['apns']['payload']['aps']['content-available'] =
+    case 'aps':
+      apnsPayload['apns']['payload']['aps'] = coreData.aps;
+      break;
+    case 'alert':
+      if (typeof coreData.alert == 'object') {
+        // When we receive a dictionary, use as is to remain
+        // compatible with how the APNS.js + node-apn work
+        apnsPayload['apns']['payload']['aps']['alert'] = coreData.alert;
+      } else {
+        // When we receive a value, prepare `alert` dictionary
+        // and set its `body` property
+        apnsPayload['apns']['payload']['aps']['alert'] = {};
+        apnsPayload['apns']['payload']['aps']['alert']['body'] = coreData.alert;
+      }
+      break;
+    case 'title':
+      // Ensure the alert object exists before trying to assign the title
+      // title always goes into the nested `alert` dictionary
+      if (!apnsPayload['apns']['payload']['aps'].hasOwnProperty('alert')) {
+        apnsPayload['apns']['payload']['aps']['alert'] = {};
+      }
+      apnsPayload['apns']['payload']['aps']['alert']['title'] = coreData.title;
+      break;
+    case 'badge':
+      apnsPayload['apns']['payload']['aps']['badge'] = coreData.badge;
+      break;
+    case 'sound':
+      apnsPayload['apns']['payload']['aps']['sound'] = coreData.sound;
+      break;
+    case 'content-available':
+      apnsPayload['apns']['payload']['aps']['content-available'] =
           coreData['content-available'];
-        break;
-      case 'mutable-content':
-        apnsPayload['apns']['payload']['aps']['mutable-content'] =
+      break;
+    case 'mutable-content':
+      apnsPayload['apns']['payload']['aps']['mutable-content'] =
           coreData['mutable-content'];
-        break;
-      case 'targetContentIdentifier':
-        apnsPayload['apns']['payload']['aps']['target-content-id'] =
+      break;
+    case 'targetContentIdentifier':
+      apnsPayload['apns']['payload']['aps']['target-content-id'] =
           coreData.targetContentIdentifier;
-        break;
-      case 'interruptionLevel':
-        apnsPayload['apns']['payload']['aps']['interruption-level'] =
+      break;
+    case 'interruptionLevel':
+      apnsPayload['apns']['payload']['aps']['interruption-level'] =
           coreData.interruptionLevel;
-        break;
-      case 'category':
-        apnsPayload['apns']['payload']['aps']['category'] = coreData.category;
-        break;
-      case 'threadId':
-        apnsPayload['apns']['payload']['aps']['thread-id'] = coreData.threadId;
-        break;
-      case 'expiration_time': // Exclude header-related fields as these are set above
-        break;
-      case 'collapse_id':
-        break;
-      case 'push_type':
-        break;
-      case 'priority':
-        break;
-      default:
-        apnsPayload['apns']['payload'][key] = coreData[key]; // Custom keys should be outside aps
-        break;
+      break;
+    case 'category':
+      apnsPayload['apns']['payload']['aps']['category'] = coreData.category;
+      break;
+    case 'threadId':
+      apnsPayload['apns']['payload']['aps']['thread-id'] = coreData.threadId;
+      break;
+    case 'expiration_time': // Exclude header-related fields as these are set above
+      break;
+    case 'collapse_id':
+      break;
+    case 'push_type':
+      break;
+    case 'priority':
+      break;
+    default:
+      apnsPayload['apns']['payload'][key] = coreData[key]; // Custom keys should be outside aps
+      break;
     }
   }
   return apnsPayload;

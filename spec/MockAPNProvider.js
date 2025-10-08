@@ -1,16 +1,16 @@
-const EventEmitter = require('events');
+import EventEmitter from 'events';
 
 const MockAPNProvider = function (args) {
-  let emitter = new EventEmitter();
+  const emitter = new EventEmitter();
   emitter.options = args;
   emitter.send = function(push, devices) {
     if (!Array.isArray(devices)) {
       devices = [devices];
     }
-    let sent = [];
-    let failed = [];
+    const sent = [];
+    const failed = [];
 
-    devices.forEach((device) => {
+    devices.forEach((device) => {
       if (args.shouldFailTransmissions) {
         if (args.errorBuilder) {
           failed.push()
@@ -45,4 +45,4 @@ MockAPNProvider.restore = function() {
   MockAPNProvider.makeError = makeError;
 }
 
-module.exports = MockAPNProvider;
+export default MockAPNProvider;

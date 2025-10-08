@@ -40,4 +40,3 @@ node_modules
 
 # Optional eslint cache
 .eslintcache
-.vscode/launch.json

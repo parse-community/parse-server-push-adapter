@@ -1,11 +1,11 @@
 'use strict';
 import Parse from 'parse';
 import log from 'npmlog';
-import APNS from './APNS';
-import FCM from './FCM';
-import WEB from './WEB';
-import EXPO from './EXPO';
-import { classifyInstallations } from './PushAdapterUtils';
+import APNS from './APNS.js';
+import FCM from './FCM.js';
+import WEB from './WEB.js';
+import EXPO from './EXPO.js';
+import { classifyInstallations } from './PushAdapterUtils.js';
 
 const LOG_PREFIX = 'parse-server-push-adapter';
 
@@ -20,9 +20,9 @@ export default class ParsePushAdapter {
     this.feature = {
       immediatePush: true
     };
-    let pushTypes = Object.keys(pushConfig);
+    const pushTypes = Object.keys(pushConfig);
 
-    for (let pushType of pushTypes) {
+    for (const pushType of pushTypes) {
       // adapter may be passed as part of the parse-server initialization
       if (this.validPushTypes.indexOf(pushType) < 0 && pushType != 'adapter') {
         throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
@@ -66,16 +66,16 @@ export default class ParsePushAdapter {
   }
 
   send(data, installations) {
-    let deviceMap = classifyInstallations(installations, this.validPushTypes);
-    let sendPromises = [];
-    for (let pushType in deviceMap) {
-      let sender = this.senderMap[pushType];
-      let devices = deviceMap[pushType];
+    const deviceMap = classifyInstallations(installations, this.validPushTypes);
+    const sendPromises = [];
+    for (const pushType in deviceMap) {
+      const sender = this.senderMap[pushType];
+      const devices = deviceMap[pushType];
 
       if (Array.isArray(devices) && devices.length > 0) {
         if (!sender) {
           log.verbose(LOG_PREFIX, `Can not find sender for push type ${pushType}, ${data}`)
-          let results = devices.map((device) => {
+          const results = devices.map((device) => {
             return Promise.resolve({
               device,
               transmitted: false,

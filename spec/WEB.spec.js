@@ -1,5 +1,6 @@
-const WEB = require('../src/WEB').default;
-const webpush = require('web-push');
+import webpush from 'web-push';
+import log from 'npmlog';
+import WEB from '../src/WEB.js';
 
 const pushSubscription = {
   endpoint: '',
@@ -33,7 +34,7 @@ function mockSender() {
 }
 
 function mockWebPush(success) {
-  return spyOn(webpush, 'sendNotification').and.callFake((deviceToken, payload, options) => {
+  return spyOn(webpush, 'sendNotification').and.callFake(() => {
     if (success) {
       return Promise.resolve({ statusCode: 201 });
     }
@@ -54,16 +55,14 @@ describe('WEB', () => {
     expect(function() { new WEB(undefined); }).toThrow();
   });
 
-  it('does log on invalid APNS notification', async () => {
-    const log = require('npmlog');
+  it('does log on invalid payload', async () => {
     const spy = spyOn(log, 'warn');
     const web = new WEB({ vapidDetails });
     web.send();
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith('parse-server-push-adapter WEB', 'invalid push payload');
   });
 
   it('can send successful WEB request', async () => {
-    const log = require('npmlog');
     const spy = spyOn(log, 'verbose');
 
     const web = new WEB({ vapidDetails: 'apiKey' });
@@ -71,7 +70,7 @@ describe('WEB', () => {
       return Promise.resolve({
         sent: 1,
         failed: 0,
-        results: [{ result: 201 }], 
+        results: [{ result: 201 }],
       });
     });
     const data = { data: { alert: 'alert' } };
@@ -92,7 +91,6 @@ describe('WEB', () => {
   });
 
   it('can send failed WEB request', async () => {
-    const log = require('npmlog');
     const spy = spyOn(log, 'error');
 
     const web = new WEB({ vapidDetails: 'apiKey' });
@@ -100,7 +98,7 @@ describe('WEB', () => {
       return Promise.resolve({
         sent: 0,
         failed: 1,
-        results: [{ error: 'push subscription has unsubscribed or expired.' }], 
+        results: [{ error: 'push subscription has unsubscribed or expired.' }],
       });
     });
     const data = { data: { alert: 'alert' } };
@@ -134,14 +132,13 @@ describe('WEB', () => {
     const response = await web.send(data, devices);
     expect(Array.isArray(response)).toBe(true);
     expect(response.length).toEqual(devices.length);
-    response.forEach((res, index) => {
+    response.forEach((res, index) => {
       expect(res.transmitted).toEqual(true);
       expect(res.device).toEqual(devices[index]);
     });
   });
 
   it('can send multiple failed WEB request', async () => {
-    const log = require('npmlog');
     const spy = spyOn(log, 'error');
 
     const web = new WEB({ vapidDetails: 'apiKey', success: false });
@@ -157,7 +154,7 @@ describe('WEB', () => {
     const response = await web.send(data, devices);
     expect(Array.isArray(response)).toBe(true);
     expect(response.length).toEqual(devices.length);
-    response.forEach((res, index) => {
+    response.forEach((res, index) => {
       expect(res.transmitted).toEqual(false);
       expect(res.device).toEqual(devices[index]);
     });

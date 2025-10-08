@@ -1,3 +1,52 @@
+## [6.7.1](https://github.com/parse-community/parse-server-push-adapter/compare/6.7.0...6.7.1) (2024-11-19)
+
+
+### Bug Fixes
+
+* Security upgrade @parse/node-apn from 6.2.0 to 6.2.1 ([#329](https://github.com/parse-community/parse-server-push-adapter/issues/329)) ([5cd5170](https://github.com/parse-community/parse-server-push-adapter/commit/5cd517056f5114b23a8175e7de6a0212c1124352))
+
+# [6.7.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.6.0...6.7.0) (2024-09-27)
+
+
+### Features
+
+* Upgrade @parse/node-apn from 6.1.0 to 6.2.0 ([#310](https://github.com/parse-community/parse-server-push-adapter/issues/310)) ([c71e167](https://github.com/parse-community/parse-server-push-adapter/commit/c71e167360fb77fcd62960b19e576ae04ac81dba))
+
+# [6.6.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.5.0...6.6.0) (2024-09-24)
+
+
+### Features
+
+* Bump @parse/node-apn from 6.0.1 to 6.1.0 ([#304](https://github.com/parse-community/parse-server-push-adapter/issues/304)) ([b5d4c59](https://github.com/parse-community/parse-server-push-adapter/commit/b5d4c59cfa5fe6e345810895566adbf4a1faf7d5))
+
+# [6.5.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.4.1...6.5.0) (2024-08-02)
+
+
+### Features
+
+* Add Firebase Cloud Messaging (FCM) HTTP/2 support and option `fcmEnableLegacyHttpTransport` to use legacy HTTP/1.1 ([#274](https://github.com/parse-community/parse-server-push-adapter/issues/274)) ([70e6b6f](https://github.com/parse-community/parse-server-push-adapter/commit/70e6b6f4db6d410872b7bd24ea83b5d0639f9276))
+
+## [6.4.1](https://github.com/parse-community/parse-server-push-adapter/compare/6.4.0...6.4.1) (2024-07-08)
+
+
+### Bug Fixes
+
+* Verbose mode is enabled if environment variables `VERBOSE` or `VERBOSE_PARSE_SERVER_PUSH_ADAPTER` are set to any value ([#264](https://github.com/parse-community/parse-server-push-adapter/issues/264)) ([0f31300](https://github.com/parse-community/parse-server-push-adapter/commit/0f3130057fac576c6aa3f04399129a95709c4a34))
+
+# [6.4.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.3.0...6.4.0) (2024-07-07)
+
+
+### Features
+
+* Add support for Node 22 ([#263](https://github.com/parse-community/parse-server-push-adapter/issues/263)) ([8d90258](https://github.com/parse-community/parse-server-push-adapter/commit/8d90258505a35b385a561584515d67c857bcbf62))
+
+# [6.3.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.2.0...6.3.0) (2024-07-07)
+
+
+### Features
+
+* Add ECMAScript 6 (ES6) support ([#255](https://github.com/parse-community/parse-server-push-adapter/issues/255)) ([bee437a](https://github.com/parse-community/parse-server-push-adapter/commit/bee437af08575ae332ae81daf18a1130e2d68ca8))
+
 # [6.2.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.1.1...6.2.0) (2024-05-15)
 
 

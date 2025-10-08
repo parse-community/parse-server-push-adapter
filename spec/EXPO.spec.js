@@ -1,5 +1,6 @@
-const EXPO = require('../src/EXPO').default;
-const Expo  = require('expo-server-sdk').Expo;
+import { Expo } from 'expo-server-sdk';
+import log from 'npmlog';
+import EXPO from '../src/EXPO.js';
 
 function mockSender(success) {
   return spyOn(EXPO.prototype, 'sendNotifications').and.callFake((payload, tokens) => {
@@ -27,8 +28,14 @@ describe('EXPO', () => {
     expect(function() { new EXPO(undefined); }).toThrow();
   });
 
+  it('does log on invalid payload', async () => {
+    const spy = spyOn(log, 'warn');
+    const expo = new EXPO({});
+    expo.send();
+    expect(spy).toHaveBeenCalledWith('parse-server-push-adapter EXPO', 'invalid push payload');
+  });
+
   it('can send successful EXPO request', async () => {
-    const log = require('npmlog');
     const spy = spyOn(log, 'verbose');
 
     const expo = new EXPO({ vapidDetails: 'apiKey' });
@@ -52,7 +59,6 @@ describe('EXPO', () => {
   });
 
   it('can send failed EXPO request', async () => {
-    const log = require('npmlog');
     const expo = new EXPO({ vapidDetails: 'apiKey' });
     spyOn(EXPO.prototype, 'sendNotifications').and.callFake(() => {
       return Promise.resolve([{ status: 'error', message: 'DeviceNotRegistered' }])});
@@ -108,7 +114,7 @@ describe('EXPO', () => {
     const response = await expo.send(data, devices);
     expect(Array.isArray(response)).toBe(true);
     expect(response.length).toEqual(devices.length);
-    response.forEach((res, index) => {
+    response.forEach((res, index) => {
       expect(res.transmitted).toEqual(false);
       expect(res.device.deviceToken).toEqual(devices[index].deviceToken);
     });

@@ -9,7 +9,7 @@ const LOG_PREFIX = 'parse-server-push-adapter WEB';
 export class WEB {
   /**
    * Create a new WEB push adapter.
-   * 
+   *
    * @param {Object} args https://github.com/web-push-libs/web-push#api-reference
    */
   constructor(args) {
@@ -39,9 +39,9 @@ export class WEB {
     const deviceTokens = Object.keys(devicesMap);
 
     const resolvers = [];
-    const promises = deviceTokens.map(() => new Promise(resolve => resolvers.push(resolve)));
-    let length = deviceTokens.length;
-    log.verbose(LOG_PREFIX, `sending to ${length} ${length > 1 ? 'devices' : 'device'}`);
+    const promises = deviceTokens.map(() => new Promise(resolve => resolvers.push(resolve)));
+    const length = deviceTokens.length;
+    log.verbose(LOG_PREFIX, `sending to ${length} ${length > 1 ? 'devices' : 'device'}`);
 
     const response = await WEB.sendNotifications(coreData, deviceTokens, this.options);
     const { results, sent, failed } = response;

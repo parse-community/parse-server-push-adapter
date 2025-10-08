@@ -1,19 +1,237 @@
-const FCM = require('../src/FCM').default;
-const path = require('path');
+import path from 'path';
+import log from 'npmlog';
+import FCM from '../src/FCM.js';
+import { getApps, deleteApp } from 'firebase-admin/app';
+
+const testArgs = {
+  firebaseServiceAccount: path.join(
+    __dirname,
+    '..',
+    'spec',
+    'support',
+    'fakeServiceAccount.json',
+  ),
+};
 
 describe('FCM', () => {
+  beforeEach(async () => {
+    getApps().forEach(app => deleteApp(app));
+  });
+
   it('can initialize', () => {
-    const args = {
-      firebaseServiceAccount: path.join(
-        __dirname,
-        '..',
-        'spec',
-        'support',
-        'fakeServiceAccount.json',
-      ),
-    };
-    const fcm = new FCM(args);
+    const fcm = new FCM(testArgs);
     expect(fcm).toBeDefined();
+  });
+
+  it('can throw on initializing with invalid args', () => {
+    expect(function() { new FCM(123); }).toThrow();
+    expect(function() { new FCM({}); }).toThrow();
+  });
+
+  it('does log on invalid payload', async () => {
+    const spy = spyOn(log, 'warn');
+    const fcm = new FCM(testArgs);
+    fcm.send();
+    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'invalid push payload');
+  });
+
+  it('initializes with fcmEnableLegacyHttpTransport set to false by default', () => {
+    const fcm = new FCM(testArgs);
+    expect(fcm).toBeDefined();
+    expect(fcm.sender).toBeDefined();
+    expect(fcm.sender.useLegacyTransport).toEqual(false);
+  });
+
+  it('can initialize with fcmEnableLegacyHttpTransport set to false', () => {
+    const legacyHttpTransportArgs = {
+      ...testArgs,
+      fcmEnableLegacyHttpTransport: false
+    };
+
+    const fcm = new FCM(legacyHttpTransportArgs);
+    expect(fcm).toBeDefined();
+    expect(fcm.sender).toBeDefined();
+    expect(fcm.sender.useLegacyTransport).toEqual(false);
+  });
+
+  it('can initialize with fcmEnableLegacyHttpTransport set to true', () => {
+    const legacyHttpTransportArgs = {
+      ...testArgs,
+      fcmEnableLegacyHttpTransport: true
+    };
+
+    const fcm = new FCM(legacyHttpTransportArgs);
+    expect(fcm).toBeDefined();
+    expect(fcm.sender).toBeDefined();
+    expect(fcm.sender.useLegacyTransport).toEqual(true);
+  });
+
+  it('can send successful FCM android request', async () => {
+    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => {});
+    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const fcm = new FCM(testArgs);
+    spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
+      return Promise.resolve({
+        responses: [{ success: true }],
+      });
+    });
+    fcm.pushType = 'android';
+    const data = { data: { alert: 'alert' } };
+    const devices = [{ deviceToken: 'token' }];
+    const response = await fcm.send(data, devices);
+    expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
+    const args = fcm.sender.sendEachForMulticast.calls.first().args;
+    expect(args.length).toEqual(1);
+    expect(args[0].android.priority).toEqual('high');
+    expect(args[0].android.data.data).toEqual('{"alert":"alert"}');
+    expect(args[0].tokens).toEqual(['token']);
+    expect(spyVerbose).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'tokens with successful pushes: ["token"]');
+    expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
+    expect(response).toEqual([[{
+      device: { deviceToken: 'token', deviceType: undefined },
+      transmitted: true
+    }]]);
+  });
+
+  it('can send successful FCM android request with apns integer keys', async () => {
+    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => {});
+    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const fcm = new FCM(testArgs);
+    spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
+      return Promise.resolve({
+        responses: [{ success: true }],
+      });
+    });
+    fcm.pushType = 'android';
+    const data = { data: { alert: 'alert', badge: 1 } };
+    const devices = [{ deviceToken: 'token' }];
+    const response = await fcm.send(data, devices);
+    expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
+    const args = fcm.sender.sendEachForMulticast.calls.first().args;
+    expect(args.length).toEqual(1);
+    expect(args[0].android.priority).toEqual('high');
+    // Should not include badge key in data
+    expect(args[0].android.data.data).toEqual('{"alert":"alert"}');
+    expect(args[0].tokens).toEqual(['token']);
+    expect(spyVerbose).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'tokens with successful pushes: ["token"]');
+    expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
+    expect(response).toEqual([[{
+      device: { deviceToken: 'token', deviceType: undefined },
+      transmitted: true
+    }]]);
+  });
+
+  it('can send successful FCM apple request with alert', async () => {
+    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => {});
+    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const fcm = new FCM(testArgs);
+    spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
+      return Promise.resolve({
+        responses: [{ success: true }],
+      });
+    });
+    fcm.pushType = 'apple';
+    const data = { data: { alert: 'alert' } };
+    const devices = [{ deviceToken: 'token' }];
+    const response = await fcm.send(data, devices);
+    expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
+    const args = fcm.sender.sendEachForMulticast.calls.first().args;
+    expect(args.length).toEqual(1);
+    expect(args[0].apns.payload).toEqual({ aps: { alert: { body: 'alert' } } });
+    expect(args[0].apns.headers).toEqual({ 'apns-push-type': 'alert' });
+    expect(args[0].tokens).toEqual(['token']);
+    expect(spyVerbose).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'tokens with successful pushes: ["token"]');
+    expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
+    expect(response).toEqual([[{
+      device: { deviceToken: 'token', deviceType: undefined },
+      transmitted: true
+    }]]);
+  });
+
+  it('can send successful FCM apple request with title', async () => {
+    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => {});
+    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const fcm = new FCM(testArgs);
+    spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
+      return Promise.resolve({
+        responses: [{ success: true }],
+      });
+    });
+    fcm.pushType = 'apple';
+    const data = { data: { title: 'title' } };
+    const devices = [{ deviceToken: 'token' }];
+    const response = await fcm.send(data, devices);
+    expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
+    const args = fcm.sender.sendEachForMulticast.calls.first().args;
+    expect(args.length).toEqual(1);
+    expect(args[0].apns.payload).toEqual({ aps: { alert: { title: 'title' } } });
+    expect(args[0].apns.headers).toEqual({ 'apns-push-type': 'alert' });
+    expect(args[0].tokens).toEqual(['token']);
+    expect(spyVerbose).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'tokens with successful pushes: ["token"]');
+    expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
+    expect(response).toEqual([[{
+      device: { deviceToken: 'token', deviceType: undefined },
+      transmitted: true
+    }]]);
+  });
+
+  it('can send failed FCM request', async () => {
+    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const spyError = spyOn(log, 'error').and.callFake(() => {});
+    const fcm = new FCM(testArgs);
+    spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
+      return Promise.resolve({
+        responses: [{ success: false, error: 'testing failed' }],
+      });
+    });
+    fcm.pushType = 'android';
+    const data = { data: { alert: 'alert' } };
+    const devices = [{ deviceToken: 'token', deviceType: 'apple' }];
+    const response = await fcm.send(data, devices);
+    expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
+    const args = fcm.sender.sendEachForMulticast.calls.first().args;
+    expect(args.length).toEqual(1);
+    expect(args[0].android.priority).toEqual('high');
+    expect(args[0].android.data.data).toEqual('{"alert":"alert"}');
+    expect(args[0].tokens).toEqual(['token']);
+    expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
+    expect(spyError.calls.all()[0].args).toEqual(['parse-server-push-adapter FCM', 'failed to send to token with error: "testing failed"']);
+    expect(spyError.calls.all()[1].args).toEqual(['parse-server-push-adapter FCM', 'tokens with failed pushes: ["token"]']);
+    expect(response).toEqual([[{
+      device: { deviceToken: 'token', deviceType: 'apple' },
+      response: { error: 'testing failed'},
+      transmitted: false,
+    }]]);
+  });
+
+  it('can handle FCM request error', async () => {
+    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const spyError = spyOn(log, 'error').and.callFake(() => {});
+    const fcm = new FCM(testArgs);
+    spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
+      return Promise.reject('testing error abort');
+    });
+    fcm.pushType = 'android';
+    const data = { data: { alert: 'alert' } };
+    const devices = [{ deviceToken: 'token' }];
+    await fcm.send(data, devices);
+    expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
+    expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
+    expect(spyError).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'error sending push: testing error abort');
+  });
+
+  it('FCM request invalid push type', async () => {
+    const fcm = new FCM(testArgs);
+    fcm.pushType = 'invalid';
+    const data = { data: { alert: 'alert' } };
+    const devices = [{ deviceToken: 'token' }];
+    try {
+      await fcm.send(data, devices);
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e.message).toBe('Unsupported push type, apple or android only.');
+    }
   });
 
   it('can use a raw FCM payload', () => {
@@ -48,8 +266,6 @@ describe('FCM', () => {
 
     const pushId = 'pushId';
     const timeStamp = 1454538822113;
-    const timeStampISOStr = new Date(timeStamp).toISOString();
-
     const payload = FCM.generateFCMPayload(
       requestData,
       pushId,
@@ -69,9 +285,9 @@ describe('FCM', () => {
 
   it('can slice devices', () => {
     // Mock devices
-    var devices = [makeDevice(1), makeDevice(2), makeDevice(3), makeDevice(4)];
+    const devices = [makeDevice(1), makeDevice(2), makeDevice(3), makeDevice(4)];
 
-    var chunkDevices = FCM.sliceDevices(devices, 3);
+    const chunkDevices = FCM.sliceDevices(devices, 3);
     expect(chunkDevices).toEqual([
       [makeDevice(1), makeDevice(2), makeDevice(3)],
       [makeDevice(4)],
@@ -260,12 +476,12 @@ describe('FCM', () => {
       // To maintain backwards compatibility with APNS payload format
       // See corresponding test with same test label in APNS.spec.js
 
-      let expirationTime = 1454571491354;
-      let collapseId = 'collapseIdentifier';
-      let pushType = 'alert';
-      let priority = 5;
+      const expirationTime = 1454571491354;
+      const collapseId = 'collapseIdentifier';
+      const pushType = 'alert';
+      const priority = 5;
 
-      let data = {
+      const data = {
         expiration_time: expirationTime,
         collapse_id: collapseId,
         push_type: pushType,
@@ -286,8 +502,6 @@ describe('FCM', () => {
 
       const pushId = 'pushId';
       const timeStamp = 1454538822113;
-      const timeStampISOStr = new Date(timeStamp).toISOString();
-
       const payload = FCM.generateFCMPayload(
         data,
         pushId,
@@ -330,7 +544,7 @@ describe('FCM', () => {
     });
 
     it('sets push type to alert if not defined explicitly', () => {
-      let data = {
+      const data = {
         alert: 'alert',
         title: 'title',
         badge: 100,
@@ -360,11 +574,11 @@ describe('FCM', () => {
     });
 
     it('can generate APNS notification from raw data', () => {
-      let expirationTime = 1454571491354;
-      let collapseId = 'collapseIdentifier';
-      let pushType = 'background';
-      let priority = 5;
-      let data = {
+      const expirationTime = 1454571491354;
+      const collapseId = 'collapseIdentifier';
+      const pushType = 'background';
+      const priority = 5;
+      const data = {
         expiration_time: expirationTime,
         collapse_id: collapseId,
         push_type: pushType,
@@ -416,11 +630,11 @@ describe('FCM', () => {
       // See 'can send APNS notification headers in data' in APNS.spec.js
       // Not mocking sends currently, only payload generation
 
-      let expirationTime = 1454571491354;
-      let collapseId = 'collapseIdentifier';
-      let pushType = 'alert'; // or background
+      const expirationTime = 1454571491354;
+      const collapseId = 'collapseIdentifier';
+      const pushType = 'alert'; // or background
 
-      let data = {
+      const data = {
         expiration_time: expirationTime,
         data: {
           alert: { body: 'alert', title: 'title' },
