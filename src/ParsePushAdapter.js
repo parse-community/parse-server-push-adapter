@@ -51,7 +51,7 @@ export default class ParsePushAdapter {
           this.senderMap[pushType] = new FCM(pushConfig[pushType], 'android');
         } else {
           throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
-            'GCM Configuration is invalid');
+            'Firebase service account is required for Android/FCM push notifications');
         }
         break;
       }

@@ -1,5 +1,4 @@
 import { deleteApp, getApps } from 'firebase-admin/app';
-import { expectAsync } from '@jasmine/core';
 import log from 'npmlog';
 import Parse from 'parse/node.js';
 import path from 'path';
@@ -236,6 +235,7 @@ describe('FCM', () => {
     fcm.pushType = 'android';
     const data = { data: { alert: 'alert' } };
     const devices = [{ deviceToken: 'token' }];
+    // eslint-disable-next-line no-undef
     await expectAsync(fcm.send(data, devices)).toBeRejectedWith(new Parse.Error(Parse.Error.OTHER_CAUSE, 'Error: test error'));
     expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
     expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
@@ -255,6 +255,7 @@ describe('FCM', () => {
     fcm.pushType = 'android';
     const data = { data: { alert: 'alert' } };
     const devices = [{ deviceToken: 'token' }];
+    // eslint-disable-next-line no-undef
     await expectAsync(fcm.send(data, devices)).toBeResolved();
     expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
     expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
