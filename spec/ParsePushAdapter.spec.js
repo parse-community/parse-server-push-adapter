@@ -1,12 +1,11 @@
 import { join } from 'path';
 import log from 'npmlog';
 import apn from '@parse/node-apn';
-import ParsePushAdapterPackage, { ParsePushAdapter as _ParsePushAdapter, APNS as _APNS, GCM as _GCM, WEB as _WEB, EXPO as _EXPO, utils } from '../src/index.js';
+import ParsePushAdapterPackage, { ParsePushAdapter as _ParsePushAdapter, FCM as _FCM, APNS as _APNS, WEB as _WEB, EXPO as _EXPO, utils } from '../src/index.js';
 const ParsePushAdapter = _ParsePushAdapter;
 import { randomString } from '../src/PushAdapterUtils.js';
 import MockAPNProvider from './MockAPNProvider.js';
 import APNS from '../src/APNS.js';
-import GCM from '../src/GCM.js';
 import WEB from '../src/WEB.js';
 import FCM from '../src/FCM.js';
 import EXPO from '../src/EXPO.js';
@@ -21,7 +20,7 @@ describe('ParsePushAdapter', () => {
     expect(typeof ParsePushAdapterPackage).toBe('function');
     expect(typeof _ParsePushAdapter).toBe('function');
     expect(typeof _APNS).toBe('function');
-    expect(typeof _GCM).toBe('function');
+    expect(typeof _FCM).toBe('function');
     expect(typeof _WEB).toBe('function');
     expect(typeof _EXPO).toBe('function');
     expect(typeof utils).toBe('object');
@@ -38,7 +37,7 @@ describe('ParsePushAdapter', () => {
         },
       },
       android: {
-        firebaseServiceAccount: path.join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+        firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
       },
       expo: {
         apiKey: 'key'
@@ -65,7 +64,7 @@ describe('ParsePushAdapter', () => {
     expect(iosSender instanceof APNS).toBe(true);
     // Check android
     const androidSender = parsePushAdapter.senderMap['android'];
-    expect(androidSender instanceof GCM).toBe(true);
+    expect(androidSender instanceof FCM).toBe(true);
     // Check web
     const webSender = parsePushAdapter.senderMap['web'];
     expect(webSender instanceof WEB).toBe(true);
@@ -122,10 +121,10 @@ describe('ParsePushAdapter', () => {
     done();
   });
 
-  it("can be initialized with FCM for apple and GCM for android", (done) => {
+  it("can be initialized with FCM for apple and FCM for android", (done) => {
     const pushConfig = {
       android: {
-        firebaseServiceAccount: path.join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+        firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
       },
       ios: {
         firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
@@ -136,7 +135,7 @@ describe('ParsePushAdapter', () => {
     const iosSender = parsePushAdapter.senderMap["ios"];
     expect(iosSender instanceof FCM).toBe(true);
     const androidSender = parsePushAdapter.senderMap["android"];
-    expect(androidSender instanceof GCM).toBe(true);
+    expect(androidSender instanceof FCM).toBe(true);
     done();
   });
 
@@ -334,11 +333,6 @@ describe('ParsePushAdapter', () => {
       },
       {
         deviceType: 'android',
-        pushType: 'gcm',
-        deviceToken: 'androidToken'
-      },
-      {
-        deviceType: 'android',
         pushType: 'ppns',
         deviceToken: 'androidToken'
       },
@@ -379,7 +373,6 @@ describe('ParsePushAdapter', () => {
     expect(args[1]).toEqual([
       makeDevice('androidToken', 'android'),
       makeDevice('androidToken', 'android'),
-      makeDevice('androidToken', 'android'),
       makeDevice('androidToken', 'android')
     ]);
     // Check ios sender
@@ -407,8 +400,7 @@ describe('ParsePushAdapter', () => {
 
       },
       android: {
-        senderId: 'senderId',
-        apiKey: 'apiKey'
+        firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
       },
       ios: [
         {
@@ -474,7 +466,7 @@ describe('ParsePushAdapter', () => {
     const parsePushAdapter = new ParsePushAdapter(pushConfig);
     parsePushAdapter.send({ data: { alert: 'some' } }, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
-
+      console.log(results);
       // 2x iOS, 1x android, 1x osx, 1x tvos, 1x web, 1x expo
       expect(results.length).toBe(7);
       results.forEach((result) => {
@@ -503,8 +495,8 @@ describe('ParsePushAdapter', () => {
   });
 
   it('reports properly failures when all transmissions have failed', (done) => {
-    spyOn(log, 'error').and.callFake(() => {});
-    spyOn(log, 'warn').and.callFake(() => {});
+    spyOn(log, 'error').and.callFake(() => { });
+    spyOn(log, 'warn').and.callFake(() => { });
     const pushConfig = {
       ios: [
         {
@@ -525,7 +517,7 @@ describe('ParsePushAdapter', () => {
     ];
 
     const parsePushAdapter = new ParsePushAdapter(pushConfig);
-    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
+    parsePushAdapter.send({ data: { alert: 'some' } }, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
       // 2x iOS, 1x android, 1x osx, 1x tvos
@@ -550,7 +542,7 @@ describe('ParsePushAdapter', () => {
 
   // Xited till we can retry on other connections
   it('reports properly select connection', (done) => {
-    spyOn(log, 'warn').and.callFake(() => {});
+    spyOn(log, 'warn').and.callFake(() => { });
     const pushConfig = {
       ios: [
         {
@@ -577,7 +569,7 @@ describe('ParsePushAdapter', () => {
     ];
 
     const parsePushAdapter = new ParsePushAdapter(pushConfig);
-    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
+    parsePushAdapter.send({ data: { alert: 'some' } }, installations).then((results) => {
       expect(Array.isArray(results)).toBe(true);
 
       // 1x iOS
@@ -602,7 +594,7 @@ describe('ParsePushAdapter', () => {
   it('properly marks not transmitter when sender is missing', (done) => {
     const pushConfig = {
       android: {
-        firebaseServiceAccount: path.join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+        firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
       }
     };
     const installations = [{
@@ -616,7 +608,7 @@ describe('ParsePushAdapter', () => {
       appIdentifier: 'invalidiosbundleId'
     }]
     const parsePushAdapter = new ParsePushAdapter(pushConfig);
-    parsePushAdapter.send({data: {alert: 'some'}}, installations).then((results) => {
+    parsePushAdapter.send({ data: { alert: 'some' } }, installations).then((results) => {
       expect(results.length).toBe(2);
       results.forEach((result) => {
         expect(result.transmitted).toBe(false);

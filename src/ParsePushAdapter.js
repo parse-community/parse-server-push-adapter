@@ -90,7 +90,7 @@ export default class ParsePushAdapter {
     }
     return Promise.all(sendPromises).then((promises) => {
       // flatten all
-      return [].concat.apply([], promises);
+      return [...promises].flat(2);
     })
   }
 }

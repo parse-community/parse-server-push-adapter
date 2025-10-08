@@ -14,8 +14,9 @@ if (booleanParser(process.env.VERBOSE || process.env.VERBOSE_PARSE_SERVER_PUSH_A
 import ParsePushAdapter from './ParsePushAdapter.js';
 import APNS from './APNS.js';
 import WEB from './WEB.js';
+import FCM from './FCM.js';
 import EXPO from './EXPO.js';
 import * as utils from './PushAdapterUtils.js';
 
 export default ParsePushAdapter;
-export { ParsePushAdapter, APNS, WEB, EXPO, utils };
+export { ParsePushAdapter, APNS, WEB, EXPO, FCM, utils };
