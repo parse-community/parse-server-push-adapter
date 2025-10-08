@@ -1,9 +1,9 @@
 'use strict';
 
-import Parse from 'parse';
-import log from 'npmlog';
-import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
+import { cert, getApp, getApps, initializeApp } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
+import log from 'npmlog';
+import Parse from 'parse';
 import { randomString } from './PushAdapterUtils.js';
 
 const LOG_PREFIX = 'parse-server-push-adapter FCM';
@@ -27,6 +27,9 @@ export default function FCM(args, pushType) {
 
   const fcmEnableLegacyHttpTransport = typeof args.fcmEnableLegacyHttpTransport === 'boolean'
     ? args.fcmEnableLegacyHttpTransport
+    : false;
+  this.resolveUnhandledClientError = typeof args.resolveUnhandledClientError === 'boolean'
+    ? args.resolveUnhandledClientError
     : false;
 
   let app;
@@ -88,8 +91,18 @@ FCM.prototype.send = function (data, devices) {
     const length = deviceTokens.length;
     log.info(LOG_PREFIX, `sending push to ${length} devices`);
 
-    return this.sender
-      .sendEachForMulticast(fcmPayload.data)
+    // This is a safe wrapper for sendEachForMulticast, due to bug in the firebase-admin
+    // library, where it throws an exception instead of returning a rejected promise
+    const sendEachForMulticastSafe = fcmPayloadData => {
+      try {
+        return this.sender.sendEachForMulticast(fcmPayloadData);
+      } catch (err) {
+        log.error(LOG_PREFIX, `error sending push: firebase client exception: ${err}`);
+        return Promise.reject(new Parse.Error(Parse.Error.OTHER_CAUSE, err));
+      }
+    };
+
+    return sendEachForMulticastSafe(fcmPayload.data)
       .then((response) => {
         const promises = [];
         const failedTokens = [];
@@ -140,8 +153,11 @@ FCM.prototype.send = function (data, devices) {
 
   const allPromises = Promise.all(
     slices.map((slice) => sendToDeviceSlice(slice, this.pushType)),
-  ).catch((err) => {
-    log.error(LOG_PREFIX, `error sending push: ${err}`);
+  ).catch(e => {
+    log.error(LOG_PREFIX, `error sending push: ${e}`);
+    if (!this.resolveUnhandledClientError && e instanceof Parse.Error && e.code === Parse.Error.OTHER_CAUSE) {
+      return Promise.reject(e);
+    }
   });
 
   return allPromises;

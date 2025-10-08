@@ -1,6 +1,6 @@
 # Parse Server Push Adapter <!-- omit in toc -->
 
-[![Build Status](https://github.com/parse-community/parse-server-push-adapter/workflows/ci/badge.svg?branch=master)](https://github.com/parse-community/parse-server-push-adapter/actions?query=workflow%3Aci+branch%3Amaster)
+[![Build Status](https://github.com/parse-community/parse-server-push-adapter/actions/workflows/ci.yml/badge.svg)](https://github.com/parse-community/parse-server-push-adapter/actions/workflows/ci.yml)
 [![Snyk Badge](https://snyk.io/test/github/parse-community/parse-server-push-adapter/badge.svg)](https://snyk.io/test/github/parse-community/parse-server-push-adapter)
 [![Coverage](https://img.shields.io/codecov/c/github/parse-community/parse-server-push-adapter/master.svg)](https://codecov.io/github/parse-community/parse-server-push-adapter?branch=master)
 [![auto-release](https://img.shields.io/badge/%F0%9F%9A%80-auto--release-9e34eb.svg)](https://github.com/parse-community/parse-server-push-adapter/releases)
@@ -23,6 +23,7 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
     - [Google Cloud Service Account Key](#google-cloud-service-account-key)
     - [Migration to FCM HTTP v1 API (June 2024)](#migration-to-fcm-http-v1-api-june-2024)
     - [HTTP/1.1 Legacy Option](#http11-legacy-option)
+    - [Firebase Client Error](#firebase-client-error)
   - [Expo Push Options](#expo-push-options)
 - [Bundled with Parse Server](#bundled-with-parse-server)
 - [Logging](#logging)
@@ -71,10 +72,11 @@ Parse Server Push Adapter currently supports these types of Apple ecosystems:
 - `ios`: iPhone, iPad, and iPod touch apps
 - `osx`: macOS, and macCatalyst apps
 - `tvos`: tvOS apps
+- `watchos`: watchOS apps
 
-Delivering push notifications to Apple devices can be done either via Apple Push Notification Service (APNS), or via Firebase Cloud Messaging (FMC). Note that each category of Apple devices require their own configuration section:
+Push notifications can be delivered to Apple devices either via Apple Push Notification Service (APNS) or Firebase Cloud Messaging (FMC). Note that each category of Apple devices requires their own configuration section:
 
-- APNS requires a private key that can be downloaded from the Apple Developer Center at https://developer.apple.com/account under _Certificates > Identifiers & Profiles._ The adapter options also require the app ID and team ID which can be found there.
+- APNS requires a private key that can be downloaded from the Apple Developer Center at https://developer.apple.com/account under _Certificates > Identifiers & Profiles._ The adapter options also require the app ID and team ID, which can be found there.
 - FCM requires a private key that can be downloaded from the Firebase Console at https://console.firebase.google.com in your project under _Settings > Cloud Messaging._
 
 Example options:
@@ -157,6 +159,15 @@ android: {
   fcmEnableLegacyHttpTransport: true
 }
 ```
+
+#### Firebase Client Error
+
+Occasionally, errors within the Firebase Cloud Messaging (FCM) client may not be managed internally and are instead passed to the Parse Server Push Adapter. These errors can occur, for instance, due to unhandled FCM server connection issues.
+
+- `resolveUnhandledClientError: true`: Logs the error and gracefully resolves it, ensuring that push sending does not result in a failure.
+- `resolveUnhandledClientError: false`: Causes push sending to fail, returning a `Parse.Error.OTHER_CAUSE` with error details that can be parsed to handle it accordingly. This is the default.
+
+In both cases, detailed error logs are recorded in the Parse Server logs for debugging purposes.
 
 ### Expo Push Options
 

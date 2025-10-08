@@ -1,3 +1,38 @@
+# [6.11.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.10.0...6.11.0) (2025-03-16)
+
+
+### Features
+
+* Bump @parse/node-apn from 6.4.3 to 6.5.0 ([#382](https://github.com/parse-community/parse-server-push-adapter/issues/382)) ([3995754](https://github.com/parse-community/parse-server-push-adapter/commit/3995754705614e00d8bfdea47333986b0b88b7cc))
+
+# [6.10.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.9.1...6.10.0) (2025-01-18)
+
+
+### Features
+
+* Add support for watchOS push notifications ([#360](https://github.com/parse-community/parse-server-push-adapter/issues/360)) ([97f14ca](https://github.com/parse-community/parse-server-push-adapter/commit/97f14cab1474657660464e5450e8dfdbe0650809))
+
+## [6.9.1](https://github.com/parse-community/parse-server-push-adapter/compare/6.9.0...6.9.1) (2025-01-01)
+
+
+### Bug Fixes
+
+* APN notification topic not composed based on push type ([#347](https://github.com/parse-community/parse-server-push-adapter/issues/347)) ([9905c34](https://github.com/parse-community/parse-server-push-adapter/commit/9905c340554cbed67f594dc37d6704169d40d8e1))
+
+# [6.9.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.8.0...6.9.0) (2024-12-30)
+
+
+### Features
+
+* Update node-apn from 6.2.1 to 6.3.0 ([#349](https://github.com/parse-community/parse-server-push-adapter/issues/349)) ([9697842](https://github.com/parse-community/parse-server-push-adapter/commit/9697842ecf58e7993be6fda6cb2760446c4d30a3))
+
+# [6.8.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.7.1...6.8.0) (2024-12-14)
+
+
+### Features
+
+* Add FCM option `resolveUnhandledClientError` to resolve or reject push promise on FCM server response GOAWAY ([#341](https://github.com/parse-community/parse-server-push-adapter/issues/341)) ([6d72f8a](https://github.com/parse-community/parse-server-push-adapter/commit/6d72f8abe7b4ff47f8884fc01b77365c26002327))
+
 ## [6.7.1](https://github.com/parse-community/parse-server-push-adapter/compare/6.7.0...6.7.1) (2024-11-19)
 
 

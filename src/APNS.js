@@ -151,7 +151,7 @@ export class APNS {
   static _createProvider(apnsArgs) {
     // if using certificate, then topic must be defined
     if (!APNS._validateAPNArgs(apnsArgs)) {
-      throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED, 'topic is mssing for %j', apnsArgs);
+      throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED, 'topic is missing for %j', apnsArgs);
     }
 
     const provider = new apn.Provider(apnsArgs);
@@ -213,6 +213,16 @@ export class APNS {
       case 'threadId':
         notification.setThreadId(coreData.threadId);
         break;
+      case 'id':
+      case 'collapseId':
+      case 'channelId':
+      case 'requestId':
+      case 'pushType':
+      case 'topic':
+      case 'expiry':
+      case 'priority':
+        // Header information is skipped and added later.
+        break;
       default:
         payload[key] = coreData[key];
         break;
@@ -221,19 +231,51 @@ export class APNS {
 
     notification.payload = payload;
 
-    notification.topic = headers.topic;
-    notification.expiry = Math.round(headers.expirationTime / 1000);
-    notification.collapseId = headers.collapseId;
+    // Update header information if necessary.
+    notification.id = coreData.id ?? headers.id;
+    notification.collapseId = coreData.collapseId ?? headers.collapseId;
+    notification.requestId = coreData.requestId ?? headers.requestId;
+    notification.channelId = coreData.channelId ?? headers.channelId;
     // set alert as default push type. If push type is not set notifications are not delivered to devices running iOS 13, watchOS 6 and later.
-    notification.pushType = 'alert';
-    if (headers.pushType) {
-      notification.pushType = headers.pushType;
+    const pushType = coreData.pushType ?? headers.pushType ?? 'alert';
+    notification.pushType = pushType;
+    const topic = coreData.topic ?? APNS._determineTopic(headers.topic, pushType);
+    notification.topic = topic;
+    let expiry = notification.expiry;
+    if (headers.expirationTime) {
+      expiry = Math.round(headers.expirationTime / 1000);
     }
-    if (headers.priority) {
-      // if headers priority is not set 'node-apn' defaults it to 5 which is min. required value for background pushes to launch the app in background.
-      notification.priority = headers.priority
-    }
+    notification.expiry = coreData.expiry ?? expiry;
+    // if headers priority is not set 'node-apn' defaults it to notification's default value. Required value for background pushes to launch the app in background.
+    notification.priority = coreData.priority ?? headers.priority ?? notification.priority;
+
     return notification;
+  }
+
+  /**
+   * Updates the topic based on the pushType.
+   *
+   * @param {String} topic The current topic to append additional information to for required provider
+   * @param {any} pushType The current push type of the notification
+   * @returns {String} Returns the updated topic
+   */
+  static _determineTopic(topic, pushType) {
+    switch(pushType) {
+    case 'location':
+      return topic + '.location-query';
+    case 'voip':
+      return topic + '.voip';
+    case 'complication':
+      return topic + '.complication';
+    case 'fileprovider':
+      return topic + '.pushkit.fileprovider';
+    case 'liveactivity':
+      return topic + '.push-type.liveactivity';
+    case 'pushtotalk':
+      return topic + '.voip-ptt';
+    default:
+      return topic;
+    }
   }
 
   /**
@@ -243,10 +285,6 @@ export class APNS {
    * @returns {Array} Returns Array with appropriate providers
    */
   _chooseProviders(appIdentifier) {
-    // If the device we need to send to does not have appIdentifier, any provider could be a qualified provider
-    /*if (!appIdentifier || appIdentifier === '') {
-        return this.providers.map((provider) => provider.index);
-    }*/
 
     // Otherwise we try to match the appIdentifier with topic on provider
     const qualifiedProviders = this.providers.filter((provider) => appIdentifier === provider.topic);

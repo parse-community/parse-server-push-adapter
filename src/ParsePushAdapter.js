@@ -14,7 +14,7 @@ export default class ParsePushAdapter {
   supportsPushTracking = true;
 
   constructor(pushConfig = {}) {
-    this.validPushTypes = ['ios', 'osx', 'tvos', 'android', 'fcm', 'web', 'expo'];
+    this.validPushTypes = ['ios', 'osx', 'tvos', 'watchos', 'android', 'fcm', 'web', 'expo'];
     this.senderMap = {};
     // used in PushController for Dashboard Features
     this.feature = {
@@ -29,30 +29,31 @@ export default class ParsePushAdapter {
           'Push to ' + pushType + ' is not supported');
       }
       switch (pushType) {
-        case 'ios':
-        case 'tvos':
-        case 'osx':
-          if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
-            this.senderMap[pushType] = new FCM(pushConfig[pushType], 'apple');
-          } else {
-            this.senderMap[pushType] = new APNS(pushConfig[pushType]);
-          }
-          break;
-        case 'web':
-          this.senderMap[pushType] = new WEB(pushConfig[pushType]);
-          break;
-        case 'expo':
-          this.senderMap[pushType] = new EXPO(pushConfig[pushType]);
-          break;
-        case 'android':
-        case 'fcm':
-          if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
-            this.senderMap[pushType] = new FCM(pushConfig[pushType], 'android');
-          } else {
-            throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
+      case 'ios':
+      case 'tvos':
+      case 'watchos':
+      case 'osx':
+        if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
+          this.senderMap[pushType] = new FCM(pushConfig[pushType], 'apple');
+        } else {
+          this.senderMap[pushType] = new APNS(pushConfig[pushType]);
+        }
+        break;
+      case 'web':
+        this.senderMap[pushType] = new WEB(pushConfig[pushType]);
+        break;
+      case 'expo':
+        this.senderMap[pushType] = new EXPO(pushConfig[pushType]);
+        break;
+      case 'android':
+      case 'fcm':
+        if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
+          this.senderMap[pushType] = new FCM(pushConfig[pushType], 'android');
+        } else {
+           throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
               'GCM Configuration is invalid');
-          }
-          break;
+        }
+        break;
       }
     }
   }
