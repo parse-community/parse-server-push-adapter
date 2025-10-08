@@ -154,6 +154,34 @@ describe('ParsePushAdapter', () => {
     done();
   });
 
+  it('throws error when Android/FCM push is initialized without firebaseServiceAccount', (done) => {
+    const pushConfig = {
+      android: {
+        // Missing firebaseServiceAccount
+        apiKey: 'someKey'
+      }
+    };
+
+    expect(function () {
+      new ParsePushAdapter(pushConfig);
+    }).toThrowError('Firebase service account is required for Android/FCM push notifications');
+    done();
+  });
+
+  it('throws error when FCM push is initialized without firebaseServiceAccount', (done) => {
+    const pushConfig = {
+      fcm: {
+        // Missing firebaseServiceAccount
+        apiKey: 'someKey'
+      }
+    };
+
+    expect(function () {
+      new ParsePushAdapter(pushConfig);
+    }).toThrowError('Firebase service account is required for Android/FCM push notifications');
+    done();
+  });
+
   it('can get valid push types', (done) => {
     const parsePushAdapter = new ParsePushAdapter();
 
@@ -392,7 +420,7 @@ describe('ParsePushAdapter', () => {
   });
 
   it('reports proper results', (done) => {
-    spyOn(log, 'error').and.callFake(() => {});
+    spyOn(log, 'error').and.callFake(() => { });
     const pushConfig = {
       web: {
         vapidDetails: {
