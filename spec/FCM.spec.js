@@ -152,7 +152,7 @@ describe('FCM', () => {
     }]]);
   });
 
-  it('can send successful FCM apple request with title', async () => {
+  it('can send successful FCM apple request with title and alert', async () => {
     const spyVerbose = spyOn(log, 'verbose').and.callFake(() => {});
     const spyInfo = spyOn(log, 'info').and.callFake(() => {});
     const fcm = new FCM(testArgs);
@@ -162,13 +162,13 @@ describe('FCM', () => {
       });
     });
     fcm.pushType = 'apple';
-    const data = { data: { title: 'title' } };
+    const data = { data: { title: 'title', alert: 'alert' } };
     const devices = [{ deviceToken: 'token' }];
     const response = await fcm.send(data, devices);
     expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
     const args = fcm.sender.sendEachForMulticast.calls.first().args;
     expect(args.length).toEqual(1);
-    expect(args[0].apns.payload).toEqual({ aps: { alert: { title: 'title' } } });
+    expect(args[0].apns.payload).toEqual({ aps: { alert: { title: 'title', body: 'alert' } } });
     expect(args[0].apns.headers).toEqual({ 'apns-push-type': 'alert' });
     expect(args[0].tokens).toEqual(['token']);
     expect(spyVerbose).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'tokens with successful pushes: ["token"]');

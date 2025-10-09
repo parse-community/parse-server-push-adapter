@@ -211,9 +211,11 @@ function _APNSToFCMPayload(requestData) {
         // compatible with how the APNS.js + node-apn work
         apnsPayload['apns']['payload']['aps']['alert'] = coreData.alert;
       } else {
-        // When we receive a value, prepare `alert` dictionary
+        // When we receive a value, prepare `alert` dictionary if needed
         // and set its `body` property
-        apnsPayload['apns']['payload']['aps']['alert'] = {};
+        if (!apnsPayload['apns']['payload']['aps'].hasOwnProperty('alert')) {
+          apnsPayload['apns']['payload']['aps']['alert'] = {};
+        }
         apnsPayload['apns']['payload']['aps']['alert']['body'] = coreData.alert;
       }
       break;
