@@ -27,8 +27,8 @@ describe('FCM', () => {
   });
 
   it('can throw on initializing with invalid args', () => {
-    expect(function() { new FCM(123); }).toThrow();
-    expect(function() { new FCM({}); }).toThrow();
+    expect(function () { new FCM(123); }).toThrow();
+    expect(function () { new FCM({}); }).toThrow();
   });
 
   it('does log on invalid payload', async () => {
@@ -71,8 +71,8 @@ describe('FCM', () => {
   });
 
   it('can send successful FCM android request', async () => {
-    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => {});
-    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => { });
+    const spyInfo = spyOn(log, 'info').and.callFake(() => { });
     const fcm = new FCM(testArgs);
     spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
       return Promise.resolve({
@@ -98,8 +98,8 @@ describe('FCM', () => {
   });
 
   it('can send successful FCM android request with apns integer keys', async () => {
-    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => {});
-    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => { });
+    const spyInfo = spyOn(log, 'info').and.callFake(() => { });
     const fcm = new FCM(testArgs);
     spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
       return Promise.resolve({
@@ -126,8 +126,8 @@ describe('FCM', () => {
   });
 
   it('can send successful FCM apple request with alert', async () => {
-    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => {});
-    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => { });
+    const spyInfo = spyOn(log, 'info').and.callFake(() => { });
     const fcm = new FCM(testArgs);
     spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
       return Promise.resolve({
@@ -153,8 +153,8 @@ describe('FCM', () => {
   });
 
   it('can send successful FCM apple request with title', async () => {
-    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => {});
-    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
+    const spyVerbose = spyOn(log, 'verbose').and.callFake(() => { });
+    const spyInfo = spyOn(log, 'info').and.callFake(() => { });
     const fcm = new FCM(testArgs);
     spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
       return Promise.resolve({
@@ -180,8 +180,8 @@ describe('FCM', () => {
   });
 
   it('can send failed FCM request', async () => {
-    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
-    const spyError = spyOn(log, 'error').and.callFake(() => {});
+    const spyInfo = spyOn(log, 'info').and.callFake(() => { });
+    const spyError = spyOn(log, 'error').and.callFake(() => { });
     const fcm = new FCM(testArgs);
     spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
       return Promise.resolve({
@@ -203,14 +203,14 @@ describe('FCM', () => {
     expect(spyError.calls.all()[1].args).toEqual(['parse-server-push-adapter FCM', 'tokens with failed pushes: ["token"]']);
     expect(response).toEqual([[{
       device: { deviceToken: 'token', deviceType: 'apple' },
-      response: { error: 'testing failed'},
+      response: { error: 'testing failed' },
       transmitted: false,
     }]]);
   });
 
   it('can handle FCM request error', async () => {
-    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
-    const spyError = spyOn(log, 'error').and.callFake(() => {});
+    const spyInfo = spyOn(log, 'info').and.callFake(() => { });
+    const spyError = spyOn(log, 'error').and.callFake(() => { });
     const fcm = new FCM(testArgs);
     spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
       return Promise.reject('testing error abort');
@@ -225,8 +225,8 @@ describe('FCM', () => {
   });
 
   it('rejects exceptions that are unhandled by FCM client', async () => {
-    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
-    const spyError = spyOn(log, 'error').and.callFake(() => {});
+    const spyInfo = spyOn(log, 'info').and.callFake(() => { });
+    const spyError = spyOn(log, 'error').and.callFake(() => { });
     testArgs.resolveUnhandledClientError = false;
     const fcm = new FCM(testArgs);
     spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
@@ -235,6 +235,7 @@ describe('FCM', () => {
     fcm.pushType = 'android';
     const data = { data: { alert: 'alert' } };
     const devices = [{ deviceToken: 'token' }];
+    // eslint-disable-next-line no-undef
     await expectAsync(fcm.send(data, devices)).toBeRejectedWith(new Parse.Error(Parse.Error.OTHER_CAUSE, 'Error: test error'));
     expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
     expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');
@@ -244,8 +245,8 @@ describe('FCM', () => {
   });
 
   it('resolves exceptions that are unhandled by FCM client', async () => {
-    const spyInfo = spyOn(log, 'info').and.callFake(() => {});
-    const spyError = spyOn(log, 'error').and.callFake(() => {});
+    const spyInfo = spyOn(log, 'info').and.callFake(() => { });
+    const spyError = spyOn(log, 'error').and.callFake(() => { });
     testArgs.resolveUnhandledClientError = true;
     const fcm = new FCM(testArgs);
     spyOn(fcm.sender, 'sendEachForMulticast').and.callFake(() => {
@@ -254,6 +255,7 @@ describe('FCM', () => {
     fcm.pushType = 'android';
     const data = { data: { alert: 'alert' } };
     const devices = [{ deviceToken: 'token' }];
+    // eslint-disable-next-line no-undef
     await expectAsync(fcm.send(data, devices)).toBeResolved();
     expect(fcm.sender.sendEachForMulticast).toHaveBeenCalled();
     expect(spyInfo).toHaveBeenCalledWith('parse-server-push-adapter FCM', 'sending push to 1 devices');

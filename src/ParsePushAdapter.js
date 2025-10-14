@@ -2,7 +2,6 @@
 import Parse from 'parse';
 import log from 'npmlog';
 import APNS from './APNS.js';
-import GCM from './GCM.js';
 import FCM from './FCM.js';
 import WEB from './WEB.js';
 import EXPO from './EXPO.js';
@@ -51,7 +50,8 @@ export default class ParsePushAdapter {
         if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
           this.senderMap[pushType] = new FCM(pushConfig[pushType], 'android');
         } else {
-          this.senderMap[pushType] = new GCM(pushConfig[pushType]);
+          throw new Parse.Error(Parse.Error.PUSH_MISCONFIGURED,
+            'Firebase service account is required for Android/FCM push notifications');
         }
         break;
       }
@@ -73,14 +73,14 @@ export default class ParsePushAdapter {
       const sender = this.senderMap[pushType];
       const devices = deviceMap[pushType];
 
-      if(Array.isArray(devices) && devices.length > 0) {
+      if (Array.isArray(devices) && devices.length > 0) {
         if (!sender) {
           log.verbose(LOG_PREFIX, `Can not find sender for push type ${pushType}, ${data}`)
           const results = devices.map((device) => {
             return Promise.resolve({
               device,
               transmitted: false,
-              response: {'error': `Can not find sender for push type ${pushType}, ${data}`}
+              response: { 'error': `Can not find sender for push type ${pushType}, ${data}` }
             })
           });
           sendPromises.push(Promise.all(results));
@@ -91,7 +91,7 @@ export default class ParsePushAdapter {
     }
     return Promise.all(sendPromises).then((promises) => {
       // flatten all
-      return [].concat.apply([], promises);
+      return [...promises].flat(2);
     })
   }
 }
