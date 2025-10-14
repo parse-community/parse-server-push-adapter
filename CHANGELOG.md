@@ -1,3 +1,15 @@
+# [7.0.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.11.0...7.0.0) (2025-10-14)
+
+
+### Features
+
+* Remove Google Cloud Messaging (GCM) API ([#450](https://github.com/parse-community/parse-server-push-adapter/issues/450)) ([69840c6](https://github.com/parse-community/parse-server-push-adapter/commit/69840c674c7483e826cc39113a658d7e6a9d4c06))
+
+
+### BREAKING CHANGES
+
+* This removes the already out-of-service Google Cloud Messaging (GCM) API. ([69840c6](69840c6))
+
 # [6.11.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.10.0...6.11.0) (2025-03-16)
 
 
