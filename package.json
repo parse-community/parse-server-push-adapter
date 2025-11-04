@@ -28,7 +28,7 @@
     "expo-server-sdk": "3.15.0",
     "firebase-admin": "13.5.0",
     "npmlog": "7.0.1",
-    "parse": "7.0.1",
+    "parse": "7.0.2",
     "web-push": "3.6.7"
   },
   "devDependencies": {
