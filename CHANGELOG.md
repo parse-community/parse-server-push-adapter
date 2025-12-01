@@ -1,3 +1,11 @@
+## [7.0.1](https://github.com/parse-community/parse-server-push-adapter/compare/7.0.0...7.0.1) (2025-12-01)
+
+
+### Bug Fixes
+
+* Security upgrade @parse/node-apn to 7.0.0 ([#472](https://github.com/parse-community/parse-server-push-adapter/issues/472)) ([8391ab2](https://github.com/parse-community/parse-server-push-adapter/commit/8391ab2ab957230a7141ee986700807eb333dff5))
+* Security upgrade parse from 6.1.1 to 7.0.1 ([#455](https://github.com/parse-community/parse-server-push-adapter/issues/455)) ([818da81](https://github.com/parse-community/parse-server-push-adapter/commit/818da81df4174de50b1c2a4a651fdad2c9600a47))
+
 # [7.0.0](https://github.com/parse-community/parse-server-push-adapter/compare/6.11.0...7.0.0) (2025-10-14)
 
 
