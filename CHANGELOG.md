@@ -1,3 +1,15 @@
+# [8.0.0](https://github.com/parse-community/parse-server-push-adapter/compare/7.0.1...8.0.0) (2025-12-01)
+
+
+### Features
+
+* Remove Node 18 support; add Node 24 support ([#476](https://github.com/parse-community/parse-server-push-adapter/issues/476)) ([f505a4f](https://github.com/parse-community/parse-server-push-adapter/commit/f505a4f9dd8b90d017838deb685ae81fb7fcefd3))
+
+
+### BREAKING CHANGES
+
+* Removes Node 18 support; add Node 24 support. ([f505a4f](f505a4f))
+
 ## [7.0.1](https://github.com/parse-community/parse-server-push-adapter/compare/7.0.0...7.0.1) (2025-12-01)
 
 
