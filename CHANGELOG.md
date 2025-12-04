@@ -1,3 +1,10 @@
+## [8.0.2](https://github.com/parse-community/parse-server-push-adapter/compare/8.0.1...8.0.2) (2025-12-04)
+
+
+### Bug Fixes
+
+* Security upgrade jws ([#479](https://github.com/parse-community/parse-server-push-adapter/issues/479)) ([22fd350](https://github.com/parse-community/parse-server-push-adapter/commit/22fd35087edba7ba3de9490b81fe14705227aece))
+
 ## [8.0.1](https://github.com/parse-community/parse-server-push-adapter/compare/8.0.0...8.0.1) (2025-12-03)
 
 
