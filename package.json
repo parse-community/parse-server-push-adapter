@@ -24,7 +24,7 @@
   "author": "Parse",
   "license": "MIT",
   "dependencies": {
-    "@parse/node-apn": "7.0.0",
+    "@parse/node-apn": "7.0.1",
     "expo-server-sdk": "4.0.0",
     "firebase-admin": "13.6.0",
     "npmlog": "7.0.1",
