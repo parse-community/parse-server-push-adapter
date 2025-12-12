@@ -1,3 +1,10 @@
+# [8.1.0](https://github.com/parse-community/parse-server-push-adapter/compare/8.0.2...8.1.0) (2025-12-12)
+
+
+### Features
+
+* Upgrade to parse 8.0.0 ([#481](https://github.com/parse-community/parse-server-push-adapter/issues/481)) ([caf1b5c](https://github.com/parse-community/parse-server-push-adapter/commit/caf1b5c97ff5e7553888de1113983c135cd37133))
+
 ## [8.0.2](https://github.com/parse-community/parse-server-push-adapter/compare/8.0.1...8.0.2) (2025-12-04)
 
 
