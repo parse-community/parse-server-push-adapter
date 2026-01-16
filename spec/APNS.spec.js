@@ -1,5 +1,5 @@
 import log from 'npmlog';
-import Parse from 'parse/node.js';
+import Parse from 'parse/node';
 import APNS from '../src/APNS.js';
 
 describe('APNS', () => {
