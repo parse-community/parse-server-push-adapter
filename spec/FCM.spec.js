@@ -1,6 +1,6 @@
 import { deleteApp, getApps } from 'firebase-admin/app';
 import log from 'npmlog';
-import Parse from 'parse/node.js';
+import Parse from 'parse/node';
 import path from 'path';
 import FCM from '../src/FCM.js';
 
