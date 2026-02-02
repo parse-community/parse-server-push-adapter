@@ -44,7 +44,7 @@
     "eslint": "9.39.2",
     "jasmine": "6.0.0",
     "jasmine-spec-reporter": "7.0.0",
-    "semantic-release": "25.0.2"
+    "semantic-release": "25.0.3"
   },
   "engines": {
     "node": "20 || 22 || 24"
