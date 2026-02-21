@@ -1,6 +1,6 @@
 "use strict";
 
-import Parse from 'parse';
+import Parse from 'parse/node';
 import log from 'npmlog';
 import webpush from 'web-push';
 

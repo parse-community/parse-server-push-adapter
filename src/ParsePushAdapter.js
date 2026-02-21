@@ -1,5 +1,5 @@
 'use strict';
-import Parse from 'parse';
+import Parse from 'parse/node';
 import log from 'npmlog';
 import APNS from './APNS.js';
 import FCM from './FCM.js';
