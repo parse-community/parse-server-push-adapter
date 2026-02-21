@@ -1,6 +1,6 @@
 'use strict';
 import apn from '@parse/node-apn';
-import Parse from 'parse';
+import Parse from 'parse/node';
 import log from 'npmlog';
 
 const LOG_PREFIX = 'parse-server-push-adapter APNS';

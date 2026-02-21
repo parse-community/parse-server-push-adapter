@@ -3,7 +3,7 @@
 import { cert, getApp, getApps, initializeApp } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
 import log from 'npmlog';
-import Parse from 'parse';
+import Parse from 'parse/node';
 import { randomString } from './PushAdapterUtils.js';
 
 const LOG_PREFIX = 'parse-server-push-adapter FCM';
