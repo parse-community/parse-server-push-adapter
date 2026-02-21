@@ -1,3 +1,10 @@
+## [8.3.1](https://github.com/parse-community/parse-server-push-adapter/compare/8.3.0...8.3.1) (2026-02-21)
+
+
+### Bug Fixes
+
+* Incorrect `Parse` import uses browser build instead of Node build ([#511](https://github.com/parse-community/parse-server-push-adapter/issues/511)) ([66cc9f4](https://github.com/parse-community/parse-server-push-adapter/commit/66cc9f40bce6d561822356a220718c1f7fb14345))
+
 # [8.3.0](https://github.com/parse-community/parse-server-push-adapter/compare/8.2.0...8.3.0) (2026-02-20)
 
 
