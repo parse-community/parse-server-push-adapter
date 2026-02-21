@@ -25,7 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "@parse/node-apn": "7.1.0",
-    "expo-server-sdk": "5.0.0",
+    "expo-server-sdk": "6.0.0",
     "firebase-admin": "13.6.1",
     "npmlog": "7.0.1",
     "parse": "8.2.0",
