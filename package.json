@@ -42,7 +42,7 @@
     "c8": "11.0.0",
     "codecov": "3.8.3",
     "eslint": "9.39.2",
-    "jasmine": "6.0.0",
+    "jasmine": "6.1.0",
     "jasmine-spec-reporter": "7.0.0",
     "semantic-release": "25.0.3"
   },
