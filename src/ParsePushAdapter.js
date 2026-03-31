@@ -2,6 +2,7 @@
 import Parse from 'parse/node';
 import log from 'npmlog';
 import APNS from './APNS.js';
+import APNSNative from './APNSNative.js';
 import FCM from './FCM.js';
 import WEB from './WEB.js';
 import EXPO from './EXPO.js';
@@ -35,6 +36,8 @@ export default class ParsePushAdapter {
       case 'osx':
         if (pushConfig[pushType].hasOwnProperty('firebaseServiceAccount')) {
           this.senderMap[pushType] = new FCM(pushConfig[pushType], 'apple');
+        } else if (pushConfig[pushType].useNativeAPNs === true) {
+          this.senderMap[pushType] = new APNSNative(pushConfig[pushType]);
         } else {
           this.senderMap[pushType] = new APNS(pushConfig[pushType]);
         }

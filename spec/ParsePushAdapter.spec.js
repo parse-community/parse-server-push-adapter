@@ -1,11 +1,12 @@
 import { join } from 'path';
 import log from 'npmlog';
 import apn from '@parse/node-apn';
-import ParsePushAdapterPackage, { ParsePushAdapter as _ParsePushAdapter, FCM as _FCM, APNS as _APNS, WEB as _WEB, EXPO as _EXPO, utils } from '../src/index.js';
+import ParsePushAdapterPackage, { ParsePushAdapter as _ParsePushAdapter, FCM as _FCM, APNS as _APNS, APNSNative as _APNSNative, WEB as _WEB, EXPO as _EXPO, utils } from '../src/index.js';
 const ParsePushAdapter = _ParsePushAdapter;
 import { randomString } from '../src/PushAdapterUtils.js';
 import MockAPNProvider from './MockAPNProvider.js';
 import APNS from '../src/APNS.js';
+import APNSNative from '../src/APNSNative.js';
 import WEB from '../src/WEB.js';
 import FCM from '../src/FCM.js';
 import EXPO from '../src/EXPO.js';
@@ -20,6 +21,7 @@ describe('ParsePushAdapter', () => {
     expect(typeof ParsePushAdapterPackage).toBe('function');
     expect(typeof _ParsePushAdapter).toBe('function');
     expect(typeof _APNS).toBe('function');
+    expect(typeof _APNSNative).toBe('function');
     expect(typeof _FCM).toBe('function');
     expect(typeof _WEB).toBe('function');
     expect(typeof _EXPO).toBe('function');
@@ -119,6 +121,34 @@ describe('ParsePushAdapter', () => {
     const androidSender = parsePushAdapter.senderMap["android"];
     expect(androidSender instanceof FCM).toBe(true);
     done();
+  });
+
+  it("can be initialized with APNSNative when useNativeAPNs is true", async () => {
+    const { generateKeyPairSync } = await import('node:crypto');
+    const { privateKey } = generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+    const testKeyPEM = privateKey.export({ type: 'pkcs8', format: 'pem' });
+
+    const pushConfig = {
+      android: {
+        firebaseServiceAccount: join(__dirname, '..', 'spec', 'support', 'fakeServiceAccount.json')
+      },
+      ios: {
+        useNativeAPNs: true,
+        token: { key: testKeyPEM, keyId: 'KEYID12345', teamId: 'TEAMID1234' },
+        production: false,
+        topic: 'com.example.app',
+      },
+    };
+
+    const parsePushAdapter = new ParsePushAdapter(pushConfig);
+    const iosSender = parsePushAdapter.senderMap['ios'];
+    expect(iosSender instanceof APNS).toBe(false);
+    expect(iosSender instanceof APNSNative).toBe(true);
+    expect(Array.isArray(iosSender.providers)).toBe(true);
+    expect(iosSender.providers.length).toBe(1);
+    expect(iosSender.providers[0].topic).toBe('com.example.app');
+    const androidSender = parsePushAdapter.senderMap['android'];
+    expect(androidSender instanceof FCM).toBe(true);
   });
 
   it("can be initialized with FCM for apple and FCM for android", (done) => {
