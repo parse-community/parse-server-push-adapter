@@ -18,6 +18,7 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
 - [Installation](#installation)
 - [Configure Parse Server](#configure-parse-server)
   - [Apple Push Options](#apple-push-options)
+    - [Native APNS (Experimental)](#native-apns-experimental)
   - [Android Push Options](#android-push-options)
   - [Firebase Cloud Messaging (FCM)](#firebase-cloud-messaging-fcm)
     - [Google Cloud Service Account Key](#google-cloud-service-account-key)
@@ -97,6 +98,25 @@ ios: {
 osx: {
   // Deliver push notifications to macOS devices via FCM
   firebaseServiceAccount: __dirname + '/firebase.json'
+}
+```
+
+#### Native APNS (Experimental)
+
+As an alternative to the default APNS implementation which uses the `@parse/node-apn` library, you can enable a native APNS implementation that uses only built-in Node.js modules (`node:http2`, `node:crypto`) with zero additional dependencies. This is an experimental feature that only supports token-based authentication (`.p8` key). Certificate-based authentication (`.p12`/`.pem`) is not supported; use the default APNS implementation for that.
+
+To enable the native APNS implementation, set `useNativeAPNs: true`:
+
+```js
+ios: {
+  useNativeAPNs: true,
+  token: {
+    key: __dirname + '/apns.p8',
+    keyId: '<APNS_KEY_ID>',
+    teamId: '<APNS_TEAM_ID>'
+  },
+  topic: '<BUNDLE_IDENTIFIER>',
+  production: true
 }
 ```
 
