@@ -342,8 +342,8 @@ export class APNSNative {
       log.error(LOG_PREFIX, 'APNS error transmitting to device %s with status %s and reason %s', failure.device, failure.status, failure.response.reason);
       return APNSNative._createErrorPromise(failure.device, failure.response.reason);
     } else {
-      log.error(LOG_PREFIX, 'APNS error transmitting to device with unkown error');
-      return APNSNative._createErrorPromise(failure.device, 'Unkown status');
+      log.error(LOG_PREFIX, 'APNS error transmitting to device with unknown error');
+      return APNSNative._createErrorPromise(failure.device, 'Unknown status');
     }
   }
 

@@ -744,7 +744,7 @@ describe('APNS', () => {
       expect(result.transmitted).toBe(false);
       expect(result.device.deviceToken).toBe('abcd');
       expect(result.device.deviceType).toBe('ios');
-      expect(result.response.error).toBe('Unkown status');
+      expect(result.response.error).toBe('Unknown status');
       done();
     })
   });
