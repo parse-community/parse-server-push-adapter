@@ -130,7 +130,7 @@ export class APNSNative {
     const priority = data['priority'] || coreData['priority'];
     let allPromises = [];
 
-    const devicesPerAppIdentifier = {};
+    const devicesPerAppIdentifier = Object.create(null);
 
     allDevices.forEach(device => {
       const appIdentifier = device.appIdentifier;
