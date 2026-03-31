@@ -47,7 +47,9 @@ export default class APNSConnection {
         req = session.request(headers);
       } catch (err) {
         // Session may have been destroyed between _getSession and request
-        this._destroySession();
+        if (this._session === session) {
+          this._destroySession();
+        }
         if (retryCount < this._retryLimit) {
           const newSession = this._getSession();
           return resolve(this._request(newSession, headers, body, retryCount + 1));
@@ -112,7 +114,9 @@ export default class APNSConnection {
         log.error(LOG_PREFIX, 'Request error: %s', err.message);
 
         if (retryCount < this._retryLimit) {
-          this._destroySession();
+          if (this._session === session) {
+            this._destroySession();
+          }
           const newSession = this._getSession();
           resolve(this._request(newSession, headers, body, retryCount + 1));
         } else {
@@ -147,40 +151,50 @@ export default class APNSConnection {
     this._connectionAttempts++;
     this._draining = false;
 
-    this._session = http2.connect(this._endpoint);
+    const session = http2.connect(this._endpoint);
+    this._session = session;
 
-    this._session.on('goaway', () => {
+    session.on('goaway', () => {
       log.warn(LOG_PREFIX, 'Received GOAWAY from APNs, will reconnect on next request');
-      this._draining = true;
+      if (this._session === session) {
+        this._draining = true;
+      }
     });
 
-    this._session.on('error', (err) => {
+    session.on('error', (err) => {
       log.error(LOG_PREFIX, 'Session error: %s', err.message);
-      this._destroySession();
+      if (this._session === session) {
+        this._destroySession();
+      }
     });
 
-    this._session.on('close', () => {
-      this._session = null;
-      this._stopPing();
+    session.on('close', () => {
+      if (this._session === session) {
+        this._session = null;
+        this._stopPing();
+      }
     });
 
     // Reset connection attempts on successful connect
-    this._session.on('connect', () => {
+    session.on('connect', () => {
       this._connectionAttempts = 0;
     });
 
     this._startPing();
-    return this._session;
+    return session;
   }
 
   _startPing() {
     this._stopPing();
     this._pingInterval = setInterval(() => {
-      if (this._session && !this._session.destroyed) {
-        this._session.ping((err) => {
+      const currentSession = this._session;
+      if (currentSession && !currentSession.destroyed) {
+        currentSession.ping((err) => {
           if (err) {
             log.warn(LOG_PREFIX, 'Ping failed: %s', err.message);
-            this._destroySession();
+            if (this._session === currentSession) {
+              this._destroySession();
+            }
           }
         });
       }
