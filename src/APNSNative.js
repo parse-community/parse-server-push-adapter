@@ -124,10 +124,10 @@ export class APNSNative {
       log.warn(LOG_PREFIX, 'invalid push payload');
       return;
     }
-    const expirationTime = data['expiration_time'] || coreData['expiration_time'];
-    const collapseId = data['collapse_id'] || coreData['collapse_id'];
-    const pushType = data['push_type'] || coreData['push_type'];
-    const priority = data['priority'] || coreData['priority'];
+    const expirationTime = data['expiration_time'] ?? coreData['expiration_time'];
+    const collapseId = data['collapse_id'] ?? coreData['collapse_id'];
+    const pushType = data['push_type'] ?? coreData['push_type'];
+    const priority = data['priority'] ?? coreData['priority'];
     let allPromises = [];
 
     const devicesPerAppIdentifier = Object.create(null);
@@ -236,6 +236,9 @@ export class APNSNative {
       case 'topic':
       case 'expiry':
       case 'priority':
+      case 'expiration_time':
+      case 'collapse_id':
+      case 'push_type':
         // Header fields — handled below
         break;
       default:
@@ -254,7 +257,7 @@ export class APNSNative {
     const defaultPriority = 10;
 
     let expiry = -1;
-    if (headerOpts.expirationTime) {
+    if (headerOpts.expirationTime != null) {
       expiry = Math.round(headerOpts.expirationTime / 1000);
     }
     expiry = coreData.expiry ?? expiry;
@@ -272,7 +275,7 @@ export class APNSNative {
     if (expiry >= 0) {
       headers['apns-expiration'] = String(expiry);
     }
-    if (collapseId) {
+    if (collapseId != null) {
       headers['apns-collapse-id'] = collapseId;
     }
     if (id) {
