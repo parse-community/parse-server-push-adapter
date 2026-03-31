@@ -433,6 +433,120 @@ describe('APNSNative', () => {
     expect(results[0].response.error).toBe('No Provider found');
   });
 
+  // --- Provider internal send tests (covers the provider.send closure) ---
+
+  it('provider.send calls connection.send and returns sent/failed', async () => {
+    const apns = new APNSNative(makeTokenConfig());
+    const provider = apns.providers[0];
+
+    // Spy on the connection's send method to simulate APNs responses
+    spyOn(provider.connection, 'send').and.callFake(async (deviceToken) => {
+      if (deviceToken === 'good') {
+        return { status: 200, body: {} };
+      }
+      return { status: 400, body: { reason: 'BadDeviceToken' } };
+    });
+
+    const notification = APNSNative._generateNotification({ alert: 'test' }, { topic: 'com.example.app' });
+    const result = await provider.send(notification, ['good', 'bad']);
+
+    expect(result.sent.length).toBe(1);
+    expect(result.sent[0].device).toBe('good');
+    expect(result.failed.length).toBe(1);
+    expect(result.failed[0].device).toBe('bad');
+    expect(result.failed[0].response.reason).toBe('BadDeviceToken');
+  });
+
+  it('provider.send handles ExpiredProviderToken with token refresh', async () => {
+    const apns = new APNSNative(makeTokenConfig());
+    const provider = apns.providers[0];
+
+    let callCount = 0;
+    spyOn(provider.connection, 'send').and.callFake(async () => {
+      callCount++;
+      if (callCount === 1) {
+        return { status: 403, body: { reason: 'ExpiredProviderToken' } };
+      }
+      return { status: 200, body: {} };
+    });
+    spyOn(provider.token, 'refresh').and.callThrough();
+
+    const notification = APNSNative._generateNotification({ alert: 'test' }, { topic: 'com.example.app' });
+    const result = await provider.send(notification, ['device1']);
+
+    expect(provider.token.refresh).toHaveBeenCalled();
+    expect(result.sent.length).toBe(1);
+    expect(result.sent[0].device).toBe('device1');
+  });
+
+  it('provider.send reports failure when ExpiredProviderToken retry also fails', async () => {
+    const apns = new APNSNative(makeTokenConfig());
+    const provider = apns.providers[0];
+
+    spyOn(provider.connection, 'send').and.callFake(async () => {
+      return { status: 403, body: { reason: 'ExpiredProviderToken' } };
+    });
+
+    const notification = APNSNative._generateNotification({ alert: 'test' }, { topic: 'com.example.app' });
+    const result = await provider.send(notification, ['device1']);
+
+    expect(result.sent.length).toBe(0);
+    expect(result.failed.length).toBe(1);
+    expect(result.failed[0].status).toBe(403);
+  });
+
+  it('provider.send handles connection errors', async () => {
+    const apns = new APNSNative(makeTokenConfig());
+    const provider = apns.providers[0];
+
+    spyOn(provider.connection, 'send').and.callFake(async () => {
+      throw new Error('Connection refused');
+    });
+
+    const notification = APNSNative._generateNotification({ alert: 'test' }, { topic: 'com.example.app' });
+    const result = await provider.send(notification, ['device1']);
+
+    expect(result.sent.length).toBe(0);
+    expect(result.failed.length).toBe(1);
+    expect(result.failed[0].error).toBe('Connection refused');
+  });
+
+  // --- sendThroughProvider retry tests ---
+
+  it('retries with next provider when first provider fails', async () => {
+    spyOn(log, 'error').and.callFake(() => {});
+    const apns = new APNSNative([
+      makeTokenConfig({ topic: 'topic', production: true }),
+      makeTokenConfig({ topic: 'topic', production: false }),
+    ]);
+
+    const provider1 = apns.providers[0];
+    spyOn(provider1, 'send').and.callFake((notification, devices) => {
+      return Promise.resolve({
+        sent: [],
+        failed: devices.map(d => ({ device: d, status: 500, response: { reason: 'InternalError' } }))
+      });
+    });
+    const provider2 = apns.providers[1];
+    spyOn(provider2, 'send').and.callFake((notification, devices) => {
+      return Promise.resolve({
+        sent: devices.map(d => ({ device: d })),
+        failed: []
+      });
+    });
+
+    const data = { 'data': { 'alert': 'alert' } };
+    const devices = [
+      { deviceToken: '112233', appIdentifier: 'topic' },
+    ];
+    const results = await apns.send(data, devices);
+
+    expect(provider1.send).toHaveBeenCalled();
+    expect(provider2.send).toHaveBeenCalled();
+    expect(results.length).toBe(1);
+    expect(results[0].transmitted).toBe(true);
+  });
+
   // --- Error handling tests ---
 
   it('properly parses errors', async () => {
