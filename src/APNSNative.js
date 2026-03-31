@@ -338,7 +338,7 @@ export class APNSNative {
     if (failure.error) {
       log.error(LOG_PREFIX, 'APNS error transmitting to device %s with error %s', failure.device, failure.error);
       return APNSNative._createErrorPromise(failure.device, failure.error);
-    } else if (failure.status && failure.response && failure.response.reason) {
+    } else if (failure.status !== undefined && failure.response?.reason) {
       log.error(LOG_PREFIX, 'APNS error transmitting to device %s with status %s and reason %s', failure.device, failure.status, failure.response.reason);
       return APNSNative._createErrorPromise(failure.device, failure.response.reason);
     } else {

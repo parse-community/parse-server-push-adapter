@@ -558,6 +558,19 @@ describe('APNSNative', () => {
       expect(result.response.error).toBe('Something wrong happend');
     });
 
+    it('properly parses status 0 transport failures', async () => {
+      spyOn(log, 'error').and.callFake(() => {});
+      const result = await APNSNative._handlePushFailure({
+        device: 'abcd',
+        status: 0,
+        response: { reason: 'RequestTimeout' }
+      });
+      expect(result.transmitted).toBe(false);
+      expect(result.device.deviceToken).toBe('abcd');
+      expect(result.device.deviceType).toBe('ios');
+      expect(result.response.error).toBe('RequestTimeout');
+    });
+
     it('properly parses errors again', async () => {
       spyOn(log, 'error').and.callFake(() => {});
       const result = await APNSNative._handlePushFailure({ device: 'abcd' });
