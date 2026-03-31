@@ -36,7 +36,7 @@ export class APNSNative {
 
     for (const providerArgs of argsList) {
       // Backward compatibility: bundleId -> topic
-      if (providerArgs.bundleId) {
+      if (providerArgs.bundleId && !providerArgs.topic) {
         log.warn(LOG_PREFIX, 'bundleId is deprecated, use topic instead');
         providerArgs.topic = providerArgs.bundleId;
       }
