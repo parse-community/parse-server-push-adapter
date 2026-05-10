@@ -154,6 +154,22 @@ android: {
 
 This can be helpful if you are already managing credentials to Google Cloud APIs in other parts of your code and you want to reuse these credentials, or if you want to manage credentials on a more granular level directly in Google Cloud. Make sure that the service account has the permission `cloudmessaging.messages.create` which is for example part of role `Firebase Cloud Messaging API Admin`.
 
+#### Analytics Labels
+
+FCM delivery reports can be filtered by analytics labels. Add `analytics_label` at the top level of the push request or inside `data` to send it as `fcmOptions.analyticsLabel`:
+
+```js
+Parse.Push.send({
+  where,
+  data: {
+    alert: 'Feature update available',
+    analytics_label: 'feature_update_v1'
+  }
+});
+```
+
+Labels must match `^[a-zA-Z0-9-_.~%]{1,50}$`.
+
 #### Migration to FCM HTTP v1 API (June 2024)
 
 ⚠️ Sending push notifications to Android devices via the FCM legacy API was deprecated on June 20 2023 and was announced to be decommissioned in June 2024. See [Google docs](https://firebase.google.com/docs/cloud-messaging/migrate-v1). To send push notifications to the newer FCM HTTP v1 API you need to update your existing push configuration for Android by replacing the key `apiKey` with `firebaseServiceAccount`.

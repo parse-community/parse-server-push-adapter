@@ -9,6 +9,7 @@ import { randomString } from './PushAdapterUtils.js';
 const LOG_PREFIX = 'parse-server-push-adapter FCM';
 const FCMRegistrationTokensMax = 500;
 const FCMTimeToLiveMax = 4 * 7 * 24 * 60 * 60; // FCM allows a max of 4 weeks
+const FCMAnalyticsLabelRegex = /^[a-zA-Z0-9-_.~%]{1,50}$/;
 const apnsIntegerDataKeys = [
   'badge',
   'content-available',
@@ -261,6 +262,8 @@ function _APNSToFCMPayload(requestData) {
       break;
     case 'priority':
       break;
+    case 'analytics_label':
+      break;
     default:
       apnsPayload['apns']['payload'][key] = coreData[key]; // Custom keys should be outside aps
       break;
@@ -285,9 +288,10 @@ function _GCMToFCMPayload(requestData, pushId, timeStamp) {
     // FCM gives an error on send if we have apns keys that should have integer values
     for (const key of apnsIntegerDataKeys) {
       if (requestData.data.hasOwnProperty(key)) {
-        delete requestData.data[key]
+        delete requestData.data[key];
       }
     }
+    delete requestData.data.analytics_label;
     androidPayload.android.data = {
       push_id: pushId,
       time: new Date(timeStamp).toISOString(),
@@ -339,6 +343,20 @@ function payloadConverter(requestData, pushType, pushId, timeStamp) {
   }
 }
 
+function getAnalyticsLabel(requestData) {
+  const analyticsLabel = requestData.analytics_label ?? requestData.data?.analytics_label;
+  if (analyticsLabel === undefined) {
+    return;
+  }
+  if (typeof analyticsLabel !== 'string' || !FCMAnalyticsLabelRegex.test(analyticsLabel)) {
+    throw new Parse.Error(
+      Parse.Error.PUSH_MISCONFIGURED,
+      'Invalid FCM analytics_label; expected 1-50 characters matching /^[a-zA-Z0-9-_.~%]+$/',
+    );
+  }
+  return analyticsLabel;
+}
+
 /**
  * Generate the fcm payload from the data we get from api request.
  * @param {Object} requestData The request body
@@ -357,11 +375,18 @@ function generateFCMPayload(
 ) {
   delete requestData['where'];
 
+  const analyticsLabel = getAnalyticsLabel(requestData);
   const payloadToUse = {
     data: {}
   };
 
   const fcmPayload = payloadConverter(requestData, pushType, pushId, timeStamp);
+  if (analyticsLabel) {
+    fcmPayload.fcmOptions = {
+      ...fcmPayload.fcmOptions,
+      analyticsLabel,
+    };
+  }
   payloadToUse.data = {
     ...fcmPayload,
     tokens: deviceTokens,
