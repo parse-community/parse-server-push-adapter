@@ -326,6 +326,124 @@ describe('FCM', () => {
     expect(payload.data.tokens).toEqual(['testToken']);
   });
 
+  it('can add an analytics label to FCM payloads', () => {
+    const requestData = {
+      data: {
+        alert: 'alert',
+        analytics_label: 'feature_update_v1',
+      },
+    };
+
+    const payload = FCM.generateFCMPayload(
+      requestData,
+      'pushId',
+      1454538822113,
+      ['testToken'],
+      'android',
+    );
+
+    expect(payload.data.fcmOptions).toEqual({
+      analyticsLabel: 'feature_update_v1',
+    });
+    expect(requestData.data.analytics_label).toEqual('feature_update_v1');
+    expect(JSON.parse(payload.data.android.data.data)).toEqual({
+      alert: 'alert',
+    });
+  });
+
+  it('can add a top-level analytics label to FCM payloads', () => {
+    const requestData = {
+      analytics_label: 'feature_update_v1',
+      data: {
+        alert: 'alert',
+      },
+    };
+
+    const payload = FCM.generateFCMPayload(
+      requestData,
+      'pushId',
+      1454538822113,
+      ['testToken'],
+      'android',
+    );
+
+    expect(payload.data.fcmOptions).toEqual({
+      analyticsLabel: 'feature_update_v1',
+    });
+    expect(JSON.parse(payload.data.android.data.data)).toEqual({
+      alert: 'alert',
+    });
+  });
+
+  it('can add an analytics label to FCM APNS payloads', () => {
+    const requestData = {
+      analytics_label: 'feature_update_v1',
+      data: {
+        alert: 'alert',
+      },
+    };
+
+    const payload = FCM.generateFCMPayload(
+      requestData,
+      'pushId',
+      1454538822113,
+      ['testToken'],
+      'apple',
+    );
+
+    expect(payload.data.fcmOptions).toEqual({
+      analyticsLabel: 'feature_update_v1',
+    });
+    expect(payload.data.apns.payload).toEqual({
+      aps: {
+        alert: {
+          body: 'alert',
+        },
+      },
+    });
+  });
+
+  it('rejects invalid analytics labels', () => {
+    const invalidLabels = [
+      '',
+      'invalid label',
+      'invalid/slash',
+      'a'.repeat(51),
+      123,
+    ];
+
+    invalidLabels.forEach((analyticsLabel) => {
+      expect(() => FCM.generateFCMPayload(
+        {
+          data: {
+            alert: 'alert',
+            analytics_label: analyticsLabel,
+          },
+        },
+        'pushId',
+        1454538822113,
+        ['testToken'],
+        'android',
+      )).toThrowError('Invalid FCM analytics_label; expected 1-50 characters matching /^[a-zA-Z0-9-_.~%]+$/');
+    });
+  });
+
+  it('rejects an invalid top-level analytics label even when data has a valid label', () => {
+    expect(() => FCM.generateFCMPayload(
+      {
+        analytics_label: null,
+        data: {
+          alert: 'alert',
+          analytics_label: 'feature_update_v1',
+        },
+      },
+      'pushId',
+      1454538822113,
+      ['testToken'],
+      'android',
+    )).toThrowError('Invalid FCM analytics_label; expected 1-50 characters matching /^[a-zA-Z0-9-_.~%]+$/');
+  });
+
   it('can slice devices', () => {
     // Mock devices
     const devices = [makeDevice(1), makeDevice(2), makeDevice(3), makeDevice(4)];
