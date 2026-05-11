@@ -428,6 +428,22 @@ describe('FCM', () => {
     });
   });
 
+  it('rejects an invalid top-level analytics label even when data has a valid label', () => {
+    expect(() => FCM.generateFCMPayload(
+      {
+        analytics_label: null,
+        data: {
+          alert: 'alert',
+          analytics_label: 'feature_update_v1',
+        },
+      },
+      'pushId',
+      1454538822113,
+      ['testToken'],
+      'android',
+    )).toThrowError('Invalid FCM analytics_label; expected 1-50 characters matching /^[a-zA-Z0-9-_.~%]+$/');
+  });
+
   it('can slice devices', () => {
     // Mock devices
     const devices = [makeDevice(1), makeDevice(2), makeDevice(3), makeDevice(4)];

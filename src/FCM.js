@@ -345,7 +345,10 @@ function payloadConverter(requestData, pushType, pushId, timeStamp) {
 }
 
 function getAnalyticsLabel(requestData) {
-  const analyticsLabel = requestData.analytics_label ?? requestData.data?.analytics_label;
+  const hasTopLevelAnalyticsLabel = Object.prototype.hasOwnProperty.call(requestData, 'analytics_label');
+  const analyticsLabel = hasTopLevelAnalyticsLabel
+    ? requestData.analytics_label
+    : requestData.data?.analytics_label;
   if (analyticsLabel === undefined) {
     return;
   }
