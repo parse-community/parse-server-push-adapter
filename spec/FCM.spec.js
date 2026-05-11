@@ -326,6 +326,79 @@ describe('FCM', () => {
     expect(payload.data.tokens).toEqual(['testToken']);
   });
 
+  it('can add an FCM analytics label from nested request data', () => {
+    const requestData = {
+      data: {
+        alert: 'alert',
+        analytics_label: 'feature_update_v1',
+      },
+    };
+
+    const payload = FCM.generateFCMPayload(
+      requestData,
+      'pushId',
+      1454538822113,
+      ['testToken'],
+      'android',
+    );
+
+    expect(payload.data.fcmOptions).toEqual({
+      analyticsLabel: 'feature_update_v1',
+    });
+    expect(payload.data.tokens).toEqual(['testToken']);
+
+    const dataFromUser = JSON.parse(payload.data.android.data.data);
+    expect(dataFromUser).toEqual({ alert: 'alert' });
+  });
+
+  it('can add an FCM analytics label from top-level request data', () => {
+    const requestData = {
+      analytics_label: 'campaign-1',
+      data: {
+        alert: 'alert',
+      },
+    };
+
+    const payload = FCM.generateFCMPayload(
+      requestData,
+      'pushId',
+      1454538822113,
+      ['testToken'],
+      'android',
+    );
+
+    expect(payload.data.fcmOptions).toEqual({
+      analyticsLabel: 'campaign-1',
+    });
+  });
+
+  it('rejects invalid FCM analytics labels', () => {
+    const invalidLabels = [
+      '',
+      'has spaces',
+      'has/slash',
+      'a'.repeat(51),
+      123,
+    ];
+
+    invalidLabels.forEach((analyticsLabel) => {
+      const requestData = {
+        data: {
+          alert: 'alert',
+          analytics_label: analyticsLabel,
+        },
+      };
+
+      expect(() => FCM.generateFCMPayload(
+        requestData,
+        'pushId',
+        1454538822113,
+        ['testToken'],
+        'android',
+      )).toThrowError('FCM analytics_label must contain 1 to 50 letters, numbers, or -_.~% characters.');
+    });
+  });
+
   it('can slice devices', () => {
     // Mock devices
     const devices = [makeDevice(1), makeDevice(2), makeDevice(3), makeDevice(4)];
@@ -584,6 +657,27 @@ describe('FCM', () => {
       expect(fcmPayload.apns.headers['apns-collapse-id']).toEqual(collapseId);
       expect(fcmPayload.apns.headers['apns-push-type']).toEqual(pushType);
       expect(fcmPayload.apns.headers['apns-priority']).toEqual(priority);
+    });
+
+    it('can add an FCM analytics label to APNS payloads', () => {
+      const data = {
+        analytics_label: 'ios_campaign',
+        alert: 'alert',
+      };
+
+      const payload = FCM.generateFCMPayload(
+        data,
+        'pushId',
+        1454538822113,
+        ['tokenTest'],
+        'apple',
+      );
+      const fcmPayload = payload.data;
+
+      expect(fcmPayload.fcmOptions).toEqual({
+        analyticsLabel: 'ios_campaign',
+      });
+      expect(fcmPayload.apns.payload.analytics_label).toBeUndefined();
     });
 
     it('sets push type to alert if not defined explicitly', () => {
