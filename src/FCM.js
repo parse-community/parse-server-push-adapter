@@ -285,17 +285,18 @@ function _GCMToFCMPayload(requestData, pushId, timeStamp) {
   }
 
   if (requestData.hasOwnProperty('data')) {
+    const data = { ...requestData.data };
     // FCM gives an error on send if we have apns keys that should have integer values
     for (const key of apnsIntegerDataKeys) {
-      if (requestData.data.hasOwnProperty(key)) {
-        delete requestData.data[key];
+      if (data.hasOwnProperty(key)) {
+        delete data[key];
       }
     }
-    delete requestData.data.analytics_label;
+    delete data.analytics_label;
     androidPayload.android.data = {
       push_id: pushId,
       time: new Date(timeStamp).toISOString(),
-      data: JSON.stringify(requestData.data),
+      data: JSON.stringify(data),
     }
   }
 
