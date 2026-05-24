@@ -16,6 +16,7 @@ const apnsIntegerDataKeys = [
   'priority',
   'expiration_time',
 ];
+const analyticsLabelPattern = /^[a-zA-Z0-9-_.~%]{1,50}$/;
 
 export default function FCM(args, pushType) {
   if (typeof args !== 'object' || !args.firebaseServiceAccount) {
@@ -200,6 +201,13 @@ function _APNSToFCMPayload(requestData) {
     apnsPayload.apns.headers = headers;
   }
 
+  const analyticsLabel = getAnalyticsLabel(requestData);
+  if (analyticsLabel) {
+    apnsPayload.apns.fcmOptions = {
+      analyticsLabel,
+    };
+  }
+
   for (const key in coreData) {
     switch (key) {
     case 'aps':
@@ -261,6 +269,10 @@ function _APNSToFCMPayload(requestData) {
       break;
     case 'priority':
       break;
+    case 'analytics_label':
+      break;
+    case 'analyticsLabel':
+      break;
     default:
       apnsPayload['apns']['payload'][key] = coreData[key]; // Custom keys should be outside aps
       break;
@@ -270,6 +282,7 @@ function _APNSToFCMPayload(requestData) {
 }
 
 function _GCMToFCMPayload(requestData, pushId, timeStamp) {
+  const analyticsLabel = getAnalyticsLabel(requestData);
 
   const androidPayload = {
     android: {
@@ -277,21 +290,33 @@ function _GCMToFCMPayload(requestData, pushId, timeStamp) {
     },
   };
 
+  if (analyticsLabel) {
+    androidPayload.android.fcmOptions = {
+      analyticsLabel,
+    };
+  }
+
   if (requestData.hasOwnProperty('notification')) {
     androidPayload.android.notification = requestData.notification;
   }
 
   if (requestData.hasOwnProperty('data')) {
+    const data = { ...requestData.data };
+
     // FCM gives an error on send if we have apns keys that should have integer values
     for (const key of apnsIntegerDataKeys) {
-      if (requestData.data.hasOwnProperty(key)) {
-        delete requestData.data[key]
+      if (data.hasOwnProperty(key)) {
+        delete data[key];
       }
     }
+
+    delete data.analytics_label;
+    delete data.analyticsLabel;
+
     androidPayload.android.data = {
       push_id: pushId,
       time: new Date(timeStamp).toISOString(),
-      data: JSON.stringify(requestData.data),
+      data: JSON.stringify(data),
     }
   }
 
@@ -310,6 +335,37 @@ function _GCMToFCMPayload(requestData, pushId, timeStamp) {
   }
 
   return androidPayload;
+}
+
+function getAnalyticsLabel(requestData) {
+  const coreData = requestData.hasOwnProperty('data') ? requestData.data : requestData;
+  let analyticsLabel;
+
+  if (requestData.hasOwnProperty('analytics_label')) {
+    analyticsLabel = requestData.analytics_label;
+  } else if (requestData.hasOwnProperty('analyticsLabel')) {
+    analyticsLabel = requestData.analyticsLabel;
+  } else if (coreData.hasOwnProperty('analytics_label')) {
+    analyticsLabel = coreData.analytics_label;
+  } else if (coreData.hasOwnProperty('analyticsLabel')) {
+    analyticsLabel = coreData.analyticsLabel;
+  }
+
+  if (analyticsLabel === undefined) {
+    return undefined;
+  }
+
+  if (
+    typeof analyticsLabel !== 'string' ||
+    !analyticsLabelPattern.test(analyticsLabel)
+  ) {
+    throw new Parse.Error(
+      Parse.Error.PUSH_MISCONFIGURED,
+      'analytics_label must match /^[a-zA-Z0-9-_.~%]{1,50}$/',
+    );
+  }
+
+  return analyticsLabel;
 }
 
 /**
