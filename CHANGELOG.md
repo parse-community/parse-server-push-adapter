@@ -1,3 +1,10 @@
+## [8.5.1](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.0...8.5.1) (2026-07-19)
+
+
+### Bug Fixes
+
+* Bump websocket-driver from 0.7.4 to 0.7.5 ([#582](https://github.com/parse-community/parse-server-push-adapter/issues/582)) ([9de0b0d](https://github.com/parse-community/parse-server-push-adapter/commit/9de0b0d259a99ffdf33b124105edba4e087bf62c))
+
 # [8.5.0](https://github.com/parse-community/parse-server-push-adapter/compare/8.4.0...8.5.0) (2026-04-17)
 
 
