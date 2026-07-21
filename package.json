@@ -26,7 +26,7 @@
   "dependencies": {
     "@parse/node-apn": "8.1.0",
     "expo-server-sdk": "6.1.0",
-    "firebase-admin": "13.9.0",
+    "firebase-admin": "14.2.0",
     "npmlog": "7.0.1",
     "parse": "8.6.0",
     "web-push": "3.6.7"
