@@ -1,3 +1,10 @@
+## [8.5.2](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.1...8.5.2) (2026-07-21)
+
+
+### Bug Fixes
+
+* Security upgrade tar and npm ([#593](https://github.com/parse-community/parse-server-push-adapter/issues/593)) ([9856ea6](https://github.com/parse-community/parse-server-push-adapter/commit/9856ea6cdcfa7c68de7ac7322a0aed3fdb6defeb))
+
 ## [8.5.1](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.0...8.5.1) (2026-07-19)
 
 
