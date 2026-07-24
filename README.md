@@ -25,6 +25,7 @@ The official Push Notification adapter for Parse Server. See [Parse Server Push 
     - [Migration to FCM HTTP v1 API (June 2024)](#migration-to-fcm-http-v1-api-june-2024)
     - [HTTP/1.1 Legacy Option](#http11-legacy-option)
     - [Firebase Client Error](#firebase-client-error)
+    - [FCM Analytics Label](#fcm-analytics-label)
   - [Expo Push Options](#expo-push-options)
 - [Bundled with Parse Server](#bundled-with-parse-server)
 - [Logging](#logging)
@@ -188,6 +189,22 @@ Occasionally, errors within the Firebase Cloud Messaging (FCM) client may not be
 - `resolveUnhandledClientError: false`: Causes push sending to fail, returning a `Parse.Error.OTHER_CAUSE` with error details that can be parsed to handle it accordingly. This is the default.
 
 In both cases, detailed error logs are recorded in the Parse Server logs for debugging purposes.
+
+#### FCM Analytics Label
+
+To tag Firebase delivery metrics for a push notification, include `analytics_label` in the push data. The adapter validates the label and maps it to `fcmOptions.analyticsLabel` in the FCM payload.
+
+```js
+await Parse.Push.send({
+  channels: ['global'],
+  data: {
+    alert: 'Feature update',
+    analytics_label: 'feature_update_v1'
+  }
+}, { useMasterKey: true });
+```
+
+The analytics label can contain 1 to 50 letters, numbers, or `-_.~%` characters.
 
 ### Expo Push Options
 
