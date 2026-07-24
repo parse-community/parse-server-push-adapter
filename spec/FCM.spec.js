@@ -378,6 +378,73 @@ describe('FCM', () => {
       expect(dataFromUser).toEqual(requestData.data);
     });
 
+    it('can generate GCM Payload with an analytics label', () => {
+      const requestData = {
+        data: {
+          alert: 'alert',
+          analytics_label: 'feature_update-1',
+        },
+      };
+
+      const pushId = 'pushId';
+      const timeStamp = 1454538822113;
+      const payload = FCM.generateFCMPayload(
+        requestData,
+        pushId,
+        timeStamp,
+        ['testToken'],
+        'android',
+      );
+
+      const fcmPayload = payload.data;
+      expect(fcmPayload.android.fcmOptions.analyticsLabel).toEqual(
+        'feature_update-1',
+      );
+
+      const dataFromUser = JSON.parse(fcmPayload.android.data.data);
+      expect(dataFromUser).toEqual({ alert: 'alert' });
+    });
+
+    it('rejects invalid analytics labels', () => {
+      const requestData = {
+        data: {
+          alert: 'alert',
+          analytics_label: 'invalid label with spaces',
+        },
+      };
+
+      expect(() => FCM.generateFCMPayload(
+        requestData,
+        'pushId',
+        1454538822113,
+        ['testToken'],
+        'android',
+      )).toThrowError(
+        Parse.Error,
+        'analytics_label must match /^[a-zA-Z0-9-_.~%]{1,50}$/',
+      );
+    });
+
+    it('rejects empty analytics labels', () => {
+      const requestData = {
+        data: {
+          alert: 'alert',
+          analytics_label: '',
+        },
+      };
+
+      expect(() => FCM.generateFCMPayload(
+        requestData,
+        'pushId',
+        1454538822113,
+        ['testToken'],
+        'android',
+      )).toThrowError(
+        Parse.Error,
+        'analytics_label must match /^[a-zA-Z0-9-_.~%]{1,50}$/',
+      );
+    });
+
     it('can generate GCM Payload with valid expiration time', () => {
       // To maintain backwards compatibility with GCM payload format
       // See corresponding test with same test label in GCM.spec.js
@@ -614,6 +681,29 @@ describe('FCM', () => {
       const fcmPayload = payload.data;
 
       expect(fcmPayload.apns.headers['apns-push-type']).toEqual('alert');
+    });
+
+    it('can generate APNS payload with an analytics label', () => {
+      const data = {
+        data: {
+          alert: 'alert',
+          analytics_label: 'ios_campaign.1',
+        },
+      };
+
+      const payload = FCM.generateFCMPayload(
+        data,
+        'pushId',
+        1454538822113,
+        ['tokenTest'],
+        'apple',
+      );
+      const fcmPayload = payload.data;
+
+      expect(fcmPayload.apns.fcmOptions.analyticsLabel).toEqual(
+        'ios_campaign.1',
+      );
+      expect(fcmPayload.apns.payload.analytics_label).toBeUndefined();
     });
 
     it('can generate APNS notification from raw data', () => {

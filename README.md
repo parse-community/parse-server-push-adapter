@@ -189,6 +189,21 @@ Occasionally, errors within the Firebase Cloud Messaging (FCM) client may not be
 
 In both cases, detailed error logs are recorded in the Parse Server logs for debugging purposes.
 
+#### Analytics Label
+
+FCM analytics labels can be set with `analytics_label` in the push data. The label must match `^[a-zA-Z0-9-_.~%]{1,50}$`; valid labels are forwarded to the Firebase Admin SDK as `fcmOptions.analyticsLabel` so they appear in Firebase delivery analytics.
+
+Example payload:
+
+```js
+{
+  data: {
+    alert: 'Feature launched',
+    analytics_label: 'feature_launch-1'
+  }
+}
+```
+
 ### Expo Push Options
 
 Example options:
