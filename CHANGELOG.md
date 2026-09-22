@@ -1,3 +1,10 @@
+## [8.5.3](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.2...8.5.3) (2026-09-22)
+
+
+### Bug Fixes
+
+* Bump fast-xml-parser from 5.10.0 to 5.10.1 ([#598](https://github.com/parse-community/parse-server-push-adapter/issues/598)) ([9abf110](https://github.com/parse-community/parse-server-push-adapter/commit/9abf1102476202321e7e2badd755e188362112a5))
+
 ## [8.5.2](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.1...8.5.2) (2026-07-21)
 
 
