@@ -1,3 +1,10 @@
+## [8.5.5](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.4...8.5.5) (2026-09-23)
+
+
+### Bug Fixes
+
+* Bump parse from 8.6.1 to 8.6.2 ([#612](https://github.com/parse-community/parse-server-push-adapter/issues/612)) ([fd7b8ec](https://github.com/parse-community/parse-server-push-adapter/commit/fd7b8ec1f5bed7ab065877e1937e09e10c0cc1e1))
+
 ## [8.5.4](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.3...8.5.4) (2026-09-23)
 
 
