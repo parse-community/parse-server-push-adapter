@@ -9,12 +9,16 @@ import { randomString } from './PushAdapterUtils.js';
 const LOG_PREFIX = 'parse-server-push-adapter FCM';
 const FCMRegistrationTokensMax = 500;
 const FCMTimeToLiveMax = 4 * 7 * 24 * 60 * 60; // FCM allows a max of 4 weeks
+const fcmAnalyticsLabelRegex = /^[a-zA-Z0-9-_.~%]{1,50}$/;
 const apnsIntegerDataKeys = [
   'badge',
   'content-available',
   'mutable-content',
   'priority',
   'expiration_time',
+];
+const fcmMetadataDataKeys = [
+  'analytics_label',
 ];
 
 export default function FCM(args, pushType) {
@@ -261,6 +265,8 @@ function _APNSToFCMPayload(requestData) {
       break;
     case 'priority':
       break;
+    case 'analytics_label':
+      break;
     default:
       apnsPayload['apns']['payload'][key] = coreData[key]; // Custom keys should be outside aps
       break;
@@ -282,16 +288,22 @@ function _GCMToFCMPayload(requestData, pushId, timeStamp) {
   }
 
   if (requestData.hasOwnProperty('data')) {
+    const data = { ...requestData.data };
     // FCM gives an error on send if we have apns keys that should have integer values
     for (const key of apnsIntegerDataKeys) {
-      if (requestData.data.hasOwnProperty(key)) {
-        delete requestData.data[key]
+      if (data.hasOwnProperty(key)) {
+        delete data[key];
+      }
+    }
+    for (const key of fcmMetadataDataKeys) {
+      if (data.hasOwnProperty(key)) {
+        delete data[key];
       }
     }
     androidPayload.android.data = {
       push_id: pushId,
       time: new Date(timeStamp).toISOString(),
-      data: JSON.stringify(requestData.data),
+      data: JSON.stringify(data),
     }
   }
 
@@ -312,6 +324,49 @@ function _GCMToFCMPayload(requestData, pushId, timeStamp) {
   return androidPayload;
 }
 
+function getAnalyticsLabel(requestData) {
+  let analyticsLabel;
+  const hasTopLevelAnalyticsLabel = requestData.hasOwnProperty('analytics_label');
+  const hasDataAnalyticsLabel = requestData.data &&
+    typeof requestData.data === 'object' &&
+    requestData.data.hasOwnProperty('analytics_label');
+
+  if (hasTopLevelAnalyticsLabel) {
+    analyticsLabel = requestData.analytics_label;
+  } else if (hasDataAnalyticsLabel) {
+    analyticsLabel = requestData.data.analytics_label;
+  }
+
+  if (analyticsLabel === undefined) {
+    return undefined;
+  }
+
+  if (typeof analyticsLabel !== 'string' || !fcmAnalyticsLabelRegex.test(analyticsLabel)) {
+    throw new Parse.Error(
+      Parse.Error.PUSH_MISCONFIGURED,
+      'FCM analytics_label must contain 1 to 50 letters, numbers, or -_.~% characters.',
+    );
+  }
+
+  return analyticsLabel;
+}
+
+function applyAnalyticsLabel(fcmPayload, requestData) {
+  const analyticsLabel = getAnalyticsLabel(requestData);
+
+  if (!analyticsLabel) {
+    return fcmPayload;
+  }
+
+  return {
+    ...fcmPayload,
+    fcmOptions: {
+      ...fcmPayload.fcmOptions,
+      analyticsLabel,
+    },
+  };
+}
+
 /**
  * Converts payloads used by APNS or GCM into a FCMv1-compatible payload.
  * Purpose is to remain backwards-compatible will payloads used in the APNS.js and GCM.js modules.
@@ -327,16 +382,20 @@ function payloadConverter(requestData, pushType, pushId, timeStamp) {
     return requestData.rawPayload;
   }
 
+  let fcmPayload;
+
   if (pushType === 'apple') {
-    return _APNSToFCMPayload(requestData);
+    fcmPayload = _APNSToFCMPayload(requestData);
   } else if (pushType === 'android') {
-    return _GCMToFCMPayload(requestData, pushId, timeStamp);
+    fcmPayload = _GCMToFCMPayload(requestData, pushId, timeStamp);
   } else {
     throw new Parse.Error(
       Parse.Error.PUSH_MISCONFIGURED,
       'Unsupported push type, apple or android only.',
     );
   }
+
+  return applyAnalyticsLabel(fcmPayload, requestData);
 }
 
 /**
