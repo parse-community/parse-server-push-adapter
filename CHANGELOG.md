@@ -1,3 +1,10 @@
+## [8.5.6](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.5...8.5.6) (2026-10-17)
+
+
+### Bug Fixes
+
+* Bump @grpc/grpc-js from 1.14.4 to 1.14.6 ([#622](https://github.com/parse-community/parse-server-push-adapter/issues/622)) ([be3a7e8](https://github.com/parse-community/parse-server-push-adapter/commit/be3a7e896dd4863c61b2ef5ff6684ae64827e49f))
+
 ## [8.5.5](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.4...8.5.5) (2026-09-23)
 
 
