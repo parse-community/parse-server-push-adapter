@@ -1,3 +1,10 @@
+## [8.5.7](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.6...8.5.7) (2026-10-17)
+
+
+### Bug Fixes
+
+* Bump @fastify/busboy from 3.0.0 to 3.2.3 ([#629](https://github.com/parse-community/parse-server-push-adapter/issues/629)) ([2dd1986](https://github.com/parse-community/parse-server-push-adapter/commit/2dd1986e4566648ebd98574447978951ceffeca2))
+
 ## [8.5.6](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.5...8.5.6) (2026-10-17)
 
 
