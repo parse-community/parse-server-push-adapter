@@ -1,3 +1,10 @@
+## [8.5.8](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.7...8.5.8) (2026-10-27)
+
+
+### Bug Fixes
+
+* Bump undici from 6.28.1 to 6.29.1 and 7.29.1 to 7.30.1 ([#636](https://github.com/parse-community/parse-server-push-adapter/issues/636)) ([75d6ad9](https://github.com/parse-community/parse-server-push-adapter/commit/75d6ad9a1122743953ed4e21663c49f2099bea15))
+
 ## [8.5.7](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.6...8.5.7) (2026-10-17)
 
 
