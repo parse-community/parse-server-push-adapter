@@ -1,3 +1,10 @@
+## [8.5.10](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.9...8.5.10) (2026-10-28)
+
+
+### Bug Fixes
+
+* Bump @parse/node-apn from 8.1.0 to 8.1.1 ([#639](https://github.com/parse-community/parse-server-push-adapter/issues/639)) ([9ca05f9](https://github.com/parse-community/parse-server-push-adapter/commit/9ca05f94d67e801f5c1d6eb0968332476570ee17))
+
 ## [8.5.9](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.8...8.5.9) (2026-10-28)
 
 
