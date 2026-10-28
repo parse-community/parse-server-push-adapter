@@ -1,3 +1,10 @@
+## [8.5.9](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.8...8.5.9) (2026-10-28)
+
+
+### Bug Fixes
+
+* Bump @tootallnate/once from 2.0.0 to 2.0.1 ([#638](https://github.com/parse-community/parse-server-push-adapter/issues/638)) ([79ddd57](https://github.com/parse-community/parse-server-push-adapter/commit/79ddd57d63e6df7cefb70dc2f06be9decbc6a46e))
+
 ## [8.5.8](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.7...8.5.8) (2026-10-27)
 
 
