@@ -1,3 +1,10 @@
+# [8.6.0](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.10...8.6.0) (2026-11-02)
+
+
+### Features
+
+* Add support for Node.js 26 ([#640](https://github.com/parse-community/parse-server-push-adapter/issues/640)) ([dfe9eb7](https://github.com/parse-community/parse-server-push-adapter/commit/dfe9eb7bb2cb55926e566568c2b5ef39f807b06c))
+
 ## [8.5.10](https://github.com/parse-community/parse-server-push-adapter/compare/8.5.9...8.5.10) (2026-10-28)
 
 
