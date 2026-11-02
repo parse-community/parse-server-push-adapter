@@ -24,11 +24,11 @@
   "author": "Parse",
   "license": "MIT",
   "dependencies": {
-    "@parse/node-apn": "8.1.1",
+    "@parse/node-apn": "8.2.0",
     "expo-server-sdk": "6.1.0",
     "firebase-admin": "13.9.0",
     "npmlog": "7.0.1",
-    "parse": "8.6.2",
+    "parse": "8.7.0",
     "web-push": "3.6.7"
   },
   "devDependencies": {
@@ -46,6 +46,6 @@
     "semantic-release": "25.0.9"
   },
   "engines": {
-    "node": "20 || 22 || 24"
+    "node": "20 || 22 || 24 || 26"
   }
 }
